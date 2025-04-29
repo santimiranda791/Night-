@@ -1,5 +1,6 @@
 header {
-  background: linear-gradient(90deg, #1a1a1a, #3b1c68);
+
+  background: linear-gradient(90deg, #1a1a1a 4  5%, #3b1c68);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -22,7 +23,7 @@ header h1 {
   box-shadow: none;
   display: flex;
   justify-content: center;
-  margin-right: 30%;
+  margin-right: 10%;
   animation: fadeInDown 1s ease-out;
 }
 
@@ -85,4 +86,35 @@ header h1 {
 
 img{
   width: 8rem;
+}
+
+/* Estilo para el contenedor del usuario */
+.user {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  margin-right: 2rem;
+
+}
+
+.user:hover {
+  transform: scale(1.05);
+}
+
+
+
+.user p {
+  margin: 0;
+  font-size: 1rem;
+  color: #ffffff;
+
+  transition: color 0.3s ease;
+}
+
+.user:hover p {
+  color: #a374ff;
 }

@@ -1,9 +1,10 @@
 import React from 'react'
-import {Header} from '../../Header/Header'
 import '../../../../Styles/PrincipalPage.css'
+import { Header } from '../../Header/Header'
 
 export const PrincipalPage = () => {
   return (
     <Header/>
+    
   )
 }
