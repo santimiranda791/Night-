@@ -1,0 +1,30 @@
+footer {
+  height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  background-color: #000; 
+  color: #fff; 
+  padding: 20px;
+  gap: 50px;
+  text-align: center;
+}
+
+footer :hover {
+  color: #3b1c68; 
+}
+
+footer h1 {
+  font-size: 24px; 
+  margin: 0; 
+}
+
+.restriction {
+  height: 115px;
+  width:auto;
+}
+
+.loguito {
+  height: 90px; 
+  width: auto;
+}

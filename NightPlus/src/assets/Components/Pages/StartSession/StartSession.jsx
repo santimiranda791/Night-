@@ -1,48 +1,72 @@
 import React from 'react';
-import '../../../../Styles/StartSession.css'; // Asegúrate de importar el CSS correcto
+
+import '../../../../Styles/StartSession.css';
 
 export const StartSession = () => {
   return (
-    <div className="login-container">
-      <h1 className="login-title">Login</h1>
-      <form className="login-form">
-        <div className="wave-group">
-          <input
-            type="email"
-            id="email"
-            className="input"
-            required
-          />
-          <label htmlFor="email" className="label">
-            <span className="label-char" style={{ '--index': 0 }}>E</span>
-            <span className="label-char" style={{ '--index': 1 }}>m</span>
-            <span className="label-char" style={{ '--index': 2 }}>a</span>
-            <span className="label-char" style={{ '--index': 3 }}>i</span>
-            <span className="label-char" style={{ '--index': 4 }}>l</span>
-          </label>
-          <div className="bar"></div>
-        </div>
-        <div className="wave-group">
-          <input
-            type="password"
-            id="password"
-            className="input"
-            required
-          />
-          <label htmlFor="password" className="label">
-            <span className="label-char" style={{ '--index': 0 }}>P</span>
-            <span className="label-char" style={{ '--index': 1 }}>a</span>
-            <span className="label-char" style={{ '--index': 2 }}>s</span>
-            <span className="label-char" style={{ '--index': 3 }}>s</span>
-            <span className="label-char" style={{ '--index': 4 }}>w</span>
-            <span className="label-char" style={{ '--index': 5 }}>o</span>
-            <span className="label-char" style={{ '--index': 6 }}>r</span>
-            <span className="label-char" style={{ '--index': 7 }}>d</span>
-          </label>
-          <div className="bar"></div>
-        </div>
-        <button type="submit" className="form-button">Login</button>
-      </form>
+    <div className="page-container">
+      {/* Logotipo */}
+      <img src="./src/assets/Icons/logito.svg" alt="Logo" className="logo" /> {/* Imagen del logo */}
+
+      <div className="login-container">
+        <h1 className="login-title">Login</h1>
+        <form className="login-form">
+          {/* Campo de Email */}
+          <div className="form__group field">
+            <input
+              type="email"
+              id="email"
+              className="form__field"
+              placeholder="Email"
+              required
+            />
+            <label htmlFor="email" className="form__label">Email</label>
+          </div>
+
+          {/* Campo de Password */}
+          <div className="form__group field">
+            <input
+              type="password"
+              id="password"
+              className="form__field"
+              placeholder="Password"
+              required
+            />
+            <label htmlFor="password" className="form__label">Password</label>
+          </div>
+
+          {/* Botón de Login */}
+          <div
+            aria-label="User Login Button"
+            tabIndex="0"
+            role="button"
+            className="user-profile"
+          >
+            <div className="user-profile-inner">
+              <svg
+                aria-hidden="true"
+                xmlns="http://www.w3.org/2000/svg"
+                viewBox="0 0 24 24"
+              >
+                <g data-name="Layer 2" id="Layer_2">
+                  {/* Puedes agregar un ícono aquí si lo necesitas */}
+                </g>
+              </svg>
+              <p>Log In</p>
+            </div>
+          </div>
+
+          {/* Opciones adicionales */}
+          <div className="login-options">
+            <a href="/forgot-password" className="forgot-password">
+              ¿Olvidaste tu contraseña?
+            </a>
+            <a href="/register" className="register">
+              ¿Es tu primera vez? Regístrate
+            </a>
+          </div>
+        </form>
+      </div>
     </div>
   );
 };

@@ -105,16 +105,45 @@ img{
   transform: scale(1.05);
 }
 
-
-
 .user p {
   margin: 0;
   font-size: 1rem;
   color: #ffffff;
-
+  text-decoration: none; /* Corregido */
   transition: color 0.3s ease;
 }
 
 .user:hover p {
   color: #a374ff;
+}
+
+
+
+.user .dropdown {
+  display: none; /* Oculta el dropdown por defecto */
+  position: absolute;
+  top: 100%; /* Posiciona el dropdown debajo del contenedor */
+  left: 0;
+  background-color: #1a1a1a;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 5px;
+  z-index: 10;
+  padding: 0.5rem 0;
+}
+
+.user:hover .dropdown {
+  display: block; /* Muestra el dropdown al hacer hover */
+}
+
+.dropdown-item {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  display: block;
+  transition: background-color 0.3s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #3b1c68; /* Cambia el fondo al pasar el mouse */
+  color: #a374ff; /* Cambia el color del texto */
 }
