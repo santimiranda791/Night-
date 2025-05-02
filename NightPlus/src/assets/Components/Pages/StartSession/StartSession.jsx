@@ -53,7 +53,7 @@ export const StartSession = () => {
                   {/* Puedes agregar un ícono aquí si lo necesitas */}
                 </g>
               </svg>
-              <p>Log In</p>
+              <p>Inicia Sesión</p>
             </div>
           </div>
 

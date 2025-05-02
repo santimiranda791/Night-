@@ -6,6 +6,7 @@ import { StartSession } from './assets/Components/Pages/StartSession/StartSessio
 import { SignInCliente } from './assets/Components/Pages/SignInCliente/SignInCliente'
 import { StartSessionAdmin } from './assets/Components/Pages/StartSessionAdmin/StartSessionAdmin'
 import { SignInAdmin } from './assets/Components/Pages/SignInAdmin/SignInAdmin'
+import { Eventos } from './assets/Components/Pages/Eventos/Eventos'
 export const App = () => {
   return (
     <>
@@ -16,6 +17,7 @@ export const App = () => {
         <Route path="/SignInCliente" element={<SignInCliente />} />
         <Route path="/LogInAdmin" element={<StartSessionAdmin/>} />
         <Route path="/SignInAdmin" element={<SignInAdmin />} />
+        <Route path="/Eventos" element={<Eventos />} />
       </Routes>
     </>
   )

@@ -97,7 +97,7 @@ export const SignInAdmin = () => {
                   {/* Puedes agregar un ícono aquí si lo necesitas */}
                 </g>
               </svg>
-              <p>Sign In</p>
+              <p>Registrate</p>
             </div>
           </div>
 

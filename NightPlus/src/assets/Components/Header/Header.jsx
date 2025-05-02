@@ -33,7 +33,7 @@ export const Header = () => {
           </li>
           <li>
             <NavLink 
-              to="/PrincipalPage" 
+              to="/Eventos" 
               style={({ isActive }) => ({
                 color: isActive ? '#a374ff' : 'white',
                 textDecoration: 'none',
