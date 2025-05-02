@@ -1,16 +1,15 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom'; // Importamos NavLink
+import { NavLink } from 'react-router-dom';
+import '../../../../Styles/StartSessionAdmin.css';
 
-import '../../../../Styles/StartSession.css';
-
-export const StartSession = () => {
+export const StartSessionAdmin = () => {
   return (
     <div className="page-container">
       {/* Logotipo */}
       <img src="./src/assets/Icons/logito.svg" alt="Logo" className="logo" /> {/* Imagen del logo */}
 
       <div className="login-container">
-        <h1 className="login-title">Inicio de Sesión</h1>
+        <h1 className="login-title">Inicio de Sesión Administrador</h1>
         <form className="login-form">
           {/* Campo de Email */}
           <div className="form__group field">
@@ -53,7 +52,7 @@ export const StartSession = () => {
                   {/* Puedes agregar un ícono aquí si lo necesitas */}
                 </g>
               </svg>
-              <p>Log In</p>
+              <p>Iniciar Sesión</p>
             </div>
           </div>
 
@@ -62,7 +61,7 @@ export const StartSession = () => {
             <NavLink to="/forgot-password" className="forgot-password">
               ¿Olvidaste tu contraseña?
             </NavLink>
-            <NavLink to="/SignInCliente" className="SignInCliente">
+            <NavLink to="/SignInAdmin" className="SignInAdmin">
               ¿Es tu primera vez? Regístrate
             </NavLink>
           </div>

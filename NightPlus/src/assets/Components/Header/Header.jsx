@@ -46,19 +46,13 @@ export const Header = () => {
       </nav>
 
       <div className="user">
-        <NavLink 
-          to="/Login" 
-          style={({ isActive }) => ({
-            color: isActive ? '#a374ff' : 'white',
-            textDecoration: 'none',
-          })}
-        >
+       
           <FaUserCircle style={{ fontSize: '2rem' }} /> 
           <p>Iniciar Sesión</p>  
-        </NavLink>
+       
         <div className="dropdown">
   <NavLink to="/Login" className="dropdown-item">¿Eres Cliente?</NavLink>
-  <NavLink to="/Admin" className="dropdown-item">¿Eres Admin?</NavLink>
+  <NavLink to="/LogInAdmin" className="dropdown-item">¿Eres Admin?</NavLink>
 </div>
       </div>
     </header>
