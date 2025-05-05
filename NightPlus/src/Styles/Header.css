@@ -1,18 +1,18 @@
 header {
-
   background: linear-gradient(90deg, #1a1a1a 4  5%, #3b1c68);
   display: flex;
   align-items: center;
   justify-content: space-between;
   color: white;
-  height: 7rem;
+  height: 8rem;
   width: 100%;
   transition: all 0.3s ease-in-out;
   box-shadow: 0 10px 6px rgba(0, 0, 0, 0.1);
+  
 }
 
 header h1 {
-  font-size: 3rem;
+  font-size: 4rem;
   letter-spacing: 2px;
   animation: fadeInDown 1s ease-out;
 }
@@ -34,6 +34,8 @@ header h1 {
   gap: 15rem;
   padding: 0;
   margin: 0;
+  font-size: 1rem;
+  margin-left: 2rem;
 }
 
 .navbar li {
@@ -81,7 +83,7 @@ header h1 {
 }
 
 .logito {
-  fill: white;
+  fill: rgb(255, 255, 255);
 }
 
 img{
@@ -91,36 +93,48 @@ img{
 /* Estilo para el contenedor del usuario */
 .user {
   display: flex;
-  position: relative; /* Asegura que el dropdown se posicione relativo al contenedor */
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
   padding: 0.5rem 1rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-  margin-right: 2rem;
+  margin-right: 4rem;
+
 }
 
 .user:hover {
   transform: scale(1.05);
 }
 
+.user p {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #ffffff;
+  text-decoration: none; /* Corregido */
+  transition: color 0.3s ease;
+  
+}
+
+.user:hover p {
+  color: #a374ff;
+}
+
 .user .dropdown {
   display: none; /* Oculta el dropdown por defecto */
   position: absolute;
-  top: 100%; /* Coloca el dropdown justo debajo del contenedor */
+  top: 100%; /* Posiciona el dropdown debajo del contenedor */
   left: 0;
   background-color: #1a1a1a;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
-  z-index: 10;
+  z-index: 1000; /* Asegura que el dropdown esté por encima del video */
   padding: 0.5rem 0;
-  min-width: 150px; /* Asegura un ancho mínimo */
 }
 
-.user:hover .dropdown,
-.user .dropdown:hover {
-  display: block; /* Mantén el dropdown visible mientras el mouse esté sobre él */
+
+.user:hover .dropdown {
+  display: block; /* Muestra el dropdown al hacer hover */
 }
 
 .dropdown-item {
@@ -130,8 +144,15 @@ img{
   display: block;
   transition: background-color 0.3s ease;
 }
+.user .dropdown-item:hover {
+  background-color: #3b1c68;
+  color: #a374ff;
+}
 
-.dropdown-item:hover {
-  background-color: #3b1c68; /* Cambia el fondo al pasar el mouse */
-  color: #a374ff; /* Cambia el color del texto */
+.user .dropdown-item {
+  color: white;
+  text-decoration: none;
+  padding: 0.5rem 1rem;
+  display: block;
+  transition: background-color 0.3s ease;
 }

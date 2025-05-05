@@ -1,8 +1,14 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom'; 
 import '../../../../Styles/SignInCliente.css';
+import { signInWithPopup } from "firebase/auth"
+import { auth, googleProvider } from '../../../../firebaseConfig/config'; 
 
 export const SignInCliente = () => {
+
+  async function signIn () {
+       await signInWithPopup(auth, googleProvider)
+  }
   return (
     <div className="page-container">
       {/* Logotipo */}
@@ -101,7 +107,10 @@ export const SignInCliente = () => {
             </div>
           </div>
 
-          {/* Opciones adicionales */}
+          <button onClick={signIn} className="google-signin-button">
+  <img src="./src/assets/Icons/google.webp" alt="Google Icon" className="google-icon" />
+  Iniciar con Google
+</button>
           <div className="login-options">
             
           <NavLink to="/Login" className="Login">

@@ -252,3 +252,58 @@ body {
       transform: rotate(360deg);
     }
   }
+
+  .google-signin-button {
+    width: 200px;
+    height: 51px;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    background: linear-gradient(
+      to bottom right,
+      #d3c6c6 0%,
+      rgba(255, 11, 11, 0) 30%
+    );
+    color: #ffffff;
+    background-color:#000000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto; /* Centra el botón horizontalmente */
+    text-align: center; 
+    margin-top: 1rem; /* Espacio entre el botón y el texto */
+  }
+  
+  .google-signin-button .google-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 0.5rem; /* Espacio entre el ícono y el texto */
+  }
+  
+  .google-signin-button p {
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 47px; /* Asegura que el texto esté alineado verticalmente */
+  }
+
+  .google-signin-button:hover,
+.google-signin-button:focus {
+  background-color: #9e72e0;
+  box-shadow: 0 0 10px #9e72e0, 0 0 40px #9e72e0;
+  outline: none;
+  transition: 1.2s ease;
+}
+
+.google-signin-button .google-icon {
+  width: 20px;
+  height: 20px;
+  margin-right: 0.5rem; /* Espacio entre el ícono y el texto */
+}
+
+.google-signin-button p {
+  color: #fff;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 47px; /* Asegura que el texto esté alineado verticalmente */
+}
