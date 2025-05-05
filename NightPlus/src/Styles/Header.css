@@ -91,6 +91,7 @@ img{
 /* Estilo para el contenedor del usuario */
 .user {
   display: flex;
+  position: relative; /* Asegura que el dropdown se posicione relativo al contenedor */
   flex-direction: row;
   align-items: center;
   gap: 0.5rem;
@@ -98,41 +99,28 @@ img{
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
   margin-right: 2rem;
-
 }
 
 .user:hover {
   transform: scale(1.05);
 }
 
-.user p {
-  margin: 0;
-  font-size: 1rem;
-  color: #ffffff;
-  text-decoration: none; /* Corregido */
-  transition: color 0.3s ease;
-}
-
-.user:hover p {
-  color: #a374ff;
-}
-
-
-
 .user .dropdown {
   display: none; /* Oculta el dropdown por defecto */
   position: absolute;
-  top: 100%; /* Posiciona el dropdown debajo del contenedor */
+  top: 100%; /* Coloca el dropdown justo debajo del contenedor */
   left: 0;
   background-color: #1a1a1a;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   border-radius: 5px;
   z-index: 10;
   padding: 0.5rem 0;
+  min-width: 150px; /* Asegura un ancho mínimo */
 }
 
-.user:hover .dropdown {
-  display: block; /* Muestra el dropdown al hacer hover */
+.user:hover .dropdown,
+.user .dropdown:hover {
+  display: block; /* Mantén el dropdown visible mientras el mouse esté sobre él */
 }
 
 .dropdown-item {
