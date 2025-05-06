@@ -29,7 +29,7 @@ export const Discotecas = () => {
     return (
         <>
           <Header />
-          <h1>Lista de Discotecas</h1>
+          <h1>Discotecas Disponibles</h1>
           {error && <p style={{ color: 'red' }}>Error: {error}</p>} {/* Muestra mensaje de error si existe */}
           <div className="discotecas-container">
             {discotecas.length > 0 ? (
