@@ -26,25 +26,25 @@ export const Discotecas = () => {
           setError(error.message);
         });
     }, []); // El array vacío asegura que esto se ejecute solo una vez al cargar el componente
-  
     return (
-      <>
-        <Header />
-        <h1>Lista de Discotecas</h1>
-        {error && <p style={{ color: 'red' }}>Error: {error}</p>} {/* Muestra mensaje de error si existe */}
-        <div className="discotecas-container">
-          {discotecas.length > 0 ? (
-            discotecas.map(discoteca => (
-              <div className="card" key={discoteca.id}>
-                <h2>{discoteca.nombre}</h2>
-                <p><strong>Ubicación:</strong> {discoteca.ubicacion}</p>
-                <p><strong>Capacidad:</strong> {discoteca.capacidad}</p>
-              </div>
-            ))
-          ) : (
-            <p>No hay discotecas disponibles.</p>
-          )}
-        </div>
-      </>
-    );
-  };
+        <>
+          <Header />
+          <h1>Lista de Discotecas</h1>
+          {error && <p style={{ color: 'red' }}>Error: {error}</p>} {/* Muestra mensaje de error si existe */}
+          <div className="discotecas-container">
+            {discotecas.length > 0 ? (
+              discotecas.map(discoteca => (
+                <div className="card" key={discoteca.id}>
+                  <img src={discoteca.imagen} alt={discoteca.nombre} className="card-image" />
+                  <h2>{discoteca.nombre}</h2>
+                  <p><strong>Ubicación:</strong> {discoteca.ubicacion}</p>
+                  <p><strong>Capacidad:</strong> {discoteca.capacidad}</p>
+                </div>
+              ))
+            ) : (
+              <p>No hay discotecas disponibles.</p>
+            )}
+          </div>
+        </>
+      );
+    }
