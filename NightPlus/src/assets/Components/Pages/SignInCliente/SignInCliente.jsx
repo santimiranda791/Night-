@@ -107,10 +107,23 @@ export const SignInCliente = () => {
             </div>
           </div>
 
-          <button onClick={signIn} className="google-signin-button">
-  <img src="./src/assets/Icons/google.webp" alt="Google Icon" className="google-icon" />
-  Iniciar con Google
-</button>
+                    {/* Botón de Google Sign-In */}
+            <div
+            aria-label="Google Sign-In Button"
+            tabIndex="0"
+            role="button"
+            className="user-profile google-signin-button"
+            onClick={signIn}
+          >
+            <div className="user-profile-inner">
+              <img
+                src="./src/assets/Icons/google.webp"
+                alt="Google Icon"
+                className="google-icon"
+              />
+              <p>Iniciar con Google</p>
+            </div>
+          </div>
           <div className="login-options">
             
           <NavLink to="/Login" className="Login">

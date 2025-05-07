@@ -180,6 +180,7 @@ body {
     justify-content: center;
     margin: 0 auto; /* Centra el botón horizontalmente */
     text-align: center; /* Asegura que el texto esté centrado */
+    margin-top: 0.8rem; /* Espacio superior */
   }
   
   .user-profile:hover,
