@@ -7,7 +7,7 @@ export const StartSession = () => {
   return (
     <div className="page-container">
       {/* Logotipo */}
-      <img src="./src/assets/Icons/logito.svg" alt="Logo" className="logo" /> {/* Imagen del logo */}
+      <img src="/logito.svg" alt="Logo" className="loguito" />
 
       <div className="login-container">
         <h1 className="login-title">Inicio de Sesión</h1>
