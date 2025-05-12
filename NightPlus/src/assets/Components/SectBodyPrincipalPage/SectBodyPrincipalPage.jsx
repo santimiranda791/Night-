@@ -1,8 +1,10 @@
 import React from 'react'
 import '../../../Styles/SectBodyPrincipalPage.css'
-import VideoBackground from '../../Icons/Video.mp4'
+
 
 export const SectBodyPrincipalPage = () => {
+
+  const VideoBackground = "/Video.mp4";
   return (
 
     <>

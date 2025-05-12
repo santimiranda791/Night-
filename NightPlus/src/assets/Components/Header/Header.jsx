@@ -12,8 +12,8 @@ export const Header = () => {
 
   return (
     <header>
-      <img src="./src/assets/Icons/logito.svg" alt="Logo" className="logo" />
-      <nav className="navbar">
+<img src="/logito.svg" alt="Logo" className="logo" />      
+<nav className="navbar">
         <ul className="nav-list">
           <li>
             <NavLink 
