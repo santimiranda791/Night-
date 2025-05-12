@@ -117,7 +117,7 @@ export const SignInCliente = () => {
           >
             <div className="user-profile-inner">
               <img
-                src="./src/assets/Icons/google.webp"
+                src="/google.webp"
                 alt="Google Icon"
                 className="google-icon"
               />
