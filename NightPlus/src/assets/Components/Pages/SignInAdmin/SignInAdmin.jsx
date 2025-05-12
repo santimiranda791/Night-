@@ -6,7 +6,7 @@ export const SignInAdmin = () => {
   return (
     <div className="page-container">
       {/* Logotipo */}
-      <img src="/logito.svg" alt="Logo" className="loguito" />
+      <img src="/logito.svg" alt="Logo" className="logo" />
 
       <div className="login-container">
         <h1 className="login-title">Registrarse</h1>
