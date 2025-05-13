@@ -9,7 +9,8 @@ export const Discotecas = () => {
   
     useEffect(() => {
       // Usamos fetch para hacer una solicitud GET al backend
-      fetch('http://localhost:8080/servicio/discotecas-list') // Cambia la URL si tu backend está en otro puerto
+     fetch('https://nightplusback.vercel.app/servicio/discotecas')
+
         .then(response => {
           // Verificamos si la respuesta es exitosa (status 200-299)
           if (!response.ok) {
