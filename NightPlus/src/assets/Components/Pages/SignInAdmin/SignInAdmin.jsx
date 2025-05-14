@@ -9,6 +9,13 @@ export const SignInAdmin = () => {
       <img src="/logito.svg" alt="Logo" className="logo" />
 
       <div className="login-container">
+        <NavLink to="/" className="back-arrow" aria-label="Back to Principal Page">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="24" height="24" viewBox="0 0 24 24">
+            <polyline points="15 18 9 12 15 6" />
+          </svg>
+          Volver
+        </NavLink>
+
         <h1 className="login-title">Registrarse</h1>
         <form className="login-form">
             

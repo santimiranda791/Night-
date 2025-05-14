@@ -252,3 +252,23 @@ body {
       transform: rotate(360deg);
     }
   }
+
+.back-arrow {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: #9e72e0; /* Color llamativo acorde a la app */
+  font-weight: 600;
+  font-size: 1.1rem;
+  text-decoration: none;
+}
+
+.back-arrow svg {
+  margin-right: 0.5rem;
+  stroke: #9e72e0; /* Color del icono acorde a la app */
+  order: -1; /* Asegura que el SVG quede a la izquierda */
+}
+
+.login-container .back-arrow {
+  margin-left: 1rem; /* Para que quede dentro del container con margen */
+}
