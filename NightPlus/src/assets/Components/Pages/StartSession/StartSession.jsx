@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../../../../Styles/StartSession.css';
+import Swal from 'sweetalert2'; // <-- Agrega esta línea
 
 export const StartSession = () => {
   const navigate = useNavigate();
@@ -24,11 +25,10 @@ export const StartSession = () => {
     setError(null);
 
     // Armar el payload exactamente igual que en el backend (sin ñ)
- const payload = {
-  usuarioCliente: formData.usuarioCliente,
-  contrasenaCliente: formData.contrasenaCliente,  // sin ñ
-};
-
+    const payload = {
+      usuarioCliente: formData.usuarioCliente,
+      contrasenaCliente: formData.contrasenaCliente,  // sin ñ
+    };
 
     try {
       const response = await fetch('http://localhost:8080/servicio/login-cliente', {
@@ -40,23 +40,57 @@ export const StartSession = () => {
       if (!response.ok) {
         if (response.status === 401) {
           setError('Credenciales incorrectas');
+          Swal.fire({
+           imageUrl: '/logitotriste.png',
+           imageWidth: 130,
+           imageHeight: 130,
+            title: 'Acceso denegado',
+            text: 'Credenciales incorrectas',
+          });
         } else {
           setError('Error al iniciar sesión');
+          Swal.fire({
+            imageUrl: '/logitotriste.png',
+           imageWidth: 130,
+           imageHeight: 130,
+            icon: 'error',
+            title: 'Error',
+            text: 'Error al iniciar sesión',
+          });
         }
         return;
       }
 
-      const data = await response.json();
-      console.log('Login exitoso:', data);
-      alert('Sesión iniciada con éxito');
+            // ...existing code...
+        const data = await response.json();
+        console.log('Login exitoso:', data);
+        Swal.fire({
+        imageUrl: '/logitonegro.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        title: '¡Sesión iniciada!',
+        text: 'Bienvenido/a',
+        timer: 1500,
+        showConfirmButton: false
+        });
+        // ...existing code...
+            // Guardar usuario en localStorage
+            localStorage.setItem('usuario', data.usuarioCliente || '');
+            localStorage.setItem('nombre', data.nombreCliente || '');
 
-      // Redirigir a dashboard o página principal
-     navigate('/');
-
+      // Redirigir a dashboard o página principal después de un pequeño delay
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
 
     } catch (err) {
       console.error('Error al iniciar sesión:', err);
       setError('Error en la conexión con el servidor');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de conexión',
+        text: 'No se pudo conectar con el servidor',
+      });
     }
   };
 
