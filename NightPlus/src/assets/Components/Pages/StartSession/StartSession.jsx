@@ -151,6 +151,9 @@ export const StartSession = () => {
             <NavLink to="/SignInCliente" className="SignInCliente">
               ¿Es tu primera vez? Regístrate
             </NavLink>
+
+
+            
           </div>
         </form>
       </div>
