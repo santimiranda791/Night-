@@ -270,5 +270,8 @@ body {
 }
 
 .login-container .back-arrow {
-  margin-left: 1rem; /* Para que quede dentro del container con margen */
+  position: absolute;
+  top: 1rem;
+  left: 1rem;
+  margin-left: 0;
 }

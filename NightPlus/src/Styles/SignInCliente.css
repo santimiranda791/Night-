@@ -1,8 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Syncopate&display=swap" rel="stylesheet');
 @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap" rel="stylesheet');
 
-
-
 * {
     font-family: "Syncopate", sans-serif;
     font-weight: 400;
@@ -19,7 +17,6 @@ body {
     overflow: hidden;
     position: relative;
 }
-
 
 .background-blur {
     position: absolute;
@@ -49,15 +46,17 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 720px; /* Ajusta según sea necesario */
-    width: 550px; /* Ajusta según sea necesario */
-    background-color:linear-gradient(90deg, #1a1a1a 45%, #3b1c68);
+    height: auto; /* Cambiado para que se ajuste al contenido */
+    max-height: 90vh; /* Limita la altura máxima para evitar overflow */
+    width: 90%; /* Ancho responsivo */
+    max-width: 700px; /* Ancho máximo aumentado */
+    background-color: linear-gradient(90deg, #1a1a1a 45%, #3b1c68);
     border-radius: 20px;
     overflow: hidden;
     z-index: 1;
+    padding: 2rem; /* Añadido padding para mejor espacio interno */
   }
 
-  
   
   .login-container::before {
     content: "";
@@ -75,7 +74,7 @@ body {
 
 .login-title {
     text-align: center;
-    margin-bottom: 4rem;
+    margin-top: 2rem;
     color: #fff;
 }
 
