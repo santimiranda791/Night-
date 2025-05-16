@@ -53,7 +53,6 @@ export const StartSession = () => {
             imageUrl: '/logitotriste.png',
            imageWidth: 130,
            imageHeight: 130,
-            icon: 'error',
             title: 'Error',
             text: 'Error al iniciar sesión',
           });
@@ -87,7 +86,9 @@ export const StartSession = () => {
       console.error('Error al iniciar sesión:', err);
       setError('Error en la conexión con el servidor');
       Swal.fire({
-        icon: 'error',
+        imageUrl: '/logitotriste.png',
+        imageWidth: 130,
+        imageHeight: 130,
         title: 'Error de conexión',
         text: 'No se pudo conectar con el servidor',
       });
