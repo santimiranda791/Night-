@@ -1,0 +1,42 @@
+/* UserProfile.css */
+.profile-container {
+    background-color: #1a1a1a; /* Fondo oscuro */
+    color: white; /* Texto blanco */
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 450px;
+    margin: 20px auto; /* Centra el contenedor */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Sombra suave */
+}
+
+.profile-title {
+    text-align: center;
+    font-size: 24px;
+    margin-bottom: 20px;
+    color: #a200ff; /* Color morado */
+}
+
+.profile-info {
+    display: flex;
+    align-items: center;
+    border: 1px solid #a200ff; /* Borde morado */
+    padding: 15px;
+    border-radius: 8px;
+}
+
+.profile-img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%; /* Hace la imagen circular */
+    margin-right: 15px; /* Espaciado entre imagen y texto */
+}
+
+.profile-details h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.profile-details p {
+    margin: 5px 0;
+    font-size: 14px;
+}

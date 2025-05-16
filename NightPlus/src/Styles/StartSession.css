@@ -256,7 +256,7 @@ body {
 .back-arrow {
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom:2rem;
   color: #9e72e0; /* Color llamativo acorde a la app */
   font-weight: 600;
   font-size: 1.1rem;
