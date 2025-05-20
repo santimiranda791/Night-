@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import '../../../../Styles/SignInCliente.css';
-import { signInWithPopup } from "firebase/auth";
+import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../../../firebaseConfig/config';
+import Swal from 'sweetalert2';
 
 export const SignInCliente = () => {
   const [formData, setFormData] = useState({
@@ -14,6 +15,9 @@ export const SignInCliente = () => {
     password: '',
   });
 
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate(); // ✅ Hook para navegación
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData(prev => ({
@@ -23,52 +27,118 @@ export const SignInCliente = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const cliente = {
-      nombre: formData.nombre,
-      edad: parseInt(formData.edad, 10),
-      telefono: formData.telefono,
-      correo: formData.email,
-      usuarioCliente: formData.documento,
-      contrasenaCliente: formData.password  // CORREGIDO (sin ñ)
-    };
+  // Validación básica
+  if (!formData.email.includes('@') || formData.password.length < 6) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Datos inválidos',
+      text: 'Verifica el correo y asegúrate que la contraseña tenga al menos 6 caracteres.',
+    });
+    return;
+  }
 
-    try {
-      const response = await fetch('http://localhost:8080/servicio/registrar-cliente', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(cliente),
-      });
+  const edadParsed = formData.edad ? parseInt(formData.edad, 10) : null;
 
-      if (!response.ok) {
-        throw new Error('Error en el registro');
-      }
-
-      const data = await response.json();
-      console.log('Registro exitoso:', data);
-      alert('Usuario registrado con éxito');
-      // Limpiar el formulario:
-      setFormData({
-        documento: '',
-        nombre: '',
-        edad: '',
-        telefono: '',
-        email: '',
-        password: '',
-      });
-
-    } catch (error) {
-      console.error('Error al registrar:', error);
-      alert('Hubo un error al registrar el usuario.');
-    }
+  const cliente = {
+    nombre: formData.nombre,
+    edad: edadParsed,
+    telefono: formData.telefono,
+    correo: formData.email,
+    usuarioCliente: formData.documento,
+    contrasenaCliente: formData.password
   };
+
+  // Validar campos obligatorios
+  if (!cliente.nombre || !cliente.correo || !cliente.usuarioCliente || !cliente.contrasenaCliente) {
+    Swal.fire({
+      icon: 'warning',
+      title: 'Campos faltantes',
+      text: 'Por favor completa todos los campos obligatorios.'
+    });
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    console.log('Enviando cliente:', cliente);
+
+    const response = await fetch('http://localhost:8080/servicio/registrar-cliente', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(cliente),
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || 'Error en el registro');
+    }
+
+    const data = await response.json();
+
+    Swal.fire({
+      icon: 'success',
+      title: '¡Registrado!',
+      text: 'Revisa tu correo para el código de verificación.',
+    });
+
+    setFormData({
+      documento: '',
+      nombre: '',
+      edad: '',
+      telefono: '',
+      email: '',
+      password: '',
+    });
+
+    navigate('/VerifyCode', { state: { email: cliente.correo } });
+
+  } catch (error) {
+    console.error('Error al registrar:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.message || 'Hubo un error al registrar el usuario.',
+    });
+  } finally {
+    setLoading(false);
+  }
+};
 
   const signInWithGoogle = async () => {
     try {
-      await signInWithPopup(auth, googleProvider);
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+
+      await fetch('http://localhost:8080/servicio/registrar-cliente-google', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: user.displayName,
+          correo: user.email,
+          usuarioCliente: user.uid,
+          contrasenaCliente: 'google',
+        }),
+      });
+
+      Swal.fire({
+        icon: 'success',
+        title: '¡Registro con Google!',
+        text: 'Has iniciado sesión correctamente con Google.',
+      });
+
+      // También podrías redirigir con navigate aquí si se desea
+      navigate('/VerifyCode', { state: { email: user.email } });
+
     } catch (error) {
       console.error('Error con Google Sign-In', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error con Google',
+        text: error.message || 'No se pudo iniciar sesión con Google.',
+      });
     }
   };
 
@@ -91,9 +161,9 @@ export const SignInCliente = () => {
             { id: 'documento', label: 'Nro De Documento', type: 'text' },
             { id: 'nombre', label: 'Nombre', type: 'text' },
             { id: 'edad', label: 'Edad', type: 'number' },
-            { id: 'telefono', label: 'Telefono', type: 'tel' },
+            { id: 'telefono', label: 'Teléfono', type: 'tel' },
             { id: 'email', label: 'Email', type: 'email' },
-            { id: 'password', label: 'Password', type: 'password' }
+            { id: 'password', label: 'Contraseña', type: 'password' }
           ].map(({ id, label, type }) => (
             <div className="form__group field" key={id}>
               <input
@@ -109,9 +179,9 @@ export const SignInCliente = () => {
             </div>
           ))}
 
-          <button type="submit" className="user-profile">
+          <button type="submit" className="user-profile" disabled={loading}>
             <div className="user-profile-inner">
-              <p>Registrate</p>
+              <p>{loading ? 'Registrando...' : 'Regístrate'}</p>
             </div>
           </button>
         </form>
