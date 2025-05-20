@@ -34,8 +34,9 @@ header h1 {
   gap: 15rem;
   padding: 0;
   margin: 0;
-  font-size: 1rem;
-  margin-left: 2rem;
+  font-size: 1.3rem;
+  margin-left: 10rem;
+  margin-bottom: 0.8rem;
 }
 
 .navbar li {
@@ -99,8 +100,8 @@ img{
   padding: 0.5rem 1rem;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
-  margin-right: 4rem;
-
+  margin-right: 8rem;
+  margin-bottom: 1rem;
 }
 
 .user:hover {
@@ -130,6 +131,7 @@ img{
   border-radius: 5px;
   z-index: 1000; /* Asegura que el dropdown esté por encima del video */
   padding: 0.5rem 0;
+  min-width: 220px; /* <<<<< Añadido para mayor ancho */
 }
 
 
@@ -155,4 +157,5 @@ img{
   padding: 0.5rem 1rem;
   display: block;
   transition: background-color 0.3s ease;
+  
 }

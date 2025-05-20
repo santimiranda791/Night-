@@ -44,6 +44,8 @@ export const StartSession = () => {
            imageUrl: '/logitotriste.png',
            imageWidth: 130,
            imageHeight: 130,
+           background: '#000',
+        color: '#fff',
             title: 'Acceso denegado',
             text: 'Credenciales incorrectas',
           });
@@ -67,6 +69,8 @@ export const StartSession = () => {
         imageUrl: '/logitonegro.png',
         imageWidth: 130,
         imageHeight: 130,
+        background: '#000',
+        color: '#fff',
         title: '¡Sesión iniciada!',
         text: 'Bienvenido/a',
         timer: 1500,
@@ -74,8 +78,11 @@ export const StartSession = () => {
         });
         // ...existing code...
             // Guardar usuario en localStorage
-            localStorage.setItem('usuario', data.usuarioCliente || '');
-            localStorage.setItem('nombre', data.nombreCliente || '');
+          localStorage.setItem('usuario', data.usuario || '');
+localStorage.setItem('nombre', data.nombre || '');
+localStorage.setItem('correo', data.correo || '');
+localStorage.setItem('token', data.token || '');
+
 
       // Redirigir a dashboard o página principal después de un pequeño delay
       setTimeout(() => {

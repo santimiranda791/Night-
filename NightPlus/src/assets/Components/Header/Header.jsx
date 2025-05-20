@@ -1,8 +1,10 @@
+// filepath: [Header.jsx](http://_vscodecontentref_/1)
 import React, { useState, useEffect } from 'react';
 import '../../../Styles/Header.css';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { FaUserCircle } from "react-icons/fa";
 import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
 
 export const Header = () => {
   const [isDropdownVisible, setDropdownVisible] = useState(false);
@@ -10,7 +12,6 @@ export const Header = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Intenta obtener el usuario/nombre desde el token JWT
     const token = localStorage.getItem('token');
     if (token) {
       try {
@@ -20,7 +21,6 @@ export const Header = () => {
         setUsuario('');
       }
     } else {
-      // Si no hay token, intenta con localStorage clásico
       setUsuario(localStorage.getItem('nombre') || localStorage.getItem('usuario') || '');
     }
   }, []);
@@ -30,12 +30,43 @@ export const Header = () => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('usuario');
-    localStorage.removeItem('nombre');
-    setUsuario('');
-    setDropdownVisible(false);
-    navigate('/');
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Deseas cerrar sesión?',
+   
+         imageUrl: '/logitopensativo.webp',
+        imageWidth: 130,
+        imageHeight: 130,
+      showCancelButton: true,
+      confirmButtonColor: '#a374ff',
+        background: '#000',
+        color: '#fff',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, cerrar sesión',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.removeItem('token');
+        localStorage.removeItem('usuario');
+        localStorage.removeItem('nombre');
+        setUsuario('');
+        setDropdownVisible(false);
+        Swal.fire({
+            background: '#000',
+        color: '#fff',
+          title: 'Sesión cerrada',
+          text: 'Has cerrado sesión correctamente.',
+          imageUrl: '/logitonegro.png',
+        imageWidth: 130,
+        imageHeight: 130,
+          timer: 1200,
+          showConfirmButton: false
+        });
+        setTimeout(() => {
+          navigate('/');
+        }, 1200);
+      }
+    });
   };
 
   return (
@@ -44,49 +75,27 @@ export const Header = () => {
       <nav className="navbar">
         <ul className="nav-list">
           <li>
-            <NavLink 
-              to="/" 
-              style={({ isActive }) => ({
-                color: isActive ? '#a374ff' : 'white',
-                textDecoration: 'none',
-              })}
-            >
-              Home
-            </NavLink>
+            <NavLink to="/" style={({ isActive }) => ({ color: isActive ? '#a374ff' : 'white', textDecoration: 'none' })}>Home</NavLink>
           </li>
           <li>
-            <NavLink 
-              to="/Discotecas" 
-              style={({ isActive }) => ({
-                color: isActive ? '#a374ff' : 'white',
-                textDecoration: 'none',
-              })}
-            >
-              Discotecas
-            </NavLink>
+            <NavLink to="/Discotecas" style={({ isActive }) => ({ color: isActive ? '#a374ff' : 'white', textDecoration: 'none' })}>Discotecas</NavLink>
           </li>
           <li>
-            <NavLink 
-              to="/Eventos" 
-              style={({ isActive }) => ({
-                color: isActive ? '#a374ff' : 'white',
-                textDecoration: 'none',
-              })}
-            >
-              Eventos
-            </NavLink>
+            <NavLink to="/Eventos" style={({ isActive }) => ({ color: isActive ? '#a374ff' : 'white', textDecoration: 'none' })}>Eventos</NavLink>
           </li>
         </ul>
       </nav>
       <div className="user" onClick={toggleDropdown}>
         <FaUserCircle style={{ fontSize: '2rem' }} />
-        <p>
-          {usuario ? `Hola, ${usuario}` : 'Iniciar Sesión'}
-        </p>
+        <p>{usuario && usuario.trim() !== '' ? `Hola, ${usuario}` : 'Iniciar Sesión'}</p>
+
         {isDropdownVisible && (
           <div className="dropdown">
             {usuario ? (
-              <p className="dropdown-item" onClick={handleLogout}>Cerrar sesión</p>
+              <>
+                <p className="dropdown-item" onClick={handleLogout}>Cerrar sesión</p>
+                <NavLink to="/Perfil" className="dropdown-item">Ver perfil</NavLink>
+              </>
             ) : (
               <>
                 <NavLink to="/Login" className="dropdown-item">¿Eres Cliente?</NavLink>
@@ -95,6 +104,7 @@ export const Header = () => {
             )}
           </div>
         )}
+
       </div>
     </header>
   );
