@@ -9,6 +9,7 @@ import { SignInAdmin } from './assets/Components/Pages/SignInAdmin/SignInAdmin'
 import { Eventos } from './assets/Components/Pages/Eventos/Eventos'
 import {UserProfile} from './assets/Components/UserProfile/UserProfile'
 import { VerifyCode } from './assets/Components/Pages/VerifyCode/VerifyCode'
+import { ForgotPassword } from './assets/Components/ForgotPassword/ForgotPassword'
 export const App = () => {
   return (
     <>
@@ -22,6 +23,7 @@ export const App = () => {
         <Route path="/Eventos" element={<Eventos />} />
         <Route path="/Perfil" element={<UserProfile />} />
         <Route path="/VerifyCode" element={<VerifyCode />} />
+        <Route path="/ForgotPassword" element={<ForgotPassword />} />
       </Routes>
     </>
   )

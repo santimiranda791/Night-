@@ -155,7 +155,7 @@ localStorage.setItem('token', data.token || '');
           </button>
 
           <div className="login-options">
-            <NavLink to="/forgot-password" className="forgot-password">
+            <NavLink to="/ForgotPassword" className="forgot-password">
               ¿Olvidaste tu contraseña?
             </NavLink>
             <NavLink to="/SignInCliente" className="SignInCliente">

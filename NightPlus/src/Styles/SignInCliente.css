@@ -292,3 +292,7 @@ body {
     transition: 1.2s ease;
   }
 
+.Login{
+  display: flex;
+  margin-bottom: 3rem;
+}

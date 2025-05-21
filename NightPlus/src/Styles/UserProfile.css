@@ -1,42 +1,297 @@
-/* UserProfile.css */
-.profile-container {
-    background-color: #1a1a1a; /* Fondo oscuro */
-    color: white; /* Texto blanco */
-    padding: 20px;
-    border-radius: 8px;
-    max-width: 450px;
-    margin: 20px auto; /* Centra el contenedor */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Sombra suave */
+:root {
+  --color-principal: #3b1c68;
+  --color-secundario: #5a3e9d;
+  --color-fondo: linear-gradient(90deg, #1a1a1a 45%, #3b1c68);
+  --color-texto: #222;
+  --color-texto-secundario: #555;
+  --color-boton-fondo: var(--color-principal);
+  --color-boton-hover: #2f154f;
+  --color-boton-texto: #fff;
+  --sombra: 0 4px 12px rgba(59, 28, 104, 0.3);
+  --border-radius: 10px;
+  --font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.profile-title {
-    text-align: center;
-    font-size: 24px;
-    margin-bottom: 20px;
-    color: #a200ff; /* Color morado */
+html, body, #root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background: var(--color-fondo);
+  font-family: var(--font-family);
 }
 
-.profile-info {
-    display: flex;
+.perfil-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  width: 100vw;
+  box-sizing: border-box;
+  background: var(--color-fondo);
+  color: var(--color-texto);
+  padding: 20px 40px;
+  gap: 40px;
+}
+
+/* Header con portada, avatar e info con botones a la derecha */
+.perfil-header {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  flex-wrap: nowrap;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Imagen portada ocupa 40% ancho, altura fija */
+.perfil-portada {
+  flex: 0 0 40%;
+  height: 250px;
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  box-shadow: 0 6px 15px rgba(0,0,0,0.15);
+  background-color: #ddd;
+}
+
+.perfil-portada img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: var(--border-radius);
+}
+
+/* Avatar grande, con borde y sombra */
+.perfil-avatar {
+  flex: 0 0 140px;
+  width: 140px;
+  height: 140px;
+  border: 5px solid var(--color-fondo);
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.25);
+  background: #fff;
+  margin-left: -70px;
+  z-index: 1;
+  position: relative;
+}
+
+.perfil-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Contenedor de info y botones a la derecha */
+.perfil-info-botones {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 24px;
+  padding-left: 40px;
+}
+
+/* Información principal */
+.perfil-info-principal {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.perfil-nombre {
+  font-size: 3rem;
+  font-weight: 900;
+  color: var(--color-principal);
+  margin: 0;
+  line-height: 1.1;
+  letter-spacing: 0.05em;
+  text-shadow: 1px 1px 5px rgba(59, 28, 104, 0.5);
+}
+
+.perfil-ubicacion,
+.perfil-email {
+  font-size: 1.1rem;
+  color: var(--color-texto-secundario);
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+}
+
+/* Botones lado derecho en fila */
+.perfil-botones {
+  display: flex;
+  gap: 20px;
+  flex-wrap: nowrap;
+}
+
+.btn {
+  background-color: var(--color-boton-fondo);
+  color: var(--color-boton-texto);
+  border: none;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+  box-shadow: 0 6px 15px rgba(59, 28, 104, 0.3);
+  user-select: none;
+  white-space: nowrap;
+}
+
+.btn:hover, .btn:focus {
+  outline: none;
+  background-color: var(--color-boton-hover);
+  box-shadow: 0 8px 24px rgba(46, 18, 79, 0.6);
+  transform: translateY(-2px);
+}
+
+.btn.btn-outline {
+  background-color: transparent;
+  border: 2px solid var(--color-principal);
+  color: var(--color-principal);
+  box-shadow: none;
+}
+
+.btn.btn-outline:hover, .btn.btn-outline:focus {
+  background-color: var(--color-principal);
+  color: var(--color-boton-texto);
+  box-shadow: 0 8px 24px rgba(59, 28, 104, 0.6);
+  transform: translateY(-2px);
+}
+
+/* Sección próximos eventos */
+.perfil-eventos {
+  width: 100%;
+  max-width: 100%;
+}
+
+.perfil-eventos h2 {
+  font-size: 2.4rem;
+  margin-bottom: 30px;
+  color: var(--color-principal);
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+
+.eventos-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 28px;
+}
+
+.evento-item {
+  background: #fff;
+  padding: 24px 28px;
+  border-radius: 16px;
+  box-shadow: 0 10px 30px rgba(59, 28, 104, 0.15);
+  cursor: pointer;
+  transition: box-shadow 0.4s cubic-bezier(0.25,0.8,0.25,1), transform 0.4s cubic-bezier(0.25,0.8,0.25,1);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.evento-item:hover,
+.evento-item:focus {
+  box-shadow: 0 15px 45px rgba(59, 28, 104, 0.35);
+  transform: translateY(-8px);
+  outline: none;
+}
+
+.evento-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.evento-nombre {
+  font-weight: 900;
+  color: var(--color-principal);
+  font-size: 1.3rem;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+}
+
+.evento-detalles {
+  font-size: 1rem;
+  color: var(--color-texto-secundario);
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .perfil-header {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .perfil-portada {
+    flex: 0 0 90vw;
+    height: 180px;
+  }
+
+  .perfil-avatar {
+    position: relative;
+    margin-left: 0;
+    width: 120px;
+    height: 120px;
+    border-width: 4px;
+    box-shadow: 0 6px 25px rgba(0,0,0,0.3);
+  }
+
+  .perfil-info-botones {
+    flex: 1 1 90vw;
+    padding-left: 0;
     align-items: center;
-    border: 1px solid #a200ff; /* Borde morado */
-    padding: 15px;
-    border-radius: 8px;
+    gap: 20px;
+  }
+
+  .perfil-info-principal {
+    align-items: center;
+    text-align: center;
+  }
+
+  .perfil-nombre {
+    font-size: 2.4rem;
+  }
+
+  .perfil-botones {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    flex: 1 1 160px;
+  }
 }
 
-.profile-img {
-    width: 80px;
-    height: 80px;
-    border-radius: 50%; /* Hace la imagen circular */
-    margin-right: 15px; /* Espaciado entre imagen y texto */
+@media (max-width: 480px) {
+  .perfil-container {
+    padding: 20px;
+  }
+
+  .perfil-eventos h2 {
+    font-size: 2rem;
+    margin-bottom: 24px;
+  }
+
+  .evento-item {
+    padding: 20px 22px;
+  }
+
+  .evento-nombre {
+    font-size: 1.1rem;
+  }
+
+  .evento-detalles {
+    font-size: 0.9rem;
+  }
 }
 
-.profile-details h2 {
-    margin: 0;
-    font-size: 20px;
-}
-
-.profile-details p {
-    margin: 5px 0;
-    font-size: 14px;
-}
