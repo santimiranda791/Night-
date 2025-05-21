@@ -1,0 +1,15 @@
+.code-input-container {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 1rem;
+}
+
+.code-input-box {
+  width: 50px;
+  height: 60px;
+  font-size: 24px;
+  text-align: center;
+  border: 2px solid #a374ff;
+  border-radius: 8px;
+}

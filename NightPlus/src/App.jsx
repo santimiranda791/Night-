@@ -10,6 +10,7 @@ import { Eventos } from './assets/Components/Pages/Eventos/Eventos'
 import {UserProfile} from './assets/Components/UserProfile/UserProfile'
 import { VerifyCode } from './assets/Components/Pages/VerifyCode/VerifyCode'
 import { ForgotPassword } from './assets/Components/ForgotPassword/ForgotPassword'
+import { VerifyCodePassword } from './assets/Components/Pages/VerifyCode/VerifyCodePassword'
 export const App = () => {
   return (
     <>
@@ -24,6 +25,7 @@ export const App = () => {
         <Route path="/Perfil" element={<UserProfile />} />
         <Route path="/VerifyCode" element={<VerifyCode />} />
         <Route path="/ForgotPassword" element={<ForgotPassword />} />
+        <Route path="/verify-code-password" element={<VerifyCodePassword />} />
       </Routes>
     </>
   )

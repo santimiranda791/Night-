@@ -1,31 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-
+import '../../../Styles/VerifyCode.css';
 export const VerifyCode = () => {
-  const [code, setCode] = useState('');
-  const [loading, setLoading] = useState(false);
-  const correo = localStorage.getItem('correo'); // Asegúrate de guardar esto en login o registro
+  const [digits, setDigits] = useState(['', '', '', '', '', '']);
+  const inputsRef = useRef([]);
+  const correo = localStorage.getItem('correo');
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (index, value) => {
+    if (!/^\d?$/.test(value)) return;
+
+    const newDigits = [...digits];
+    newDigits[index] = value;
+    setDigits(newDigits);
+
+    if (value && index < 5) {
+      inputsRef.current[index + 1]?.focus();
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === 'Backspace' && !digits[index] && index > 0) {
+      inputsRef.current[index - 1]?.focus();
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!correo) {
+    const code = digits.join('');
+    if (code.length !== 6 || !correo) {
       Swal.fire({
-       imageUrl: '/logitotriste.png',
-           imageWidth: 130,
-           imageHeight: 130,
-           background: '#000',
+        imageUrl: '/logitotriste.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
         color: '#fff',
         title: 'Error',
-        text: 'Correo no disponible. Por favor, inicia sesión nuevamente.',
+        text: 'Código incompleto o correo no disponible.',
       });
       return;
     }
-
-    console.log('Correo a verificar:', correo);
-    console.log('Código a verificar:', code);
 
     setLoading(true);
     try {
@@ -38,36 +55,35 @@ export const VerifyCode = () => {
       if (!response.ok) {
         Swal.fire({
           imageUrl: '/logitotriste.png',
-           imageWidth: 130,
-           imageHeight: 130,
-           background: '#000',
-        color: '#fff',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
           title: 'Código inválido',
           text: 'El código ingresado no es correcto',
         });
-        setLoading(false);
         return;
       }
 
-      Swal.fire({ 
+      Swal.fire({
         imageUrl: '/logitonegro.png',
         imageWidth: 130,
         imageHeight: 130,
         background: '#000',
-        color: '#fff', title: '¡Verificado!',
+        color: '#fff',
+        title: '¡Verificado!',
         text: 'Código correcto, acceso autorizado',
         timer: 1500,
         showConfirmButton: false,
       });
 
       navigate('/Login');
-
     } catch (err) {
       Swal.fire({
-          imageUrl: '/logitotriste.png',
-           imageWidth: 130,
-           imageHeight: 130,
-           background: '#000',
+        imageUrl: '/logitotriste.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
         color: '#fff',
         title: 'Error de red',
         text: 'No se pudo verificar el código',
@@ -83,17 +99,20 @@ export const VerifyCode = () => {
       <div className="login-container">
         <h1 className="login-title">Verifica tu código</h1>
         <form className="login-form" onSubmit={handleSubmit}>
-          <div className="form__group field">
-            <input
-              type="text"
-              className="form__field"
-              placeholder="Código de verificación"
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              required
-              maxLength={6}
-            />
-            <label className="form__label">Código</label>
+          <div className="code-input-container">
+            {digits.map((digit, index) => (
+              <input
+                key={index}
+                type="text"
+                inputMode="numeric"
+                maxLength="1"
+                value={digit}
+                onChange={(e) => handleChange(index, e.target.value)}
+                onKeyDown={(e) => handleKeyDown(e, index)}
+                ref={(el) => (inputsRef.current[index] = el)}
+                className="code-input-box"
+              />
+            ))}
           </div>
           <button type="submit" className="user-profile" disabled={loading}>
             <div className="user-profile-inner">
