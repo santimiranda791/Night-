@@ -32,7 +32,11 @@ export const SignInCliente = () => {
   // Validación básica
   if (!formData.email.includes('@') || formData.password.length < 6) {
     Swal.fire({
-      icon: 'warning',
+      imageUrl: '/logitopensativo.webp',
+           imageWidth: 130,
+           imageHeight: 130,
+           background: '#000',
+        color: '#fff',
       title: 'Datos inválidos',
       text: 'Verifica el correo y asegúrate que la contraseña tenga al menos 6 caracteres.',
     });
@@ -53,7 +57,11 @@ export const SignInCliente = () => {
   // Validar campos obligatorios
   if (!cliente.nombre || !cliente.correo || !cliente.usuarioCliente || !cliente.contrasenaCliente) {
     Swal.fire({
-      icon: 'warning',
+       imageUrl: '/logitopensativo.webp',
+           imageWidth: 130,
+           imageHeight: 130,
+           background: '#000',
+        color: '#fff',
       title: 'Campos faltantes',
       text: 'Por favor completa todos los campos obligatorios.'
     });
@@ -79,7 +87,11 @@ export const SignInCliente = () => {
     const data = await response.json();
 
     Swal.fire({
-      icon: 'success',
+       imageUrl: '/logitonegro.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
       title: '¡Registrado!',
       text: 'Revisa tu correo para el código de verificación.',
     });
@@ -93,12 +105,18 @@ export const SignInCliente = () => {
       password: '',
     });
 
-    navigate('/VerifyCode', { state: { email: cliente.correo } });
+   localStorage.setItem('correo', cliente.correo); // ✅ Añade esto
+navigate('/VerifyCode', { state: { email: cliente.correo } });
+
 
   } catch (error) {
     console.error('Error al registrar:', error);
     Swal.fire({
-      icon: 'error',
+      imageUrl: '/logitotriste.png',
+           imageWidth: 130,
+           imageHeight: 130,
+           background: '#000',
+        color: '#fff',
       title: 'Error',
       text: error.message || 'Hubo un error al registrar el usuario.',
     });
@@ -124,7 +142,11 @@ export const SignInCliente = () => {
       });
 
       Swal.fire({
-        icon: 'success',
+        imageUrl: '/logitonegro.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
         title: '¡Registro con Google!',
         text: 'Has iniciado sesión correctamente con Google.',
       });
@@ -135,7 +157,11 @@ export const SignInCliente = () => {
     } catch (error) {
       console.error('Error con Google Sign-In', error);
       Swal.fire({
-        icon: 'error',
+       imageUrl: '/logitotriste.png',
+           imageWidth: 130,
+           imageHeight: 130,
+           background: '#000',
+        color: '#fff',
         title: 'Error con Google',
         text: error.message || 'No se pudo iniciar sesión con Google.',
       });

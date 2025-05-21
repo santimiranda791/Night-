@@ -55,6 +55,8 @@ export const StartSession = () => {
             imageUrl: '/logitotriste.png',
            imageWidth: 130,
            imageHeight: 130,
+            background: '#000',
+        color: '#fff',
             title: 'Error',
             text: 'Error al iniciar sesión',
           });

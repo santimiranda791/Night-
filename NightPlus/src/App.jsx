@@ -21,7 +21,7 @@ export const App = () => {
         <Route path="/SignInAdmin" element={<SignInAdmin />} />
         <Route path="/Eventos" element={<Eventos />} />
         <Route path="/Perfil" element={<UserProfile />} />
-        <Route path="/verificar-codigo" element={<VerifyCode />} />
+        <Route path="/VerifyCode" element={<VerifyCode />} />
       </Routes>
     </>
   )
