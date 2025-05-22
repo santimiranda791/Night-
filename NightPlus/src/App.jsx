@@ -6,8 +6,6 @@ import { PrincipalPage } from './assets/Components/Pages/PrincipalPage/Principal
 import { Discotecas } from './assets/Components/Pages/Discotecas/Discotecas';
 import { Eventos } from './assets/Components/Pages/Eventos/Eventos';
 import { MapaDiscoteca } from './assets/Components/Pages/MapaZonas/MapaDiscoteca';
-
-
 import { StartSession } from './assets/Components/Pages/StartSession/StartSession';
 import { SignInCliente } from './assets/Components/Pages/SignInCliente/SignInCliente';
 import { StartSessionAdmin } from './assets/Components/Pages/StartSessionAdmin/StartSessionAdmin';
@@ -34,6 +32,7 @@ export const App = () => {
       <Route path="/verifycode" element={<VerifyCode />} />
       <Route path="/forgotpassword" element={<ForgotPassword />} />
       <Route path="/verify-code-password" element={<VerifyCodePassword />} />
+      <Route path='/mapa' element={<MapaDiscoteca />} />
     </Routes>
   );
 };

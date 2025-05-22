@@ -8,7 +8,8 @@ export const ZonaMapa = ({ zona }) => {
       <h3 className="zona-title">{zona.nombre}</h3>
       <p className="zona-desc">{zona.descripcion}</p>
       <p><strong>Capacidad:</strong> {zona.capacidad} personas</p>
-      <p><strong>Precio Reserva:</strong> ${zona.precio_reserva}</p>
+   <p><strong>Precio Reserva:</strong> ${zona.precioReserva}</p>
+
 
       <div className="mesas-grid">
         {zona.mesas && zona.mesas.map((mesa) => (

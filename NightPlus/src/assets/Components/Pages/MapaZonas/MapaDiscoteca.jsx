@@ -8,7 +8,13 @@ export const MapaDiscoteca = () => {
 
   useEffect(() => {
     fetch('http://localhost:8080/api/zonas') // Puerto de tu backend
-      .then((response) => response.json())
+      .then((response) => {
+  if (!response.ok) {
+    throw new Error(`HTTP error! status: ${response.status}`);
+  }
+  return response.json();
+})
+
       .then((data) => {
         setZonas(data);
         setLoading(false);
