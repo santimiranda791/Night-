@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import '../../../Styles/VerifyCode.css';
+import '../../../../Styles/VerifyCode.css';
 export const VerifyCode = () => {
   const [digits, setDigits] = useState(['', '', '', '', '', '']);
   const inputsRef = useRef([]);
