@@ -1,27 +1,20 @@
 .zona-card {
   background-color: #ffffff;
-  border-radius: 8px;
-  padding: 1.5rem;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 320px;
+  border: 1px solid #ccc;
+  border-radius: 12px;
+  padding: 20px;
+  width: 280px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
 }
 
-.zona-title {
-  font-size: 1.5rem;
-  color: #222;
-  margin-bottom: 0.5rem;
+.zona-card:hover {
+  transform: scale(1.02);
 }
 
-.zona-desc {
-  color: #666;
-  margin-bottom: 1rem;
-  font-size: 0.95rem;
-}
-
-.mesas-grid {
+.mesas-container {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem;
-  margin-top: 1rem;
-  justify-content: start;
+  gap: 10px;
+  margin-top: 15px;
 }

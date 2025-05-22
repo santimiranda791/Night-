@@ -1,11 +1,12 @@
 import React from 'react';
 import '../../../../Styles/MesaItem.css';
 
-export const MesaItem = ({ mesa }) => {
+const MesaItem = ({ mesa }) => {
   return (
-    <div className={`mesa-item ${mesa.disponible ? 'disponible' : 'ocupada'}`}>
-      <span className="mesa-numero">Mesa {mesa.numero}</span>
-      <span className="mesa-capacidad">{mesa.capacidad} personas</span>
-    </div>
+    <button className="mesa-button">
+      Mesa {mesa.numeroMesa} ({mesa.capacidad} personas)
+    </button>
   );
 };
+
+export default MesaItem;
