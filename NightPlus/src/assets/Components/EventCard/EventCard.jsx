@@ -1,7 +1,14 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../../../Styles/EventCard.css';
 
- export const EventCard = () => {
+export const EventCard = () => {
+  const navigate = useNavigate();
+
+  const handleVerEvento = () => {
+    navigate('/mapa'); // Aquí podrías pasar parámetros si más adelante quieres mostrar zonas por evento
+  };
+
   return (
     <div className="event-card">
       <div className="event-banner">
@@ -16,7 +23,7 @@ import '../../../Styles/EventCard.css';
           Evento Oficial De Chicas: ¡Combo de 5 Amigas NO SE COBRA COVER!
         </p>
         <p className="event-club">Discoteca Tropikal-Club</p>
-        <a href="#" className="event-btn">Ver Evento</a>
+        <button className="event-btn" onClick={handleVerEvento}>Ver Evento</button>
       </div>
     </div>
   );
