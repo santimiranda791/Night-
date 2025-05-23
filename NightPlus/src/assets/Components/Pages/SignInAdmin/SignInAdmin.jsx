@@ -1,121 +1,151 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom'; 
-import '../../../../Styles/SignInAdmin.css';
+import React, { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import '../../../../Styles/SignInCliente.css'; // Reutilizamos estilos
 
 export const SignInAdmin = () => {
+  const [formData, setFormData] = useState({
+    usuario: '',
+    nombre: '',
+    telefono: '',
+    correo: '',
+    contrasena: '',
+  });
+
+  const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { id, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [id]: value
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const admin = {
+      nombreAdmin: formData.nombre,
+      telefonoAdmin: formData.telefono,
+      correoAdmin: formData.correo,
+      usuarioAdmin: formData.usuario,
+      contrasenaAdmin: formData.contrasena,
+    };
+
+    // Validación
+    if (!admin.nombreAdmin || !admin.correoAdmin || !admin.usuarioAdmin || !admin.contrasenaAdmin) {
+      Swal.fire({
+        imageUrl: '/logitopensativo.webp',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
+        title: 'Campos incompletos',
+        text: 'Por favor completa todos los campos obligatorios.'
+      });
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const response = await fetch('http://localhost:8080/servicio/registrar-administrador', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(admin),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || 'Error al registrar administrador');
+      }
+
+      await response.json();
+
+      Swal.fire({
+        imageUrl: '/logitonegro.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
+        title: '¡Administrador registrado!',
+        text: 'Ahora puedes iniciar sesión.',
+      });
+
+      setFormData({
+        usuario: '',
+        nombre: '',
+        telefono: '',
+        correo: '',
+        contrasena: '',
+      });
+
+      navigate('/LoginAdmin');
+
+    } catch (error) {
+      Swal.fire({
+        imageUrl: '/logitotriste.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
+        title: 'Error',
+        text: error.message || 'Error al registrar.',
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="page-container">
-      {/* Logotipo */}
       <img src="/logito.svg" alt="Logo" className="logo" />
-
       <div className="login-container">
-        <NavLink to="/" className="back-arrow" aria-label="Back to Principal Page">
+        <NavLink to="/" className="back-arrow">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="24" height="24" viewBox="0 0 24 24">
             <polyline points="15 18 9 12 15 6" />
           </svg>
           Volver
         </NavLink>
 
-        <h1 className="login-title">Registrarse</h1>
-        <form className="login-form">
-            
-          {/* Campo de documento */}
-          <div className="form__group field">
-            <input
-              type="email"
-              id="documento"
-              className="form__field"
-              placeholder="documento"
-              required
-            />
-            <label htmlFor="email" className="form__label">Nro De Documento</label>
-          </div>
+        <h1 className="login-title">Registro de Administrador</h1>
 
-          {/* Campo de Nombre */}
-          <div className="form__group field">
-            <input
-              type="input"
-              id="Nombre"
-              className="form__field"
-              placeholder="Nombre"
-              required
-            />
-            <label htmlFor="password" className="form__label">Nombre</label>
-          </div>
-           {/* Campo de Edad */}
-           <div className="form__group field">
-            <input
-              type="input"
-              id="Edad"
-              className="form__field"
-              placeholder="Edad"
-              required
-            />
-            <label htmlFor="password" className="form__label">Edad</label>
-          </div>
-           {/* Campo de Telefono */}
-           <div className="form__group field">
-            <input
-              type="input"
-              id="Telefono"
-              className="form__field"
-              placeholder="Telefono"
-              required
-            />
-            <label htmlFor="password" className="form__label">Telefono</label>
-          </div>
-           {/* Campo de Email */}
-           <div className="form__group field">
-            <input
-              type="Email"
-              id="Email"
-              className="form__field"
-              placeholder="Email"
-              required
-            />
-            <label htmlFor="password" className="form__label">Email</label>
-          </div>
-           {/* Campo de Password */}
-           <div className="form__group field">
-            <input
-              type="password"
-              id="password"
-              className="form__field"
-              placeholder="Password"
-              required
-            />
-            <label htmlFor="password" className="form__label">Password</label>
-          </div>
-
-          {/* Botón de Login */}
-          <div
-            aria-label="User Login Button"
-            tabIndex="0"
-            role="button"
-            className="user-profile"
-          >
-            <div className="user-profile-inner">
-              <svg
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-              >
-                <g data-name="Layer 2" id="Layer_2">
-                  {/* Puedes agregar un ícono aquí si lo necesitas */}
-                </g>
-              </svg>
-              <p>Registrate</p>
+        <form className="login-form" onSubmit={handleSubmit}>
+          {[
+            { id: 'usuario', label: 'Usuario', type: 'text' },
+            { id: 'nombre', label: 'Nombre', type: 'text' },
+            { id: 'telefono', label: 'Teléfono', type: 'tel' },
+            { id: 'correo', label: 'Correo', type: 'email' },
+            { id: 'contrasena', label: 'Contraseña', type: 'password' }
+          ].map(({ id, label, type }) => (
+            <div className="form__group field" key={id}>
+              <input
+                type={type}
+                id={id}
+                className="form__field"
+                placeholder={label}
+                value={formData[id]}
+                onChange={handleChange}
+                required
+              />
+              <label htmlFor={id} className="form__label">{label}</label>
             </div>
-          </div>
+          ))}
 
-          {/* Opciones adicionales */}
-          <div className="login-options">
-            
-          <NavLink to="/LogInAdmin" className="Login">
-                ¿Ya tienes cuenta? Inicia Sesión
-            </NavLink>
-          </div>
+          <button type="submit" className="user-profile" disabled={loading}>
+            <div className="user-profile-inner">
+              <p>{loading ? 'Registrando...' : 'Registrar'}</p>
+            </div>
+          </button>
         </form>
+
+        <div className="login-options">
+          <NavLink to="/LoginAdmin" className="Login">
+            ¿Ya tienes cuenta? Inicia Sesión
+          </NavLink>
+        </div>
       </div>
     </div>
   );

@@ -1,3 +1,4 @@
+// ForgotPassword.jsx
 import React, { useState } from 'react'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom'
@@ -45,8 +46,6 @@ export const ForgotPassword = () => {
         showConfirmButton: false,
       })
 
-      // Navega a la pantalla de verificar código y cambiar contraseña,
-      // pasando el correo en el estado de navegación
       setTimeout(() => {
         navigate('/verify-code-password', { state: { correo: email } })
       }, 2000)

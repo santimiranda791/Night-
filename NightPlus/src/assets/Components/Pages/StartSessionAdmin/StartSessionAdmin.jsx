@@ -1,75 +1,139 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import '../../../../Styles/StartSessionAdmin.css';
+import React, { useState } from 'react';
+import { NavLink, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import '../../../../Styles/StartSession.css';
 
 export const StartSessionAdmin = () => {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    usuario: '',
+    contrasena: '',
+  });
+
+  const [error, setError] = useState(null);
+
+  const handleChange = (e) => {
+    setFormData(prev => ({
+      ...prev,
+      [e.target.id]: e.target.value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    const payload = {
+      usuarioAdmin: formData.usuario,
+      contrasenaAdmin: formData.contrasena,
+    };
+
+    try {
+      const response = await fetch('http://localhost:8080/servicio/login-administrador', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      });
+
+      if (!response.ok) {
+        Swal.fire({
+          imageUrl: '/logitotriste.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: 'Error de inicio',
+          text: 'Credenciales inválidas o error del servidor',
+        });
+        return;
+      }
+
+      const data = await response.json();
+
+      Swal.fire({
+        imageUrl: '/logitonegro.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
+        title: '¡Bienvenido!',
+        text: 'Inicio de sesión exitoso',
+        timer: 1500,
+        showConfirmButton: false
+      });
+
+      localStorage.setItem('usuarioAdmin', data.usuario || '');
+      localStorage.setItem('nombreAdmin', data.nombre || '');
+      localStorage.setItem('correoAdmin', data.correo || '');
+      localStorage.setItem('token', data.token || '');
+
+      setTimeout(() => {
+        navigate('/');
+      }, 1500);
+
+    } catch (err) {
+      Swal.fire({
+        imageUrl: '/logitotriste.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        title: 'Error de conexión',
+        text: 'No se pudo conectar al servidor',
+      });
+    }
+  };
+
   return (
     <div className="page-container">
-      {/* Logotipo */}
       <img src="/logito.svg" alt="Logo" className="logo" />
-
       <div className="login-container">
-        <NavLink to="/" className="back-arrow" aria-label="Back to Principal Page">
+        <NavLink to="/" className="back-arrow">
           <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" width="24" height="24" viewBox="0 0 24 24">
             <polyline points="15 18 9 12 15 6" />
           </svg>
           Volver
         </NavLink>
 
-        <h1 className="login-title">Inicio de Sesión Administrador</h1>
-        <form className="login-form">
-          {/* Campo de Email */}
+        <h1 className="login-title">Iniciar Sesión - Admin</h1>
+
+        <form className="login-form" onSubmit={handleSubmit}>
           <div className="form__group field">
             <input
-              type="email"
-              id="email"
+              type="text"
+              id="usuario"
               className="form__field"
-              placeholder="Email"
+              placeholder="Usuario"
+              value={formData.usuario}
+              onChange={handleChange}
               required
             />
-            <label htmlFor="email" className="form__label">Email</label>
+            <label htmlFor="usuario" className="form__label">Usuario</label>
           </div>
 
-          {/* Campo de Password */}
           <div className="form__group field">
             <input
               type="password"
-              id="password"
+              id="contrasena"
               className="form__field"
-              placeholder="Password"
+              placeholder="Contraseña"
+              value={formData.contrasena}
+              onChange={handleChange}
               required
             />
-            <label htmlFor="password" className="form__label">Password</label>
+            <label htmlFor="contrasena" className="form__label">Contraseña</label>
           </div>
 
-          {/* Botón de Login */}
-          <div
-            aria-label="User Login Button"
-            tabIndex="0"
-            role="button"
-            className="user-profile"
-          >
+          {error && <p className="error-message" style={{ color: 'red' }}>{error}</p>}
+
+          <button type="submit" className="user-profile">
             <div className="user-profile-inner">
-              <svg
-                aria-hidden="true"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 24 24"
-              >
-                <g data-name="Layer 2" id="Layer_2">
-                  {/* Puedes agregar un ícono aquí si lo necesitas */}
-                </g>
-              </svg>
-              <p>Iniciar Sesión</p>
+              <p>Inicia Sesión</p>
             </div>
-          </div>
+          </button>
 
-          {/* Opciones adicionales */}
           <div className="login-options">
-            <NavLink to="/forgot-password" className="forgot-password">
-              ¿Olvidaste tu contraseña?
-            </NavLink>
             <NavLink to="/SignInAdmin" className="SignInAdmin">
-              ¿Es tu primera vez? Regístrate
+              ¿No tienes cuenta? Regístrate
             </NavLink>
           </div>
         </form>
