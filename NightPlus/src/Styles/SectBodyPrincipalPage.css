@@ -1,5 +1,3 @@
-
-
 .body-container {
 
   width: 100%;
@@ -13,7 +11,8 @@
   width: 100%;
   height: 35vh;
   position: absolute;
-  z-index: -1; /* Asegura que el video esté detrás de otros elementos */
+  z-index: 1; 
+  margin-top: 2rem;/* Changed from -1 to 1 to bring video in front */
 }
 
 .background-video {
@@ -23,7 +22,7 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: -1; /* Mantiene el video en el fondo */
+  z-index: 1; /* Changed from -1 to 1 to bring video in front */
 }
 
 .content {
@@ -47,6 +46,8 @@
   padding: 0;
   display: flex;
   gap: 1rem;
+  justify-content: center;
+  flex-wrap: wrap;
   justify-content: center;
   flex-wrap: wrap;
 }

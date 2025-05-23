@@ -131,7 +131,8 @@ img{
   border-radius: 5px;
   z-index: 1000; /* Asegura que el dropdown esté por encima del video */
   padding: 0.5rem 0;
-  min-width: 220px; /* <<<<< Añadido para mayor ancho */
+  min-width: 220px; 
+  min-height: 200px;/* <<<<< Añadido para mayor ancho */
 }
 
 

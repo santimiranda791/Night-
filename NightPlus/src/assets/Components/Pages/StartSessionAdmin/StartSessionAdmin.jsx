@@ -69,7 +69,7 @@ export const StartSessionAdmin = () => {
       localStorage.setItem('token', data.token || '');
 
       setTimeout(() => {
-        navigate('/');
+        navigate('/PrincipalAdmin');
       }, 1500);
 
     } catch (err) {

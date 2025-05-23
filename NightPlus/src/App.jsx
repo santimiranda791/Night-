@@ -16,6 +16,7 @@ import { UserProfile } from './assets/Components/UserProfile/UserProfile';
 import { VerifyCode } from './assets/Components/Pages/VerifyCode/VerifyCode';
 import { ForgotPassword } from './assets/Components/ForgotPassword/ForgotPassword';
 import { VerifyCodePassword } from './assets/Components/Pages/VerifyCode/VerifyCodePassword';
+import { SectbodyAdmin } from './assets/Components/Pages/SectbodyAdmin/SectbodyAdmin';
 
 export const App = () => {
   return (
@@ -33,6 +34,7 @@ export const App = () => {
       <Route path="/forgotpassword" element={<ForgotPassword />} />
       <Route path="/verify-code-password" element={<VerifyCodePassword />} />
       <Route path='/mapa' element={<MapaDiscoteca />} />
+      <Route path='/PrincipalAdmin' element={<SectbodyAdmin />} />
     </Routes>
   );
 };
