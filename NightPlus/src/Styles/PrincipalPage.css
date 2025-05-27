@@ -16,4 +16,8 @@ body {
   
 }
 
-
+body {
+  /* ...otros estilos... */
+  overflow-x: hidden;
+  overflow-y: auto;
+}

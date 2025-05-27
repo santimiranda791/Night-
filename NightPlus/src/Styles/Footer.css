@@ -1,15 +1,16 @@
 footer {
-  height: 90px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  background-color: #000; 
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+   background: linear-gradient(90deg, #1a1a1a 4  5%, #3b1c68);
   color: #fff; 
   padding: 20px;
   gap: 50px;
   text-align: center;
+  border-top: solid 2px rgb(22, 21, 21)
+  /* position: relative;  <-- Elimina o comenta esta línea */
 }
-
 footer :hover {
   color: #3b1c68; 
 }

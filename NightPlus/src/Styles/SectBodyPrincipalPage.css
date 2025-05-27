@@ -1,17 +1,29 @@
-.body-container {
-
-  width: 100%;
-  height: 100vh;
-  z-index: 1;
-  padding: 2rem;
-
+body {
+  /* ...otros estilos... */
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
+/* Ajusta el contenedor principal para dejar espacio al footer */
+.body-container {
+  width: 100%;
+  height: 60%; /* altura total menos footer */
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  padding-bottom: 90px; /* espacio para el footer */
+  box-sizing: border-box;
+}
+
+/* El video ocupa la parte superior, no todo el fondo */
 .video-container {
   width: 100%;
-  height: 35vh;
-  position: absolute;
-  z-index: 1; }
+  height: 30vh; /* Más alto para mejor visual */
+  position: relative;
+  z-index: 1;
+  overflow: hidden;
+}
 
 .background-video {
   width: 100%;
@@ -20,20 +32,24 @@
   position: absolute;
   top: 0;
   left: 0;
-  z-index: 1; /* Changed from -1 to 1 to bring video in front */
+  z-index: 1;
 }
 
+/* El contenido va debajo del video */
 .content {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   color: white;
   text-align: center;
   padding: 2rem;
   display: flex;
   flex-direction: column;
   justify-content: center;
-  height: 100%;
+  align-items: center;
+  padding-left: 4rem;
 }
+
+/* ...resto igual... */
 
 .upcoming-events {
   margin-top: 2rem;
@@ -43,11 +59,11 @@
   list-style: none;
   padding: 0;
   display: flex;
-  gap: 1rem;
+  gap: 2rem;
   justify-content: center;
-  flex-wrap: wrap;
+  margin-top: 2rem;
   justify-content: center;
-  flex-wrap: wrap;
+   
 }
 
 .event-card {

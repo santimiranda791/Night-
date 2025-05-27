@@ -7,11 +7,9 @@ import { SectBodyPrincipalPage } from '../../SectBodyPrincipalPage/SectBodyPrinc
 export const PrincipalPage = () => {
   return (
     <>
-    <Header/>
-    <SectBodyPrincipalPage/>
-    <Footer/>
+      <Header/> 
+      <SectBodyPrincipalPage />
+      <Footer /> {/* Usa el componente Footer aquí */}
     </>
-    
-
   )
 }

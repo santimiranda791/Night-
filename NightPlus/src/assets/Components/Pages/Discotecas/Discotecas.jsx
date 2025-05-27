@@ -29,7 +29,7 @@ export const Discotecas = () => {
     return (
         <>
           <Header />
-          <h1>Discotecas Disponibles</h1>
+          <h1>Nuestras Discotecas</h1>
           {error && <p style={{ color: 'red' }}>Error: {error}</p>} {/* Muestra mensaje de error si existe */}
           <div className="discotecas-container">
             {discotecas.length > 0 ? (
@@ -38,7 +38,7 @@ export const Discotecas = () => {
                   <img src={discoteca.imagen} alt={discoteca.nombre} className="card-image" />
                   <h2>{discoteca.nombre}</h2>
                   <p><strong>Ubicación:</strong> {discoteca.ubicacion}</p>
-                  <p><strong>Capacidad:</strong> {discoteca.capacidad}</p>
+                  <p><strong>Capacidad:</strong> {discoteca.capacidadDisc}</p>
                 </div>
               ))
             ) : (

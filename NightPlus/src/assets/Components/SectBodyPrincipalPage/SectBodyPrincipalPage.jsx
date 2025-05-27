@@ -39,9 +39,11 @@ export const SectBodyPrincipalPage = () => {
               <p>Descripción breve del evento 3.</p>
             </li>
           </ul>
+          
         </section>
       </div>
     </div>
+   
     </>
   )
 }

@@ -16,8 +16,8 @@ body {
     background-size: cover;
     height: 100vh;
     margin: 0;
-    overflow: hidden;
-    position: relative;
+overflow-x: hidden;
+overflow-y: auto;    position: relative;
 }
 
 
