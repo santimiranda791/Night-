@@ -73,10 +73,11 @@ body {
     border-radius: 20px;
   }
 
-.login-title {
+.login-title-admin {
     text-align: center;
     margin-bottom: 4rem;
     color: #fff;
+    font-size: 2rem;
 }
 
 /* From Uiverse.io by mrhyddenn */

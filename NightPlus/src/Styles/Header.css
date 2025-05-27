@@ -8,6 +8,8 @@ header {
   width: 100%;
   transition: all 0.3s ease-in-out;
   box-shadow: 0 10px 6px rgba(0, 0, 0, 0.1);
+  position: relative;
+  z-index: 10;
   
 }
 
@@ -132,7 +134,7 @@ img{
   z-index: 1000; /* Asegura que el dropdown esté por encima del video */
   padding: 0.5rem 0;
   min-width: 220px; 
-  min-height: 200px;/* <<<<< Añadido para mayor ancho */
+  min-height: 50px;/* <<<<< Añadido para mayor ancho */
 }
 
 

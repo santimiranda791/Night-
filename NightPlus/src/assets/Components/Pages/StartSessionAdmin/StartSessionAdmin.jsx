@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import '../../../../Styles/StartSession.css';
+import '../../../../Styles/StartSessionAdmin.css';
 
 export const StartSessionAdmin = () => {
   const navigate = useNavigate();
@@ -94,7 +94,7 @@ export const StartSessionAdmin = () => {
           Volver
         </NavLink>
 
-        <h1 className="login-title">Iniciar Sesión - Admin</h1>
+        <h1 className="login-title-admin">Iniciar Sesión - Admin</h1>
 
         <form className="login-form" onSubmit={handleSubmit}>
           <div className="form__group field">
