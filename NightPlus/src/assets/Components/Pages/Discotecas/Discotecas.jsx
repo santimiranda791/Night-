@@ -34,11 +34,11 @@ export const Discotecas = () => {
           <div className="discotecas-container">
             {discotecas.length > 0 ? (
               discotecas.map(discoteca => (
-                <div className="card" key={discoteca.nit}>
+                <div className="card" key={discoteca.id}>
                   <img src={discoteca.imagen} alt={discoteca.nombre} className="card-image" />
                   <h2>{discoteca.nombre}</h2>
                   <p><strong>Ubicación:</strong> {discoteca.ubicacion}</p>
-                  <p><strong>Capacidad:</strong> {discoteca.capacidadDisco}</p>
+                  <p><strong>Capacidad:</strong> {discoteca.capacidadDisc}</p>
                 </div>
               ))
             ) : (

@@ -10,8 +10,6 @@ import { StartSession } from './assets/Components/Pages/StartSession/StartSessio
 import { SignInCliente } from './assets/Components/Pages/SignInCliente/SignInCliente';
 import { StartSessionAdmin } from './assets/Components/Pages/StartSessionAdmin/StartSessionAdmin';
 import { SignInAdmin } from './assets/Components/Pages/SignInAdmin/SignInAdmin';
-
-
 import { UserProfile } from './assets/Components/UserProfile/UserProfile';
 import { VerifyCode } from './assets/Components/Pages/VerifyCode/VerifyCode';
 import { ForgotPassword } from './assets/Components/ForgotPassword/ForgotPassword';

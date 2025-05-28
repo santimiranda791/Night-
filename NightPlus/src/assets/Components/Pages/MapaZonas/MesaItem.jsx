@@ -12,7 +12,7 @@
 
     return (
         <button className={`mesa-button ${mesa.disponible ? 'disponible' : 'no-disponible'}`} onClick={handleClick}>
-        Mesa {mesa.numeroMesa} ({mesa.capacidad} personas)
+        Mesa {mesa.numero} ({mesa.capacidad} personas)
         </button>
     );
     };
