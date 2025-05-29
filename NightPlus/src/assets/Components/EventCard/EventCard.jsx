@@ -24,6 +24,7 @@ export const EventCard = () => {
         </p>
         <p className="event-club">Discoteca Tropikal-Club</p>
         <button className="event-btn" onClick={handleVerEvento}>Ver Evento</button>
+        
       </div>
     </div>
   );

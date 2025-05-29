@@ -4,6 +4,10 @@ import '../../../Styles/SectBodyPrincipalPage.css'
 export const SectBodyPrincipalPage = () => {
   const VideoBackground = "/Video.mp4";
 
+  
+  const handleVerEvento = () => {
+    navigate('/mapa'); // Aquí podrías pasar parámetros si más adelante quieres mostrar zonas por evento
+  };
   const events = [
     {
       id: 1,
@@ -69,8 +73,10 @@ export const SectBodyPrincipalPage = () => {
                     <li key={event.id} className="event-card" tabIndex="0">
                       <img src={event.image} alt={`Imagen del ${event.title}`} className="event-image" />
                       <div className="event-info">
+                      <button className="event-btn" onClick={handleVerEvento}>Ver Evento</button>
                         <strong>{event.title}</strong> - Fecha: {event.date}
                         <p>{event.description}</p>
+                           
                       </div>
                     </li>
                   ))}
