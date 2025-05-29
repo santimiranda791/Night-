@@ -1,3 +1,4 @@
+/* --- Video Background --- */
 .video-container {
   position: relative;
   width: 100%;
@@ -14,10 +15,11 @@
   filter: brightness(0.6);
 }
 
+/* --- Main Body --- */
 .body-container {
   position: relative;
   padding: 3rem 2rem 0 2rem;
-  max-width: 900px;
+  max-width: 1200px;
   margin: 0 auto;
   color: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -36,182 +38,261 @@
   text-shadow: 1px 1px 3px rgba(0,0,0,0.6);
 }
 
+/* --- Upcoming Events Section --- */
 .upcoming-events {
-  background: rgba(0, 0, 0, 0.5);
-  padding: 3.5rem;
-  border-radius: 12px;
-  box-shadow: 0 0 15px rgba(0,0,0,0.4);
-  overflow-x: hidden;
-  white-space: nowrap;
+  background: none;
+  padding: 3.5rem 0 2rem 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow-x: visible;
+  white-space: normal;
   position: relative;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.carousel-wrapper {
-  overflow: visible;
-  width: 100%;
-  max-width: 900px;
-  margin: 0 auto;
-}
-
-.events-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-  will-change: transform;
-  width: calc(450px * 4); /* total width for 4 event cards */
-  gap: 0;
-  overflow: hidden;
-}
-
-.event-card {
-  min-width: 100%;
   max-width: 100%;
-  height: 480px;
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  scroll-snap-align: start;
-}
-
-.event-image {
-  width: 100%;
-  height: 380px;
-  object-fit: cover;
+  margin: 0 auto;
 }
 
 .upcoming-events h2 {
-  font-size: 2rem;
-  margin-bottom: 1rem;
-  color: #ffd700;
+  font-size: 2.2rem;
+  margin-bottom: 1.5rem;
+  color: #a259e4;
   text-shadow: 1px 1px 2px rgba(0,0,0,0.8);
+  letter-spacing: 1px;
 }
 
-.events-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  display: flex;
-  gap: 2rem;
-  overflow: hidden;
-  transition: transform 0.5s ease-in-out;
-  will-change: transform;
-}
-
-.events-list::-webkit-scrollbar {
-  display: none; /* Chrome, Safari, Opera */
-}
-
-.event-card {
-  background: rgba(255, 255, 255, 0.1);
-  min-width: 450px;
-  height: 480px;
-  border-radius: 12px;
-  overflow: hidden;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  cursor: pointer;
-  transition: background-color 0.3s ease, transform 0.3s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  scroll-snap-align: start;
-}
-
-.carousel-container {
+/* --- Carousel Gold Moderno Vertical --- */
+.carousel-gold-container {
   position: relative;
   display: flex;
   align-items: center;
-}
-
-.carousel-button {
-  background-color: rgba(255, 215, 0, 0.8);
-  border: none;
-  color: #000;
-  font-size: 2rem;
-  padding: 0.25rem 0.75rem;
-  cursor: pointer;
-  border-radius: 50%;
-  box-shadow: 0 0 8px rgba(255, 215, 0, 0.7);
-  transition: background-color 0.3s ease;
+  justify-content: center;
+  max-width: 100vw;
+  margin: 0 auto 2rem auto;
+  width: 700px;
+  min-height: 600px;
   user-select: none;
-  z-index: 10;
+  background: none;
+  box-shadow: none;
 }
 
-.carousel-button:hover,
-.carousel-button:focus {
-  background-color: #ffd700;
-  outline: none;
-}
-
-.carousel-button.left {
-  margin-right: 0.5rem;
-}
-
-.carousel-button.right {
-  margin-left: 0.5rem;
-}
-
-.event-card:hover,
-.event-card:focus {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-5px);
-  outline: none;
-}
-
-.event-image {
+.carousel-gold-wrapper {
+  overflow: hidden;
   width: 100%;
-  height: 380px;
-  object-fit: cover;
+  border-radius: 40px;
+  box-shadow: none;
+  background: none;
 }
 
-.event-info {
-  padding: 1rem;
-  color: #eee;
+.carousel-gold-list {
+  display: flex;
+  flex-direction: row;
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  transition: transform 0.6s cubic-bezier(.77,0,.18,1);
+  will-change: transform;
+}
+
+.carousel-gold-card {
+  min-width: 100%;
+  max-width: 100%;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background: linear-gradient(135deg, #7f53ac 60%, #647dee 100%);
+  border-radius: 40px;
+  /* Elimina el margin lateral para evitar espacios */
+  box-shadow: 0 12px 48px 0 rgba(100,125,222,0.18), 0 2px 16px 0 rgba(0,0,0,0.25);
+  border: 3px solid #7f53ac;
+  overflow: hidden;
+  transition: box-shadow 0.4s, border 0.4s, transform 0.3s;
+  position: relative;
+  /* Puedes agregar padding interno si quieres separación visual */
+}
+
+.carousel-gold-card:focus,
+.carousel-gold-card:hover {
+  box-shadow: 0 24px 64px 0 #647dee88, 0 2px 16px 0 #000a;
+  border: 4px solid #647dee;
+  outline: none;
+  transform: translateY(-12px) scale(1.04);
+}
+
+.carousel-gold-img-wrap {
+  width: 100%;
+  background: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 350px;
+  border-bottom: 4px solid #e0c3fc;
+}
+
+.carousel-gold-img {
+  width: 100%;
+  height: 350px;
+  object-fit: cover;
+  border-radius: 40px 40px 0 0;
+  box-shadow: 0 2px 24px #7f53acaa;
+}
+
+.carousel-gold-info {
+  width: 100%;
+  padding: 2.5rem 2rem 2.5rem 2rem;
+  color: #fffbe7;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background: transparent;
   text-align: center;
 }
 
-.event-info strong {
-  font-size: 1.2rem;
-  color: #ffd700;
+.carousel-gold-info strong {
+  font-size: 2.5rem;
+  color: #fff;
+  margin-bottom: 0.7rem;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 12px #7f53acaa;
 }
 
-.event-info p {
-  margin-top: 0.5rem;
-  font-size: 1rem;
+.carousel-gold-date {
+  font-size: 1.3rem;
+  color: #e0c3fc;
+  margin-bottom: 1.2rem;
+}
+
+.carousel-gold-info p {
+  font-size: 1.3rem;
+  margin-bottom: 2.2rem;
+  color: #fffbe7;
+}
+
+.carousel-gold-event-btn {
+  background: linear-gradient(90deg, #7f53ac 60%, #647dee 100%);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  padding: 1rem 2.5rem;
+  font-size: 1.3rem;
+  font-weight: bold;
+  cursor: pointer;
+  box-shadow: 0 2px 12px #647dee44;
+  transition: background 0.3s, color 0.3s;
+}
+
+.carousel-gold-event-btn:hover,
+.carousel-gold-event-btn:focus {
+  background: #fff;
+  color: #7f53ac;
+  outline: none;
+  border: 2px solid #7f53ac;
+}
+
+/* --- Botones flotantes --- */
+.carousel-gold-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #7f53ac;
+  color: #fff;
+  border: none;
+  font-size: 3rem;
+  padding: 0.7rem 1.5rem;
+  border-radius: 50%;
+  box-shadow: 0 2px 24px #647dee88;
+  cursor: pointer;
+  z-index: 20;
+  transition: background 0.3s, color 0.3s;
+  opacity: 0.92;
+}
+
+.carousel-gold-btn.left {
+  left: 0;
+}
+
+.carousel-gold-btn.right {
+  right: 0;
+}
+
+.carousel-gold-btn:hover,
+.carousel-gold-btn:focus {
+  background: #fff;
+  color: #7f53ac;
+  outline: none;
+}
+
+/* --- Indicadores --- */
+.carousel-gold-indicators {
+  display: flex;
+  justify-content: center;
+  margin-top: 2rem;
+  gap: 1rem;
+}
+
+.carousel-gold-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 3px solid #7f53ac;
+  background: #fff;
+  cursor: pointer;
+  transition: background 0.3s, border 0.3s;
+  outline: none;
+}
+
+.carousel-gold-dot.active,
+.carousel-gold-dot:hover {
+  background: #7f53ac;
+  border: 3px solid #fff;
+}
+
+/* --- Responsive --- */
+@media (max-width: 900px) {
+  .carousel-gold-card {
+    min-width: 99vw;
+    max-width: 99vw;
+    border-radius: 24px;
+  }
+  .carousel-gold-img-wrap {
+    min-height: 180px;
+  }
+  .carousel-gold-img {
+    border-radius: 24px 24px 0 0;
+    height: 180px;
+  }
+  .carousel-gold-info {
+    padding: 1.2rem 0.7rem 1.2rem 0.7rem;
+  }
+  .carousel-gold-info strong {
+    font-size: 1.3rem;
+  }
+  .carousel-gold-info p {
+    font-size: 1rem;
+  }
 }
 
 @media (max-width: 600px) {
   .content h1 {
     font-size: 2rem;
   }
-
   .content p {
     font-size: 1rem;
   }
-
   .upcoming-events h2 {
     font-size: 1.5rem;
   }
-
-  .event-card {
-    width: 100%;
+  .carousel-gold-card {
+    min-width: 99vw;
+    max-width: 99vw;
+    border-radius: 16px;
   }
-
-  .event-info strong {
-    font-size: 1rem;
+  .carousel-gold-img {
+    border-radius: 16px 16px 0 0;
+    height: 120px;
   }
-
-  .event-info p {
-    font-size: 0.9rem;
+  .carousel-gold-info {
+    padding: 0.7rem 0.3rem 0.7rem 0.3rem;
   }
 }
 

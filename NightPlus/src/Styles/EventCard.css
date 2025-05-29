@@ -4,9 +4,10 @@
   color: white;
   border-radius: 20px;
   box-shadow: 0 0 30px #3b1c68; /* Color más acorde */
-  overflow: hidden;
+  /* overflow: hidden; */ /* Comentado para evitar recorte de contenido */
   width: 100%;
   max-width: 420px;
+  min-height: 550px; /* Altura mínima para mostrar todo el contenido */
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   animation: pulseCard 3s infinite alternate;
   position: relative;
@@ -76,6 +77,7 @@
 .event-details {
   padding: 1rem;
   text-align: center;
+  min-height: 150px; /* Altura mínima para que el botón no quede fuera */
 }
 
 .event-title {

@@ -1,13 +1,13 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
+import { useNavigate } from 'react-router-dom'
 import '../../../Styles/SectBodyPrincipalPage.css'
 
 export const SectBodyPrincipalPage = () => {
   const VideoBackground = "/Video.mp4";
+  const navigate = useNavigate();
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const touchStartX = useRef(null);
 
-  
-  const handleVerEvento = () => {
-    navigate('/mapa'); // Aquí podrías pasar parámetros si más adelante quieres mostrar zonas por evento
-  };
   const events = [
     {
       id: 1,
@@ -39,7 +39,9 @@ export const SectBodyPrincipalPage = () => {
     }
   ];
 
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const handleVerEvento = (id) => {
+    navigate('/mapa'); // Puedes pasar el id si lo necesitas: `/mapa/${id}`
+  };
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? events.length - 1 : prevIndex - 1));
@@ -47,6 +49,21 @@ export const SectBodyPrincipalPage = () => {
 
   const nextSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex === events.length - 1 ? 0 : prevIndex + 1));
+  };
+
+  const goToSlide = (idx) => setCurrentIndex(idx);
+
+  // Touch events for mobile
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e) => {
+    if (touchStartX.current === null) return;
+    const diff = e.changedTouches[0].clientX - touchStartX.current;
+    if (diff > 50) prevSlide();
+    else if (diff < -50) nextSlide();
+    touchStartX.current = null;
   };
 
   return (
@@ -65,24 +82,46 @@ export const SectBodyPrincipalPage = () => {
 
           <section className="upcoming-events">
             <h2>Próximos Eventos</h2>
-            <div className="carousel-container">
-              <button className="carousel-button left" onClick={prevSlide} aria-label="Previous Slide">&#8249;</button>
-              <div className="carousel-wrapper">
-                <ul className="events-list" style={{ transform: `translateX(-${currentIndex * 100}%)`, transition: 'transform 0.5s ease-in-out' }}>
+            <div
+              className="carousel-gold-container"
+              onTouchStart={handleTouchStart}
+              onTouchEnd={handleTouchEnd}
+            >
+              <button className="carousel-gold-btn left" onClick={prevSlide} aria-label="Anterior">&#8249;</button>
+              <div className="carousel-gold-wrapper">
+                <ul
+                  className="carousel-gold-list"
+                  style={{
+                    transform: `translateX(-${currentIndex * 100}%)`,
+                    transition: 'transform 0.6s cubic-bezier(.77,0,.18,1)'
+                  }}
+                >
                   {events.map(event => (
-                    <li key={event.id} className="event-card" tabIndex="0">
-                      <img src={event.image} alt={`Imagen del ${event.title}`} className="event-image" />
-                      <div className="event-info">
-                      <button className="event-btn" onClick={handleVerEvento}>Ver Evento</button>
-                        <strong>{event.title}</strong> - Fecha: {event.date}
+                    <li key={event.id} className="carousel-gold-card" tabIndex="0">
+                      <div className="carousel-gold-img-wrap">
+                        <img src={event.image} alt={`Imagen del ${event.title}`} className="carousel-gold-img" />
+                      </div>
+                      <div className="carousel-gold-info">
+                        <strong>{event.title}</strong>
+                        <div className="carousel-gold-date">Fecha: {event.date}</div>
                         <p>{event.description}</p>
-                           
+                        <button className="carousel-gold-event-btn" onClick={() => handleVerEvento(event.id)}>Ver Evento</button>
                       </div>
                     </li>
                   ))}
                 </ul>
               </div>
-              <button className="carousel-button right" onClick={nextSlide} aria-label="Next Slide">&#8250;</button>
+              <button className="carousel-gold-btn right" onClick={nextSlide} aria-label="Siguiente">&#8250;</button>
+            </div>
+            <div className="carousel-gold-indicators">
+              {events.map((_, idx) => (
+                <button
+                  key={idx}
+                  className={`carousel-gold-dot${currentIndex === idx ? ' active' : ''}`}
+                  onClick={() => goToSlide(idx)}
+                  aria-label={`Ir al evento ${idx + 1}`}
+                />
+              ))}
             </div>
           </section>
         </div>
