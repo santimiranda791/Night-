@@ -184,7 +184,7 @@ navigate('/VerifyCode', { state: { email: cliente.correo } });
 
         <form className="login-form" onSubmit={handleSubmit}>
           {[
-            { id: 'documento', label: 'Nro De Documento', type: 'text' },
+            { id: 'documento', label: 'Usuario', type: 'text' },
             { id: 'nombre', label: 'Nombre', type: 'text' },
             { id: 'edad', label: 'Edad', type: 'number' },
             { id: 'telefono', label: 'Teléfono', type: 'tel' },

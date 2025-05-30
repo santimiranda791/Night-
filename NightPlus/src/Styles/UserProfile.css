@@ -1,196 +1,265 @@
-/* ========================= VARIABLES ========================= */
-:root {
-  --color-principal:        #3b1c68;
-  --color-secundario:       #5a3e9d;
-  --color-fondo:            linear-gradient(90deg, #1a1a1a 45%, #3b1c68);
-  --color-texto:            #222;
-  --color-texto-secundario: #555;
-  --color-boton-fondo:      var(--color-principal);
-  --color-boton-hover:      #2f154f;
-  --color-boton-texto:      #fff;
-  --sombra:                 0 4px 12px rgba(59, 28, 104, 0.3);
-  --border-radius:          10px;
-  --font-family:            'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-/* ========================= RESET & BASE ========================= */
-html, body, #root {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  background: var(--color-fondo);
-  font-family: var(--font-family);
-  color: var(--color-texto);
-}
-
-/* ========================= CONTENEDOR PRINCIPAL ========================= */
-.perfil-container {
-  max-width: 1200px;
-  margin: 20px auto;
-  background: #fff;
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  box-shadow: var(--sombra);
-  color: var(--color-texto);
-}
-
-/* ========================= PORTADA ========================= */
-.perfil-portada {
+/* Estilo general del contenedor del perfil */
+.user-profile-container {
+  width: 950px;
+  margin: 40px auto;
+  background-color: #000000;
+  border: 2px solid #440152;
+  border-radius: 15px;
+  box-shadow: 0 10px 20px rgba(139, 8, 165, 0.25);
+  font-family: 'Arial', sans-serif;
+  color: #333;
+  padding: 30px;
   position: relative;
-  height: 250px;
-  background-size: cover;
-  background-position: center;
-  border-bottom: 4px solid var(--color-principal);
-}
-.perfil-portada .overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(59, 28, 104, 0.7);
-}
-
-/* ========================= HEADER CONTENIDO ========================= */
-.perfil-header-content {
-  position: relative;
-  display: flex;
-  align-items: center;
-  padding: 20px;
-  gap: 20px;
   z-index: 1;
 }
 
-/* ========================= AVATAR ========================= */
-.perfil-avatar {
-  width: 140px;
-  height: 140px;
+/* Header con foto y datos */
+.user-header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.profile-image {
+  width: 130px;
+  height: 130px;
   border-radius: 50%;
-  overflow: hidden;
-  border: 5px solid var(--color-fondo);
-  background: #fff;
-  flex-shrink: 0;
-}
-.perfil-avatar img {
-  width: 100%;
-  height: 100%;
+  border: 3px solid #8b08a5;
   object-fit: cover;
+  box-shadow: 0 4px 10px rgba(139, 8, 165, 0.4);
+  margin-bottom: 15px;
 }
 
-/* ========================= NOMBRE Y SEGUIDORES ========================= */
-.perfil-nombre-seguidores h1 {
+.profile-name {
+  font-size: 2.4rem;
+  color: #8b08a5;
   margin: 0;
-  font-size: 2.5rem;
-  font-weight: 900;
-  color: var(--color-principal);
-}
-.perfil-nombre-seguidores p {
-  margin: 4px 0 0;
-  font-size: 1rem;
-  color: var(--color-texto-secundario);
+  text-shadow: 2px 2px 5px rgba(0,0,0,0.15);
 }
 
-/* ========================= NAVEGACIÓN DE PESTAÑAS ========================= */
-.perfil-nav {
+.profile-email {
+  font-size: 1rem;
+  color: #555;
+  margin-top: 5px;
+  font-style: italic;
+}
+
+/* Contenedor de pestañas */
+.profile-tabs {
   display: flex;
-  background: #fff;
-  border-bottom: 2px solid var(--color-principal);
+  justify-content: space-between;
+  border-bottom: 2px solid #8b08a5;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  gap: 8px;
 }
-.perfil-nav button {
+
+.profile-tab {
   flex: 1;
-  padding: 12px 0;
-  background: transparent;
-  border: none;
-  color: var(--color-principal);
-  font-weight: 600;
+  text-align: center;
+  padding: 10px 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  border-bottom: 4px solid transparent;
+  font-weight: 600;
+  color: #8b08a5cc;
+  border-bottom: 3px solid transparent;
+  transition: all 0.3s ease;
+  user-select: none;
+  border-radius: 6px 6px 0 0;
 }
-.perfil-nav button:hover {
-  background-color: var(--color-secundario);
-  color: #fff;
+
+.profile-tab:hover {
+  color: #8b08a5;
 }
-.perfil-nav button.active {
-  border-bottom-color: var(--color-principal);
-  background-color: var(--color-principal);
+
+.profile-tab.active {
   color: #fff;
+  background-color: #8b08a5;
+  border-bottom: 3px solid #6e0678;
   font-weight: 700;
 }
 
-/* ========================= CONTENIDO DE PESTAÑAS ========================= */
-.perfil-content {
-  padding: 20px;
-  background: #fff;
-  color: var(--color-texto);
+/* Contenido principal */
+.profile-content {
+  min-height: 220px;
 }
 
-/* ========================= FORMULARIO ========================= */
-.form-group {
-  margin-bottom: 15px;
+/* Formulario en la pestaña 'cuenta' */
+.profile-form h2 {
+  color: #8b08a5;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  font-size: 1.8rem;
+  letter-spacing: 1.2px;
 }
-.form-group label {
+
+.profile-form p {
+  color: #666;
+  margin-bottom: 20px;
+  font-style: italic;
+}
+
+/* Labels */
+.profile-form label {
   display: block;
   margin-bottom: 6px;
   font-weight: 600;
-  color: var(--color-principal);
+  color: #8b08a5dd;
+  text-transform: uppercase;
+  font-size: 0.9rem;
 }
-.form-group input {
-  width: 100%;
-  padding: 8px 10px;
-  border-radius: var(--border-radius);
-  border: 1px solid var(--color-secundario);
-  background: #f9f9f9;
-  color: var(--color-texto);
+
+/* Inputs */
+.profile-form input[type="text"],
+.profile-form input[type="email"],
+.profile-form input[type="number"],
+.profile-form input[type="password"] {
+  width: 98%;
+  padding: 10px 12px;
+  margin-bottom: 18px;
+  border: 2px solid #8b08a5aa;
+  border-radius: 8px;
   font-size: 1rem;
-}
-.form-group input:focus {
+  transition: border-color 0.3s ease;
   outline: none;
-  border-color: var(--color-principal);
-  box-shadow: 0 0 5px var(--color-principal);
+  background-color: #000000;
+  color: #fff;
 }
 
-/* ========================= BOTONES ========================= */
-.form-buttons {
+.profile-form input[type="text"]:focus,
+.profile-form input[type="email"]:focus,
+.profile-form input[type="number"]:focus,
+.profile-form input[type="password"]:focus {
+  border-color: #8b08a5;
+  box-shadow: 0 0 6px #8b08a5aa;
+}
+
+/* Botones */
+.buttons {
   display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-.btn-descartar {
-  background: transparent;
-  border: 2px solid var(--color-principal);
-  color: var(--color-principal);
-  padding: 8px 16px;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-.btn-descartar:hover {
-  background-color: var(--color-principal);
-  color: #fff;
-}
-.btn-actualizar {
-  background-color: var(--color-principal);
-  border: none;
-  color: #fff;
-  padding: 8px 16px;
-  border-radius: var(--border-radius);
-  cursor: pointer;
-  font-weight: 700;
-  transition: background-color 0.3s ease;
-}
-.btn-actualizar:hover {
-  background-color: var(--color-secundario);
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 1.9rem;
 }
 
-/* ========================= RESPONSIVE ========================= */
-@media (max-width: 768px) {
-  .perfil-header-content {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-  }
-  .perfil-nav {
-    flex-wrap: wrap;
-  }
-  .perfil-nav button {
-    flex: 1 1 50%;
-  }
+.updatee-button,
+.logout-button {
+  padding: 10px 22px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.updatee-button {
+  background-color: #8b08a5;
+  color: white;
+  box-shadow: 0 4px 12px rgba(139, 8, 165, 0.5);
+}
+
+.updatee-button:hover {
+  background-color: #6e0678;
+  box-shadow: 0 6px 16px rgba(110, 6, 120, 0.7);
+}
+
+.logout-button {
+  background-color: #ddd;
+  color: #555;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.logout-button:hover {
+  background-color: #bbb;
+  color: #333;
+}
+
+/* Placeholder para otras pestañas */
+.profile-placeholder {
+  text-align: center;
+  color: #999;
+  font-style: italic;
+  padding: 60px 0;
+  font-size: 1.2rem;
+}
+/* Estilo para overlay */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 900;
+}
+
+/* Estilo para el modal */
+.modal-content {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(0, 0, 0);
+  padding: 30px;
+  border-radius: 10px;
+  width: 90%;
+  max-width: 700px;
+  z-index: 1000;
+  color: #fff;
+}
+
+/* Estilo del formulario en dos columnas */
+.modal-content form {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Campo que ocupa dos columnas */
+.modal-content form label,
+.modal-content form input {
+  display: block;
+  width: 100%;
+  
+}
+
+.modal-content form input {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-top: 4px;
+  background-color: #000000;
+  color: #fff;
+  border-color: #8b08a5;
+  box-shadow: 0 0 6px #8b08a5aa;
+}
+
+/* Asegura que los campos de contraseña ocupen ambas columnas */
+.modal-content form input[name="contrasena_cliente"] {
+  grid-column: span 2;
+}
+
+/* Estilo para los botones */
+.buttons {
+  grid-column: span 2;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.logout-button {
+  background-color: #ccc;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.updatee-button {
+  background-color: #8b08a5;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
 }
