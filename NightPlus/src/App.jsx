@@ -1,6 +1,9 @@
-import React from 'react';
+
+import React, { useContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
+import { LoadingAlert } from './assets/Components/LoadingAlert/LoadingAlert';
+import { LoadingProvider, LoadingContext } from './contexts/LoadingContext';
 
 import { PrincipalPage } from './assets/Components/Pages/PrincipalPage/PrincipalPage';
 import { Discotecas } from './assets/Components/Pages/Discotecas/Discotecas';
@@ -15,26 +18,32 @@ import { VerifyCode } from './assets/Components/Pages/VerifyCode/VerifyCode';
 import { ForgotPassword } from './assets/Components/ForgotPassword/ForgotPassword';
 import { VerifyCodePassword } from './assets/Components/Pages/VerifyCode/VerifyCodePassword';
 import { SectbodyAdmin } from './assets/Components/Pages/SectbodyAdmin/SectbodyAdmin';
-import { ViewEvent } from './assets/Components/Pages/ViewEvent/ViewEvent';
+
+const LoadingAlertWrapper = () => {
+  const { loading } = useContext(LoadingContext);
+  return loading ? <LoadingAlert /> : null;
+};
 
 export const App = () => {
   return (
-    <Routes>
-      <Route path="/" element={<PrincipalPage />} />
-      <Route path="/discotecas" element={<Discotecas />} />
-      <Route path="/eventos" element={<Eventos />} />
-      <Route path="/mapa" element={<MapaDiscoteca />} />
-      <Route path="/login" element={<StartSession />} />
-      <Route path="/signincliente" element={<SignInCliente />} />
-      <Route path="/loginadmin" element={<StartSessionAdmin />} />
-      <Route path="/signinadmin" element={<SignInAdmin />} />
-      <Route path="/perfil" element={<UserProfile />} />
-      <Route path="/verifycode" element={<VerifyCode />} />
-      <Route path="/forgotpassword" element={<ForgotPassword />} />
-      <Route path="/verify-code-password" element={<VerifyCodePassword />} />
-      <Route path='/mapa' element={<MapaDiscoteca />} />
-      <Route path='/PrincipalAdmin' element={<SectbodyAdmin />} />
-      <Route path="/view-event/:id" element={<ViewEvent/>} />
-    </Routes>
+    <LoadingProvider>
+      <LoadingAlertWrapper />
+      <Routes>
+        <Route path="/" element={<PrincipalPage />} />
+        <Route path="/discotecas" element={<Discotecas />} />
+        <Route path="/eventos" element={<Eventos />} />
+        <Route path="/mapa" element={<MapaDiscoteca />} />
+        <Route path="/login" element={<StartSession />} />
+        <Route path="/signincliente" element={<SignInCliente />} />
+        <Route path="/loginadmin" element={<StartSessionAdmin />} />
+        <Route path="/signinadmin" element={<SignInAdmin />} />
+        <Route path="/perfil" element={<UserProfile />} />
+        <Route path="/verifycode" element={<VerifyCode />} />
+        <Route path="/forgotpassword" element={<ForgotPassword />} />
+        <Route path="/verify-code-password" element={<VerifyCodePassword />} />
+        <Route path='/mapa' element={<MapaDiscoteca />} />
+        <Route path='/PrincipalAdmin' element={<SectbodyAdmin />} />
+      </Routes>
+    </LoadingProvider>
   );
 };

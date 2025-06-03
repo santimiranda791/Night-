@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../../../../Styles/SignInCliente.css';
 import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../../../firebaseConfig/config';
 import Swal from 'sweetalert2';
+import { LoadingContext } from '../../../../contexts/LoadingContext';
 
 export const SignInCliente = () => {
   const [formData, setFormData] = useState({
@@ -15,7 +16,7 @@ export const SignInCliente = () => {
     password: '',
   });
 
-  const [loading, setLoading] = useState(false);
+  const { loading, setLoading } = useContext(LoadingContext);
   const navigate = useNavigate(); // ✅ Hook para navegación
 
   const handleChange = (e) => {
