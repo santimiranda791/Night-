@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { Routes, Route } from 'react-router-dom';
 
 import { LoadingAlert } from './assets/Components/LoadingAlert/LoadingAlert';
-import { LoadingProvider, LoadingContext } from './contexts/LoadingContext';
+import { LoadingProvider, LoadingContext } from './Context/LoadingContext';
 
 import { PrincipalPage } from './assets/Components/Pages/PrincipalPage/PrincipalPage';
 import { Discotecas } from './assets/Components/Pages/Discotecas/Discotecas';

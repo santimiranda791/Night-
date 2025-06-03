@@ -56,14 +56,14 @@ export const UserProfile = () => {
       const clienteRecibido = await response.json();
   
       Swal.fire({
-             imageUrl: '/logitonegro.png',
-              imageWidth: 130,
-              imageHeight: 130,
-              background: '#000',
-              color: '#fff',
-            title: 'Actualizado!',
-            text: 'Tus Datos han sido actualizados correctamente.',
-          });
+        imageUrl: '/logitonegro.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
+        title: 'Actualizado!',
+        text: 'Tus Datos han sido actualizados correctamente.',
+      });
       setShowModal(false);
   
       // Actualizar localStorage con los nuevos datos (excepto usuario)
@@ -74,15 +74,15 @@ export const UserProfile = () => {
       localStorage.setItem("correo", clienteRecibido.correo);
   
     } catch (err) {
-       Swal.fire({
-            imageUrl: '/logitotriste.png',
-                 imageWidth: 130,
-                 imageHeight: 130,
-                 background: '#000',
-              color: '#fff',
-            title: 'Error',
-            text: error.message || 'Hubo un error al registrar el usuario.',
-          });
+      Swal.fire({
+        imageUrl: '/logitotriste.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
+        title: 'Error',
+        text: err.message || 'Hubo un error al registrar el usuario.',
+      });
     }
   };
   
@@ -97,7 +97,7 @@ export const UserProfile = () => {
   
       {/* Tabs */}
       <div className="profile-tabs">
-        {['cuenta',  'eventos', 'wallet', 'órdenes'].map(tab => (
+        {['cuenta', 'eventos', 'wallet', 'órdenes'].map(tab => (
           <div
             key={tab}
             className={`profile-tab ${activeTab === tab ? 'active' : ''}`}

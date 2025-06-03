@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../../../../Styles/StartSession.css';
-import Swal from 'sweetalert2'; // <-- Agrega esta línea
+import Swal from 'sweetalert2';
 
 export const StartSession = () => {
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     usuarioCliente: '',
-    contrasenaCliente: '',  // sin ñ para evitar problemas
+    contrasenaCliente: '',
   });
 
   const [error, setError] = useState(null);
@@ -24,10 +24,9 @@ export const StartSession = () => {
     e.preventDefault();
     setError(null);
 
-    // Armar el payload exactamente igual que en el backend (sin ñ)
     const payload = {
       usuarioCliente: formData.usuarioCliente,
-      contrasenaCliente: formData.contrasenaCliente,  // sin ñ
+      contrasenaCliente: formData.contrasenaCliente,
     };
 
     try {
@@ -41,11 +40,11 @@ export const StartSession = () => {
         if (response.status === 401) {
           setError('Credenciales incorrectas');
           Swal.fire({
-           imageUrl: '/logitotriste.png',
-           imageWidth: 130,
-           imageHeight: 130,
-           background: '#000',
-        color: '#fff',
+            imageUrl: '/logitotriste.png',
+            imageWidth: 130,
+            imageHeight: 130,
+            background: '#000',
+            color: '#fff',
             title: 'Acceso denegado',
             text: 'Credenciales incorrectas',
           });
@@ -53,10 +52,10 @@ export const StartSession = () => {
           setError('Error al iniciar sesión');
           Swal.fire({
             imageUrl: '/logitotriste.png',
-           imageWidth: 130,
-           imageHeight: 130,
+            imageWidth: 130,
+            imageHeight: 130,
             background: '#000',
-        color: '#fff',
+            color: '#fff',
             title: 'Error',
             text: 'Error al iniciar sesión',
           });
@@ -64,10 +63,9 @@ export const StartSession = () => {
         return;
       }
 
-            // ...existing code...
-        const data = await response.json();
-        console.log('Login exitoso:', data);
-        Swal.fire({
+      const data = await response.json();
+      console.log('Login exitoso:', data);
+      Swal.fire({
         imageUrl: '/logitonegro.png',
         imageWidth: 130,
         imageHeight: 130,
@@ -76,17 +74,14 @@ export const StartSession = () => {
         title: '¡Sesión iniciada!',
         text: 'Bienvenido/a',
         timer: 1500,
-        showConfirmButton: false
-        });
-        // ...existing code...
-            // Guardar usuario en localStorage
-          localStorage.setItem('usuario', data.usuario || '');
-localStorage.setItem('nombre', data.nombre || '');
-localStorage.setItem('correo', data.correo || '');
-localStorage.setItem('token', data.token || '');
+        showConfirmButton: false,
+      });
 
+      localStorage.setItem('usuario', data.usuario || '');
+      localStorage.setItem('nombre', data.nombre || '');
+      localStorage.setItem('correo', data.correo || '');
+      localStorage.setItem('token', data.token || '');
 
-      // Redirigir a dashboard o página principal después de un pequeño delay
       setTimeout(() => {
         navigate('/');
       }, 1500);
@@ -119,7 +114,6 @@ localStorage.setItem('token', data.token || '');
         <h1 className="login-title">Inicio de Sesión</h1>
 
         <form className="login-form" onSubmit={handleSubmit}>
-
           <div className="form__group field">
             <input
               type="text"
@@ -146,7 +140,7 @@ localStorage.setItem('token', data.token || '');
             <label htmlFor="contrasenaCliente" className="form__label">Contraseña</label>
           </div>
 
-          {error && <p className="error-message" style={{color: 'red'}}>{error}</p>}
+          {error && <p className="error-message" style={{ color: 'red' }}>{error}</p>}
 
           <button type="submit" className="user-profile">
             <div className="user-profile-inner">
@@ -161,9 +155,6 @@ localStorage.setItem('token', data.token || '');
             <NavLink to="/SignInCliente" className="SignInCliente">
               ¿Es tu primera vez? Regístrate
             </NavLink>
-
-
-            
           </div>
         </form>
       </div>
