@@ -15,6 +15,7 @@ import { VerifyCode } from './assets/Components/Pages/VerifyCode/VerifyCode';
 import { ForgotPassword } from './assets/Components/ForgotPassword/ForgotPassword';
 import { VerifyCodePassword } from './assets/Components/Pages/VerifyCode/VerifyCodePassword';
 import { SectbodyAdmin } from './assets/Components/Pages/SectbodyAdmin/SectbodyAdmin';
+import { ViewEvent } from './assets/Components/Pages/ViewEvent/ViewEvent';
 
 export const App = () => {
   return (
@@ -33,6 +34,7 @@ export const App = () => {
       <Route path="/verify-code-password" element={<VerifyCodePassword />} />
       <Route path='/mapa' element={<MapaDiscoteca />} />
       <Route path='/PrincipalAdmin' element={<SectbodyAdmin />} />
+      <Route path="/view-event/:id" element={<ViewEvent/>} />
     </Routes>
   );
 };

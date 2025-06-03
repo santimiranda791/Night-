@@ -39,9 +39,12 @@ export const SectBodyPrincipalPage = () => {
     }
   ];
 
-  const handleVerEvento = (id) => {
-    navigate('/mapa'); // Puedes pasar el id si lo necesitas: `/mapa/${id}`
-  };
+
+const handleVerEvento = (id) => {
+
+  navigate(`/view-event/${id}`);
+};
+
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? events.length - 1 : prevIndex - 1));
