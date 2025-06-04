@@ -93,17 +93,17 @@
 }
 
 .carousel-gold-card {
-  min-width: 100%;
-  max-width: 100%;
+  min-width: 99.2%;
+  max-width: 99.3%;
   width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
-  background: linear-gradient(135deg, #7f53ac 60%, #647dee 100%);
+  background: linear-gradient(135deg, #000000 60%, #000000 100%);
   border-radius: 40px;
   /* Elimina el margin lateral para evitar espacios */
   box-shadow: 0 12px 48px 0 rgba(100,125,222,0.18), 0 2px 16px 0 rgba(0,0,0,0.25);
-  border: 3px solid #7f53ac;
+  border: 3px solid #ffffff;
   overflow: hidden;
   transition: box-shadow 0.4s, border 0.4s, transform 0.3s;
   position: relative;
@@ -112,8 +112,8 @@
 
 .carousel-gold-card:focus,
 .carousel-gold-card:hover {
-  box-shadow: 0 24px 64px 0 #647dee88, 0 2px 16px 0 #000a;
-  border: 4px solid #647dee;
+  box-shadow: 0 24px 64px 0 #00000088, 0 2px 16px 0 #000a;
+  border: 4px solid #ffffff;
   outline: none;
   transform: translateY(-12px) scale(1.04);
 }
@@ -124,14 +124,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 350px;
+  min-height: 250px;
   border-bottom: 4px solid #e0c3fc;
 }
 
 .carousel-gold-img {
   width: 100%;
-  height: 350px;
-  object-fit: cover;
+  height: 600px;
+
   border-radius: 40px 40px 0 0;
   box-shadow: 0 2px 24px #7f53acaa;
 }
@@ -169,7 +169,7 @@
 }
 
 .carousel-gold-event-btn {
-  background: linear-gradient(90deg, #7f53ac 60%, #647dee 100%);
+  background: linear-gradient(90deg, #4c0097 60%, #3f0172 100%);
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -234,7 +234,7 @@
   width: 20px;
   height: 20px;
   border-radius: 50%;
-  border: 3px solid #7f53ac;
+  border: 3px solid #000000;
   background: #fff;
   cursor: pointer;
   transition: background 0.3s, border 0.3s;
@@ -243,7 +243,7 @@
 
 .carousel-gold-dot.active,
 .carousel-gold-dot:hover {
-  background: #7f53ac;
+  background: #000000;
   border: 3px solid #fff;
 }
 
