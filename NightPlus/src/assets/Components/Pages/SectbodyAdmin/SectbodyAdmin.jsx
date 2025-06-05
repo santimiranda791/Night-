@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Swal from "sweetalert2";
 import "../../../../Styles/SectbodyAdmin.css";
 
 export const SectbodyAdmin = () => {
+  const navigate = useNavigate();
+
   // Estado para pestañas
   const [activeTab, setActiveTab] = useState("admins");
 
@@ -76,9 +80,48 @@ export const SectbodyAdmin = () => {
     }
   };
 
+  // Cerrar sesión
+  const handleLogout = () => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: '¿Deseas cerrar sesión?',
+      imageUrl: '/logitopensativo.webp',
+      imageWidth: 130,
+      imageHeight: 130,
+      showCancelButton: true,
+      confirmButtonColor: '#8b08a5',
+      background: '#18122B',
+      color: '#fff',
+      cancelButtonColor: '#6a4ca5',
+      confirmButtonText: 'Sí, cerrar sesión',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        localStorage.clear();
+        Swal.fire({
+          background: '#18122B',
+          color: '#fff',
+          title: 'Sesión cerrada',
+          text: 'Has cerrado sesión correctamente.',
+          imageUrl: '/logitonegro.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          timer: 1200,
+          showConfirmButton: false
+        });
+        setTimeout(() => {
+          navigate('/loginadmin');
+        }, 1200);
+      }
+    });
+  };
+
   return (
     <div className="admin-panel-container">
-      <aside className="sidebar">
+      <aside className="sidebar glass">
+        <div className="logo-container">
+          <img src="/logito.svg" alt="Logo Night+" className="logo-img" />
+        </div>
         <h2>Admin Panel</h2>
         <ul>
           <li
@@ -100,6 +143,13 @@ export const SectbodyAdmin = () => {
             Eventos
           </li>
         </ul>
+        <button
+          className="logout-btn"
+          onClick={handleLogout}
+          title="Cerrar sesión"
+        >
+          <span style={{ fontSize: '1.3em' }}>⎋</span> Cerrar sesión
+        </button>
       </aside>
 
       <main className="main-content">
@@ -147,7 +197,6 @@ export const SectbodyAdmin = () => {
                       >
                         👁
                       </button>
-                      {/* Aquí agregar edición si quieres */}
                       <button
                         className="btn delete"
                         onClick={() => eliminarAdmin(admin.id)}
@@ -178,7 +227,6 @@ export const SectbodyAdmin = () => {
                 <p><b>Nombre:</b> {selectedAdmin.nombre} {selectedAdmin.apellido}</p>
                 <p><b>Correo:</b> {selectedAdmin.correo}</p>
                 <p><b>Última actualización:</b> {selectedAdmin.actualizado}</p>
-                {/* Puedes agregar más campos o editar */}
               </div>
             )}
           </div>
@@ -221,7 +269,7 @@ export const SectbodyAdmin = () => {
                           <img
                             src={d.imagen}
                             alt={d.nombre}
-                            style={{ width: "80px", height: "50px", objectFit: "cover" }}
+                            style={{ width: "80px", height: "50px", objectFit: "cover", borderRadius: "8px", border: "2px solid #8b08a5" }}
                           />
                         ) : (
                           "Sin imagen"
