@@ -67,7 +67,7 @@
   justify-content: center;
   max-width: 100vw;
   margin: 0 auto 2rem auto;
-  width: 700px;
+  width: 750px;
   min-height: 600px;
   user-select: none;
   background: none;
@@ -103,7 +103,7 @@
   border-radius: 40px;
   /* Elimina el margin lateral para evitar espacios */
   box-shadow: 0 12px 48px 0 rgba(100,125,222,0.18), 0 2px 16px 0 rgba(0,0,0,0.25);
-  border: 3px solid #ffffff;
+  border: 2px solid #8b08a5;
   overflow: hidden;
   transition: box-shadow 0.4s, border 0.4s, transform 0.3s;
   position: relative;
@@ -150,10 +150,10 @@
 
 .carousel-gold-info strong {
   font-size: 2.5rem;
-  color: #fff;
+  color: #8b08a5;
   margin-bottom: 0.7rem;
   letter-spacing: 1px;
-  text-shadow: 0 2px 12px #7f53acaa;
+  text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3);
 }
 
 .carousel-gold-date {
@@ -169,7 +169,7 @@
 }
 
 .carousel-gold-event-btn {
-  background: linear-gradient(90deg, #4c0097 60%, #3f0172 100%);
+  background: linear-gradient(90deg, #3f0172 60%, #3f009188 100%);
   color: #fff;
   border: none;
   border-radius: 12px;
@@ -184,9 +184,9 @@
 .carousel-gold-event-btn:hover,
 .carousel-gold-event-btn:focus {
   background: #fff;
-  color: #7f53ac;
+  color: #3f009188;
   outline: none;
-  border: 2px solid #7f53ac;
+  border: 2px solid #3f0172;
 }
 
 /* --- Botones flotantes --- */
@@ -194,13 +194,13 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: #7f53ac;
-  color: #fff;
+  background: #000000;
+  color: #3f0172;
   border: none;
   font-size: 3rem;
   padding: 0.7rem 1.5rem;
   border-radius: 50%;
-  box-shadow: 0 2px 24px #647dee88;
+  box-shadow: 0 4px 24px #6f00ff88;
   cursor: pointer;
   z-index: 20;
   transition: background 0.3s, color 0.3s;
