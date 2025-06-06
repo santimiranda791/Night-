@@ -166,7 +166,7 @@ export const SectbodyAdmin = () => {
                 placeholder="Buscar por nombre o apellido..."
                 value={searchAdmins}
                 onChange={(e) => setSearchAdmins(e.target.value)}
-              />
+                />
             </div>
 
             <table className="admin-table">
