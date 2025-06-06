@@ -47,6 +47,51 @@ export const SectbodyAdmin = () => {
     }
   };
 
+  // --- Agregar evento (discoteca) ---
+  const addEvent = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: 'Añadir Evento',
+      html:
+        '<input id="swal-input1" class="swal2-input" placeholder="NIT">' +
+        '<input id="swal-input2" class="swal2-input" placeholder="Nombre">' +
+        '<input id="swal-input3" class="swal2-input" placeholder="Ubicación">' +
+        '<input id="swal-input4" class="swal2-input" placeholder="Capacidad" type="number">' +
+        '<input id="swal-input5" class="swal2-input" placeholder="Horario">' +
+        '<input id="swal-input6" class="swal2-input" placeholder="Imagen URL (opcional)">',
+      focusConfirm: false,
+      preConfirm: () => {
+        const nit = document.getElementById('swal-input1').value;
+        const nombre = document.getElementById('swal-input2').value;
+        const ubicacion = document.getElementById('swal-input3').value;
+        const capacidad = document.getElementById('swal-input4').value;
+        const horario = document.getElementById('swal-input5').value;
+        const imagen = document.getElementById('swal-input6').value;
+        if (!nit || !nombre || !ubicacion || !capacidad || !horario) {
+          Swal.showValidationMessage('Por favor completa todos los campos requeridos');
+          return;
+        }
+        return { nit, nombre, ubicacion, capacidad, horario, imagen };
+      }
+    });
+
+    if (formValues) {
+      try {
+       const res = await fetch("http://localhost:8080/servicio/guardar", {
+
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formValues)
+        });
+        if (!res.ok) throw new Error("Error al añadir evento");
+        const nuevoEvento = await res.json();
+        setDiscotecas([...discotecas, nuevoEvento]);
+        Swal.fire('Evento añadido', '', 'success');
+      } catch (err) {
+        Swal.fire('Error', err.message, 'error');
+      }
+    }
+  };
+
   useEffect(() => {
     fetchAdmins();
   }, []);
@@ -57,14 +102,14 @@ export const SectbodyAdmin = () => {
     }
   }, [activeTab]);
 
-  // Filtrado admins
+  // Filtrado de administradores
   const filtradosAdmins = admins.filter(
     (a) =>
       a.nombre.toLowerCase().includes(searchAdmins.toLowerCase()) ||
       a.apellido.toLowerCase().includes(searchAdmins.toLowerCase())
   );
 
-  // Acciones admin
+  // Acciones de administrador
   const verAdmin = (admin) => setSelectedAdmin(admin);
   const eliminarAdmin = async (id) => {
     if (!window.confirm("¿Eliminar administrador?")) return;
@@ -166,7 +211,7 @@ export const SectbodyAdmin = () => {
                 placeholder="Buscar por nombre o apellido..."
                 value={searchAdmins}
                 onChange={(e) => setSearchAdmins(e.target.value)}
-                />
+              />
             </div>
 
             <table className="admin-table">
@@ -224,7 +269,9 @@ export const SectbodyAdmin = () => {
             ) : (
               <div>
                 <p><b>ID:</b> {selectedAdmin.id}</p>
-                <p><b>Nombre:</b> {selectedAdmin.nombre} {selectedAdmin.apellido}</p>
+                <p>
+                  <b>Nombre:</b> {selectedAdmin.nombre} {selectedAdmin.apellido}
+                </p>
                 <p><b>Correo:</b> {selectedAdmin.correo}</p>
                 <p><b>Última actualización:</b> {selectedAdmin.actualizado}</p>
               </div>
@@ -234,7 +281,12 @@ export const SectbodyAdmin = () => {
 
         {activeTab === "eventos" && (
           <div>
-            <h2>Eventos (Discotecas)</h2>
+            <header className="topbar">
+              <h2>Eventos (Discotecas)</h2>
+              <button className="btn-add" onClick={addEvent}>
+                + Añadir evento
+              </button>
+            </header>
             {loadingDisco && <p>Cargando discotecas...</p>}
             {errorDisco && <p style={{ color: "red" }}>{errorDisco}</p>}
             {!loadingDisco && !errorDisco && (
@@ -269,7 +321,13 @@ export const SectbodyAdmin = () => {
                           <img
                             src={d.imagen}
                             alt={d.nombre}
-                            style={{ width: "80px", height: "50px", objectFit: "cover", borderRadius: "8px", border: "2px solid #8b08a5" }}
+                            style={{
+                              width: "80px",
+                              height: "50px",
+                              objectFit: "cover",
+                              borderRadius: "8px",
+                              border: "2px solid #8b08a5"
+                            }}
                           />
                         ) : (
                           "Sin imagen"

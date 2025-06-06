@@ -3,17 +3,17 @@
   display: flex;
   height: 100vh;
   font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(120deg, #18122B 60%, #4b145b 100%);
+  background: linear-gradient(120deg, #18122B 60%, #3f0172 100%);
 }
 
 /* SIDEBAR */
 .sidebar {
   width: 260px;
   min-width: 200px;
-  background: linear-gradient(135deg, #18122B 60%, #4b145b 100%);
+  background: linear-gradient(135deg, #18122B 60%, #3f0172 100%);
   color: #fff;
   padding: 2.2rem 1.2rem 1.2rem 1.2rem;
-  box-shadow: 2px 0 24px #4b145b55;
+  box-shadow: 2px 0 24px #3f017255;
   border-radius: 24px 0 24px 0;
   display: flex;
   flex-direction: column;
@@ -21,13 +21,13 @@
   transition: background 0.3s;
   position: relative;
   backdrop-filter: blur(8px);
-  border-right: 3px solid #4b145b;
+  border-right: 3px solid #3f0172;
 }
 
 /* Efecto glass */
 .sidebar.glass {
-  background: linear-gradient(135deg, rgba(24, 18, 43, 0.92) 60%, rgba(75, 20, 91, 0.92) 100%);
-  box-shadow: 0 8px 32px 0 #4b145b55;
+  background: linear-gradient(135deg, rgba(24, 18, 43, 0.92) 60%, rgba(63, 1, 114, 0.92) 100%);
+  box-shadow: 0 8px 32px 0 #3f017255;
   backdrop-filter: blur(10px);
 }
 
@@ -45,8 +45,8 @@
   object-fit: contain;
   border-radius: 50%;
   background: #fff;
-  box-shadow: 0 2px 18px #4b145b55;
-  border: 3px solid #4b145b;
+  box-shadow: 0 2px 18px #3f017255;
+  border: 3px solid #3f0172;
   padding: 7px;
   animation: spin 7s linear infinite;
   transition: box-shadow 0.3s;
@@ -62,8 +62,8 @@
   font-weight: 900;
   letter-spacing: 2px;
   text-align: center;
-  color: #8b08a5;
-  text-shadow: 0 2px 12px #6a4ca5aa;
+  color: #3f0172;
+  text-shadow: 0 2px 12px #3f009188;
   font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
 }
 
@@ -91,17 +91,17 @@
 }
 .sidebar li.active,
 .sidebar li:hover {
-  background: linear-gradient(90deg, #4b145b 70%, #18122B 100%);
+  background: linear-gradient(90deg, #3f0172 70%, #18122B 100%);
   color: #fff;
-  box-shadow: 0 0 16px #4b145b55;
-  border: 2px solid #4b145b;
+  box-shadow: 0 0 16px #3f017255;
+  border: 2px solid #3f0172;
 }
 
 /* BOTÓN CERRAR SESIÓN */
 .logout-btn {
   margin-top: auto;
   width: 100%;
-  background: linear-gradient(90deg, #18122B 60%, #4b145b 100%);
+  background: linear-gradient(90deg, #18122B 60%, #3f0172 100%);
   color: #fff;
   border: none;
   border-radius: 14px;
@@ -109,7 +109,7 @@
   font-size: 1.12rem;
   font-weight: 900;
   cursor: pointer;
-  box-shadow: 0 2px 14px #8b08a544;
+  box-shadow: 0 2px 14px #3f009144;
   transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
   display: flex;
   align-items: center;
@@ -118,11 +118,11 @@
   margin-bottom: 0.5rem;
   letter-spacing: 0.5px;
   font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
-  border: 2px solid #4b145b;
+  border: 2px solid #3f0172;
 }
 .logout-btn:hover {
-  background: linear-gradient(90deg, #4b145b 60%, #18122B 100%);
-  box-shadow: 0 4px 24px #4b145baa;
+  background: linear-gradient(90deg, #3f0172 60%, #18122B 100%);
+  box-shadow: 0 4px 24px #3f0172aa;
   border: 2px solid #fff;
 }
 
@@ -131,7 +131,7 @@
   flex: 1;
   padding: 2.5rem 2rem;
   background: #18122B;
-  box-shadow: 0 0 32px #8b08a544 inset;
+  box-shadow: 0 0 32px #3f009144 inset;
   border-radius: 24px;
   margin: 1.5rem;
   overflow-y: auto;
@@ -148,13 +148,13 @@
 .topbar h1 {
   font-size: 2.1rem;
   font-weight: 900;
-  color: #4b145b;
+  color: #3f0172;
   letter-spacing: 1px;
   font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
   text-shadow: 0 2px 12px #18122Baa;
 }
 .btn-add {
-  background: linear-gradient(90deg, #4b145b 70%, #18122B 100%);
+  background: linear-gradient(90deg, #3f0172 70%, #18122B 100%);
   color: #fff;
   padding: 0.7rem 1.6rem;
   border: none;
@@ -162,14 +162,14 @@
   cursor: pointer;
   font-weight: 900;
   font-size: 1.12rem;
-  box-shadow: 0 4px 12px #8b08a544;
+  box-shadow: 0 4px 12px #3f009144;
   transition: background 0.3s, box-shadow 0.3s;
   font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
-  border: 2px solid #4b145b;
+  border: 2px solid #3f0172;
 }
 .btn-add:hover {
-  background: linear-gradient(90deg, #18122B 70%, #4b145b 100%);
-  box-shadow: 0 6px 18px #4b145baa;
+  background: linear-gradient(90deg, #18122B 70%, #3f0172 100%);
+  box-shadow: 0 6px 18px #3f0172aa;
   color: #fff;
 }
 
@@ -181,7 +181,7 @@
   width: 100%;
   padding: 0.85rem 1.1rem;
   border-radius: 12px;
-  border: 2px solid #8b08a5;
+  border: 2px solid #3f0172;
   font-size: 1.05rem;
   background: #232046;
   color: #fff;
@@ -189,8 +189,8 @@
 }
 .actions-bar input:focus {
   outline: none;
-  border-color: #6a4ca5;
-  box-shadow: 0 0 10px #8b08a588;
+  border-color: #3f0091;
+  box-shadow: 0 0 10px #3f009188;
 }
 
 /* Tabla */
@@ -209,7 +209,7 @@
   color: #fff;
 }
 .admin-table th {
-  background: linear-gradient(90deg, #4b145b 70%, #18122B 100%);
+  background: linear-gradient(90deg, #3f0172 70%, #18122B 100%);
   color: #fff;
   font-weight: 900;
   border-radius: 10px 10px 0 0;
@@ -217,12 +217,12 @@
   padding-bottom: 1.1rem;
   letter-spacing: 0.07em;
   font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
-  border-bottom: 3px solid #4b145b;
+  border-bottom: 3px solid #3f0172;
 }
 .admin-table tbody tr {
   background: rgba(255,255,255,0.04);
   border-radius: 12px;
-  box-shadow: 0 2px 8px #8b08a522;
+  box-shadow: 0 2px 8px #3f009122;
   transition: background-color 0.3s;
 }
 .admin-table tbody tr:hover {
@@ -242,39 +242,39 @@
   cursor: pointer;
   font-weight: 800;
   font-size: 1.05rem;
-  box-shadow: 0 2px 8px #8b08a522;
+  box-shadow: 0 2px 8px #3f009122;
   transition: background 0.3s, box-shadow 0.3s;
   font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
 }
 .btn.view {
-  background: linear-gradient(90deg, #3b1c68 70%, #8b08a5 100%);
+  background: linear-gradient(90deg, #3b1c68 70%, #3f0172 100%);
   color: #fff;
-  border: 2px solid #8b08a5;
+  border: 2px solid #3f0172;
 }
 .btn.view:hover {
-  background: linear-gradient(90deg, #8b08a5 70%, #3b1c68 100%);
-  box-shadow: 0 4px 14px #8b08a5aa;
-  color: #6a4ca5;
+  background: linear-gradient(90deg, #3f0172 70%, #3b1c68 100%);
+  box-shadow: 0 4px 14px #3f0172aa;
+  color: #3f0091;
 }
 .btn.edit {
-  background: linear-gradient(90deg, #8b08a5 70%, #6a4ca5 100%);
+  background: linear-gradient(90deg, #3f0172 70%, #3f0091 100%);
   color: #fff;
-  border: 2px solid #8b08a5;
+  border: 2px solid #3f0172;
 }
 .btn.edit:hover {
-  background: linear-gradient(90deg, #6a4ca5 70%, #8b08a5 100%);
-  box-shadow: 0 4px 14px #6a4ca5aa;
+  background: linear-gradient(90deg, #3f0091 70%, #3f0172 100%);
+  box-shadow: 0 4px 14px #3f0091aa;
   color: #fff;
 }
 .btn.delete {
-  background: linear-gradient(90deg, #e74c3c 70%, #8b08a5 100%);
+  background: linear-gradient(90deg, #e74c3c 70%, #3f0172 100%);
   color: #fff;
   border: 2px solid #e74c3c;
 }
 .btn.delete:hover {
-  background: linear-gradient(90deg, #8b08a5 70%, #e74c3c 100%);
+  background: linear-gradient(90deg, #3f0172 70%, #e74c3c 100%);
   box-shadow: 0 4px 14px #e74c3caa;
-  color: #6a4ca5;
+  color: #3f0091;
 }
 
 /* Scrollbar styling for main content */
@@ -286,6 +286,6 @@
   border-radius: 10px;
 }
 .main-content::-webkit-scrollbar-thumb {
-  background: #8b08a5;
+  background: #3f0172;
   border-radius: 10px;
 }
