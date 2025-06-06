@@ -52,13 +52,21 @@ export const SectbodyAdmin = () => {
     const { value: formValues } = await Swal.fire({
       title: 'Añadir Evento',
       html:
-        '<input id="swal-input1" class="swal2-input" placeholder="NIT">' +
-        '<input id="swal-input2" class="swal2-input" placeholder="Nombre">' +
-        '<input id="swal-input3" class="swal2-input" placeholder="Ubicación">' +
-        '<input id="swal-input4" class="swal2-input" placeholder="Capacidad" type="number">' +
-        '<input id="swal-input5" class="swal2-input" placeholder="Horario">' +
-        '<input id="swal-input6" class="swal2-input" placeholder="Imagen URL (opcional)">',
+        '<input id="swal-input1" class="swal2-input" placeholder="NIT" autocomplete="off"><br>' +
+        '<input id="swal-input2" class="swal2-input" placeholder="Nombre" autocomplete="off"><br>' +
+        '<input id="swal-input3" class="swal2-input" placeholder="Ubicación" autocomplete="off"><br>' +
+        '<input id="swal-input4" class="swal2-input" placeholder="Capacidad" type="number" min="1" autocomplete="off"><br>' +
+        '<input id="swal-input5" class="swal2-input" placeholder="Horario" autocomplete="off"><br>' +
+        '<input id="swal-input6" class="swal2-input" placeholder="Imagen URL (opcional)" autocomplete="off">',
       focusConfirm: false,
+      customClass: {
+        confirmButton: 'swal2-confirm',
+        cancelButton: 'swal2-cancel',
+        popup: 'swal2-popup'
+      },
+      showCancelButton: true,
+      confirmButtonText: 'Guardar',
+      cancelButtonText: 'Cancelar',
       preConfirm: () => {
         const nit = document.getElementById('swal-input1').value;
         const nombre = document.getElementById('swal-input2').value;
@@ -76,8 +84,7 @@ export const SectbodyAdmin = () => {
 
     if (formValues) {
       try {
-       const res = await fetch("http://localhost:8080/servicio/guardar", {
-
+        const res = await fetch("http://localhost:8080/servicio/guardar", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formValues)
