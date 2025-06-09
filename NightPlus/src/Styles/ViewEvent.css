@@ -1,84 +1,160 @@
-.ViewEventDiv {
+/* Fondo desenfocado */
+.background-blur {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  filter: blur(8px) brightness(0.7);
+  z-index: 0;
+}
+
+/* Centrado del contenido */
+.centered-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 4rem;
+  position: relative;
+  z-index: 1;
+}
+
+/* Tarjeta principal */
+.event-card {
   display: flex;
   flex-direction: row;
- margin-left: 20rem;
+  background: rgba(30, 0, 40, 0.92);
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(139,8,165,0.25);
+  overflow: hidden;
+  max-width: 950px;
   width: 100%;
-  height: 100%;
+  min-height: 520px;
+  margin: 2rem 1rem;
 }
 
-h1 {
- 
-  text-align: center;
+.event-info {
+  flex: 1.2;
+  padding: 3rem 2.5rem 3rem 3rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.imgViewEvent {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(139,8,165,0.08);
+  border-left: 2px solid #8b08a5;
+}
+
+.ViewEventImg {
+  width: 90%;
+  max-width: 350px;
+  border-radius: 18px;
+  box-shadow: 0 4px 32px #8b08a5a0;
+  margin: 0;
+}
+
+/* Títulos y textos */
+.event-title {
+  text-align: left;
+  font-size: 2.2rem;
+  color: #e040fb;
+  margin-bottom: 0.5rem;
+  letter-spacing: 1px;
+  text-shadow: 0 2px 8px #8b08a5;
+}
+
+.event-name {
   font-size: 2.5rem;
-  color: #8b08a5;
-  text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3);
-  margin-bottom: 120px;
+  color: #fff;
+  margin-bottom: 1.2rem;
+  text-shadow: 0 2px 8px #8b08a5, 0 0 20px #8b08a5;
 }
 
-p {
- 
-  text-align: center;
-  font-size: 1.2rem;
-  color: #ffffff;
-  margin: 50px 0;
-  
-  
+.event-offer {
+  font-size: 1.3rem;
+  color: #e040fb;
+  margin-bottom: 0.7rem;
+  font-weight: bold;
+  text-align: left;
 }
 
-h2 {
-  margin-top: 6rem;
-  font-size: 3rem;
-  color: #ffffff;
-  margin-bottom: 50px;
-  text-shadow:
-    0 2px 8px #8b08a5,     
-    0 0 20px #8b08a5,        
-    0 1px 0 #8b08a5;        
-  position: relative;
+.event-desc {
+  font-size: 1.1rem;
+  color: #fff;
+  margin-bottom: 1.5rem;
+  text-align: left;
 }
 
-
-h2::after {
-  content: attr(data-reflect) "";
-  display: block;
-  color: #8b08a5;
-  font-size: 3.2rem;
-  opacity: 0.25;
-  transform: scaleY(-1);
-  margin-top: -18px;
-  filter: blur(2px);
-  text-shadow:
-    0 2px 8px #8b08a5,
-    0 0 20px #8b08a5;
-  pointer-events: none;
-  user-select: none;
+/* Botones y formulario */
+.btnReservar, .btnPagar {
+  background: linear-gradient(90deg, #8b08a5 60%, #e040fb 100%);
+  color: #fff;
+  border: none;
+  border-radius: 25px;
+  padding: 12px 32px;
+  font-size: 1.1rem;
+  margin-top: 2rem;
+  cursor: pointer;
+  box-shadow: 0 2px 8px #8b08a5;
+  transition: background 0.3s, transform 0.2s;
 }
 
-.ViewEventImg{
+.btnReservar:hover, .btnPagar:hover {
+  background: linear-gradient(90deg, #e040fb 60%, #8b08a5 100%);
+  transform: scale(1.04);
+}
+
+.formReserva {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: rgba(139, 8, 165, 0.15);
+  padding: 2rem 2.5rem;
+  border-radius: 18px;
+  margin-top: 2rem;
+  box-shadow: 0 4px 24px rgba(139,8,165,0.12);
   width: 100%;
-  height: auto;
-  max-width: 400px;
-  border-radius: 10px;
-  margin-left: 5rem;
-  
+  max-width: 350px;
 }
 
+.formReserva label {
+  color: #fff;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
 
+.formReserva input {
+  margin-top: 0.5rem;
+  padding: 0.7rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #8b08a5;
+  font-size: 1rem;
+  width: 100%;
+  background: #fff;
+  color: #333;
+  margin-bottom: 1.2rem;
+}
 
-
-
+/* Flecha animada */
 .animated-arrow {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin-top: 1.5rem;
-  height: 400px;
+  height: 80px;
   position: relative;
 }
 
 .arrow-body {
   width: 9px;
-  height: 80px;
+  height: 50px;
   background: linear-gradient(180deg, #8b08a5 60%, #000000 100%);
   border-radius: 2px;
   animation: arrow-move 1.2s infinite;

@@ -57,7 +57,7 @@ export const SectbodyAdmin = () => {
         '<input id="swal-input3" class="swal2-input" placeholder="Ubicación" autocomplete="off"><br>' +
         '<input id="swal-input4" class="swal2-input" placeholder="Capacidad" type="number" min="1" autocomplete="off"><br>' +
         '<input id="swal-input5" class="swal2-input" placeholder="Horario" autocomplete="off"><br>' +
-        '<input id="swal-input6" class="swal2-input" placeholder="Imagen URL (opcional)" autocomplete="off">',
+        '<input id="swal-input6" type="file" accept="image/*" style="margin:10px 0 0 0;display:block"/><div style="color:#aaa;font-size:0.9em;margin-bottom:10px;"></div>',
       focusConfirm: false,
       customClass: {
         confirmButton: 'swal2-confirm',
@@ -67,17 +67,30 @@ export const SectbodyAdmin = () => {
       showCancelButton: true,
       confirmButtonText: 'Guardar',
       cancelButtonText: 'Cancelar',
-      preConfirm: () => {
+      preConfirm: async () => {
         const nit = document.getElementById('swal-input1').value;
         const nombre = document.getElementById('swal-input2').value;
         const ubicacion = document.getElementById('swal-input3').value;
         const capacidad = document.getElementById('swal-input4').value;
         const horario = document.getElementById('swal-input5').value;
-        const imagen = document.getElementById('swal-input6').value;
+        const fileInput = document.getElementById('swal-input6');
+        let imagen = "";
+
         if (!nit || !nombre || !ubicacion || !capacidad || !horario) {
           Swal.showValidationMessage('Por favor completa todos los campos requeridos');
           return;
         }
+
+        if (fileInput.files && fileInput.files[0]) {
+          const file = fileInput.files[0];
+          imagen = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = e => resolve(e.target.result);
+            reader.onerror = e => reject(e);
+            reader.readAsDataURL(file);
+          });
+        }
+
         return { nit, nombre, ubicacion, capacidad, horario, imagen };
       }
     });
