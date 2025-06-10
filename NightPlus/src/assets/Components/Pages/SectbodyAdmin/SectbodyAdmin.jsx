@@ -5,26 +5,11 @@ import "../../../../Styles/SectbodyAdmin.css";
 
 export const SectbodyAdmin = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("admins");
-
-  const [admins, setAdmins] = useState([]);
-  const [searchAdmins, setSearchAdmins] = useState("");
-  const [selectedAdmin, setSelectedAdmin] = useState(null);
-
+  const [activeTab, setActiveTab] = useState("perfil");
+  const [currentAdmin, setCurrentAdmin] = useState(null);
   const [discotecas, setDiscotecas] = useState([]);
   const [loadingDisco, setLoadingDisco] = useState(false);
   const [errorDisco, setErrorDisco] = useState(null);
-
-  const fetchAdmins = async () => {
-    try {
-      const res = await fetch("http://localhost:8080/admins");
-      if (!res.ok) throw new Error("Error al obtener administradores");
-      const data = await res.json();
-      setAdmins(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
   const fetchDiscotecas = async () => {
     setLoadingDisco(true);
@@ -51,7 +36,7 @@ export const SectbodyAdmin = () => {
 
   const addEvent = async () => {
     const { value: formValues } = await Swal.fire({
-      title: 'Añadir Evento',
+      title: "Añadir Evento",
       html:
         '<input id="swal-input1" class="swal2-input" placeholder="NIT">' +
         '<input id="swal-input2" class="swal2-input" placeholder="Nombre">' +
@@ -61,29 +46,34 @@ export const SectbodyAdmin = () => {
         '<input id="swal-input6" type="file" accept="image/*" class="swal2-file">',
       focusConfirm: false,
       showCancelButton: true,
-      confirmButtonText: 'Guardar',
-      cancelButtonText: 'Cancelar',
+      confirmButtonText: "Guardar",
+      cancelButtonText: "Cancelar",
       preConfirm: async () => {
-        const nit = document.getElementById('swal-input1').value.trim();
-        const nombre = document.getElementById('swal-input2').value.trim();
-        const ubicacion = document.getElementById('swal-input3').value.trim();
-        const capacidad = document.getElementById('swal-input4').value.trim();
-        const horario = document.getElementById('swal-input5').value.trim();
-        const fileInput = document.getElementById('swal-input6');
+        const nit = document.getElementById("swal-input1").value.trim();
+        const nombre = document.getElementById("swal-input2").value.trim();
+        const ubicacion = document.getElementById("swal-input3").value.trim();
+        const capacidad = document.getElementById("swal-input4").value.trim();
+        const horario = document.getElementById("swal-input5").value.trim();
+        const fileInput = document.getElementById("swal-input6");
         const imagenArchivo = fileInput.files[0];
 
         if (!nit || !nombre || !ubicacion || !capacidad || !horario) {
-          Swal.showValidationMessage('Completa todos los campos');
+          Swal.showValidationMessage("Completa todos los campos");
           return;
         }
-
         let imagenBase64 = null;
         if (imagenArchivo) {
           imagenBase64 = await toBase64(imagenArchivo);
         }
-
-        return { nit, nombre, ubicacion, capacidad: Number(capacidad), horario, imagen: imagenBase64 };
-      }
+        return {
+          nit,
+          nombre,
+          ubicacion,
+          capacidad: Number(capacidad),
+          horario,
+          imagen: imagenBase64,
+        };
+      },
     });
 
     if (formValues) {
@@ -93,19 +83,148 @@ export const SectbodyAdmin = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formValues),
         });
-
         if (!res.ok) throw new Error("No se pudo añadir el evento");
         const nuevo = await res.json();
         setDiscotecas([...discotecas, nuevo]);
-        Swal.fire('¡Guardado!', 'Discoteca añadida correctamente', 'success');
+        Swal.fire("¡Guardado!", "Discoteca añadida correctamente", "success");
       } catch (err) {
-        Swal.fire('Error', err.message, 'error');
+        Swal.fire("Error", err.message, "error");
       }
     }
   };
 
+  // Delete event function
+  const deleteEvent = async (nit) => {
+    const result = await Swal.fire({
+      title: "Confirmar eliminación",
+      text: "¿Estás seguro de eliminar este evento?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+    if (result.isConfirmed) {
+      try {
+        const res = await fetch(
+          `http://localhost:8080/servicio/eliminar/${nit}`,
+          { method: "DELETE" }
+        );
+        if (!res.ok) throw new Error("No se pudo eliminar el evento");
+        setDiscotecas(discotecas.filter((d) => d.nit !== nit));
+        Swal.fire("Eliminado", "El evento ha sido eliminado", "success");
+      } catch (err) {
+        Swal.fire("Error", err.message, "error");
+      }
+    }
+  };
+
+  // Update event function
+  const updateEvent = async (eventData) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Actualizar Evento",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="NIT" value="${eventData.nit}" disabled>
+        <input id="swal-input2" class="swal2-input" placeholder="Nombre" value="${eventData.nombre}">
+        <input id="swal-input3" class="swal2-input" placeholder="Ubicación" value="${eventData.ubicacion}">
+        <input id="swal-input4" class="swal2-input" type="number" placeholder="Capacidad" value="${eventData.capacidad}">
+        <input id="swal-input5" class="swal2-input" placeholder="Horario" value="${eventData.horario}">
+        <input id="swal-input6" type="file" accept="image/*" class="swal2-file">
+      `,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: "Actualizar",
+      cancelButtonText: "Cancelar",
+      preConfirm: async () => {
+        const nombre = document.getElementById("swal-input2").value.trim();
+        const ubicacion = document.getElementById("swal-input3").value.trim();
+        const capacidad = document.getElementById("swal-input4").value.trim();
+        const horario = document.getElementById("swal-input5").value.trim();
+        const fileInput = document.getElementById("swal-input6");
+        const imagenArchivo = fileInput.files[0];
+
+        if (!nombre || !ubicacion || !capacidad || !horario) {
+          Swal.showValidationMessage("Completa todos los campos");
+          return;
+        }
+        let imagenBase64 = null;
+        if (imagenArchivo) {
+          imagenBase64 = await toBase64(imagenArchivo);
+        }
+        return {
+          nombre,
+          ubicacion,
+          capacidad: Number(capacidad),
+          horario,
+          imagen: imagenBase64,
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const res = await fetch(
+          `http://localhost:8080/servicio/actualizar/${eventData.nit}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formValues),
+          }
+        );
+        if (!res.ok) throw new Error("No se pudo actualizar el evento");
+        const updated = await res.json();
+        setDiscotecas(
+          discotecas.map((d) => (d.nit === eventData.nit ? updated : d))
+        );
+        Swal.fire("Actualizado", "Evento actualizado correctamente", "success");
+      } catch (err) {
+        Swal.fire("Error", err.message, "error");
+      }
+    }
+  };
+
+  const updateProfile = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: "Actualizar Información",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="Nombre" value="${currentAdmin.nombre}">
+        <input id="swal-input2" class="swal2-input" placeholder="Apellido" value="${currentAdmin.apellido || ''}">
+        <input id="swal-input3" class="swal2-input" placeholder="Correo" value="${currentAdmin.correo}">
+      `,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: "Actualizar",
+      preConfirm: () => {
+        const nombre = document.getElementById("swal-input1").value.trim();
+        const apellido = document.getElementById("swal-input2").value.trim();
+        const correo = document.getElementById("swal-input3").value.trim();
+        if (!nombre || !correo) {
+          Swal.showValidationMessage("Nombre y Correo son requeridos");
+          return;
+        }
+        return { nombre, apellido, correo };
+      },
+    });
+    if (formValues) {
+      const updatedAdmin = {
+        ...currentAdmin,
+        ...formValues,
+        actualizado: new Date().toLocaleString(),
+      };
+      setCurrentAdmin(updatedAdmin);
+      localStorage.setItem("currentAdmin", JSON.stringify(updatedAdmin));
+      Swal.fire({
+        icon: "success",
+        title: "Actualizado",
+        text: "Información actualizada correctamente",
+      });
+    }
+  };
+
   useEffect(() => {
-    fetchAdmins();
+    const storedUser = localStorage.getItem("currentAdmin");
+    if (storedUser) {
+      setCurrentAdmin(JSON.parse(storedUser));
+    }
   }, []);
 
   useEffect(() => {
@@ -114,58 +233,36 @@ export const SectbodyAdmin = () => {
     }
   }, [activeTab]);
 
-  const filtradosAdmins = admins.filter(
-    (a) =>
-      a.nombre.toLowerCase().includes(searchAdmins.toLowerCase()) ||
-      a.apellido.toLowerCase().includes(searchAdmins.toLowerCase())
-  );
-
-  const verAdmin = (admin) => setSelectedAdmin(admin);
-
-  const eliminarAdmin = async (id) => {
-    if (!window.confirm("¿Eliminar administrador?")) return;
-    try {
-      const res = await fetch(`http://localhost:8080/admins/${id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("No se pudo eliminar");
-      setAdmins(admins.filter((a) => a.id !== id));
-      if (selectedAdmin?.id === id) setSelectedAdmin(null);
-    } catch (err) {
-      alert("Error: " + err.message);
-    }
-  };
-
   const handleLogout = () => {
     Swal.fire({
-      title: '¿Estás seguro?',
-      text: '¿Deseas cerrar sesión?',
-      imageUrl: '/logitopensativo.webp',
+      title: "¿Estás seguro?",
+      text: "¿Deseas cerrar sesión?",
+      imageUrl: "/logitopensativo.webp",
       imageWidth: 130,
       imageHeight: 130,
       showCancelButton: true,
-      confirmButtonColor: '#8b08a5',
-      background: '#18122B',
-      color: '#fff',
-      cancelButtonColor: '#6a4ca5',
-      confirmButtonText: 'Sí, cerrar sesión',
-      cancelButtonText: 'Cancelar'
+      confirmButtonColor: "#8b08a5",
+      background: "#18122B",
+      color: "#fff",
+      cancelButtonColor: "#6a4ca5",
+      confirmButtonText: "Sí, cerrar sesión",
+      cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
         localStorage.clear();
         Swal.fire({
-          background: '#18122B',
-          color: '#fff',
-          title: 'Sesión cerrada',
-          text: 'Has cerrado sesión correctamente.',
-          imageUrl: '/logitonegro.png',
+          background: "#18122B",
+          color: "#fff",
+          title: "Sesión cerrada",
+          text: "Has cerrado sesión correctamente.",
+          imageUrl: "/logitonegro.png",
           imageWidth: 130,
           imageHeight: 130,
           timer: 1200,
-          showConfirmButton: false
+          showConfirmButton: false,
         });
         setTimeout(() => {
-          navigate('/loginadmin');
+          navigate("/loginadmin");
         }, 1200);
       }
     });
@@ -179,88 +276,54 @@ export const SectbodyAdmin = () => {
         </div>
         <h2>Admin Panel</h2>
         <ul>
-          <li className={activeTab === "admins" ? "active" : ""} onClick={() => setActiveTab("admins")}>Administradores</li>
-          <li className={activeTab === "perfil" ? "active" : ""} onClick={() => setActiveTab("perfil")}>Perfil</li>
-          <li className={activeTab === "eventos" ? "active" : ""} onClick={() => setActiveTab("eventos")}>Eventos</li>
+          <li
+            className={activeTab === "perfil" ? "active" : ""}
+            onClick={() => setActiveTab("perfil")}
+          >
+            Perfil
+          </li>
+          <li
+            className={activeTab === "eventos" ? "active" : ""}
+            onClick={() => setActiveTab("eventos")}
+          >
+            Eventos
+          </li>
         </ul>
         <button className="logout-btn" onClick={handleLogout} title="Cerrar sesión">
-          <span style={{ fontSize: '1.3em' }}>⎋</span> Cerrar sesión
+          <span style={{ fontSize: "1.3em" }}>⎋</span> Cerrar sesión
         </button>
       </aside>
 
       <main className="main-content">
-        {activeTab === "admins" && (
-          <>
-            <header className="topbar">
-              <h1>Administradores</h1>
-              <button className="btn-add">+ Añadir nuevo</button>
-            </header>
-            <div className="actions-bar">
-              <input
-                type="text"
-                placeholder="Buscar por nombre o apellido..."
-                value={searchAdmins}
-                onChange={(e) => setSearchAdmins(e.target.value)}
-              />
-            </div>
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>Acción</th>
-                  <th>ID</th>
-                  <th>Nombre</th>
-                  <th>Apellido</th>
-                  <th>Correo</th>
-                  <th>Actualizado</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtradosAdmins.length === 0 ? (
-                  <tr><td colSpan="6" style={{ textAlign: "center" }}>No hay administradores que coincidan.</td></tr>
-                ) : (
-                  filtradosAdmins.map((admin) => (
-                    <tr key={admin.id}>
-                      <td>
-                        <button className="btn view" onClick={() => verAdmin(admin)}>👁</button>
-                        <button className="btn delete" onClick={() => eliminarAdmin(admin.id)}>❌</button>
-                      </td>
-                      <td>{admin.id}</td>
-                      <td>{admin.nombre}</td>
-                      <td>{admin.apellido}</td>
-                      <td>{admin.correo}</td>
-                      <td>{admin.actualizado}</td>
-                    </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </>
-        )}
-
         {activeTab === "perfil" && (
-          <div>
+          <div className="profile-container">
             <h2>Perfil del Administrador</h2>
-            {!selectedAdmin ? (
-              <p>Selecciona un administrador en la pestaña "Administradores" para ver su perfil.</p>
-            ) : (
-              <div>
-                <p><b>ID:</b> {selectedAdmin.id}</p>
-                <p><b>Nombre:</b> {selectedAdmin.nombre} {selectedAdmin.apellido}</p>
-                <p><b>Correo:</b> {selectedAdmin.correo}</p>
-                <p><b>Última actualización:</b> {selectedAdmin.actualizado}</p>
+            {currentAdmin ? (
+              <div className="profile-card">
+                <p><b>ID:</b> {currentAdmin.id}</p>
+                <p><b>Nombre:</b> {currentAdmin.nombre} {currentAdmin.apellido}</p>
+                <p><b>Correo:</b> {currentAdmin.correo}</p>
+                <p><b>Última actualización:</b> {currentAdmin.actualizado || "N/A"}</p>
+                <button className="btn-update" onClick={updateProfile}>
+                  Actualizar información
+                </button>
               </div>
+            ) : (
+              <p className="no-info">No se encontró información del usuario logueado.</p>
             )}
           </div>
         )}
 
         {activeTab === "eventos" && (
-          <div>
+          <div className="events-container">
             <header className="topbar">
               <h2>Eventos (Discotecas)</h2>
-              <button className="btn-add" onClick={addEvent}>+ Añadir evento</button>
+              <button className="btn-add" onClick={addEvent}>
+                + Añadir evento
+              </button>
             </header>
             {loadingDisco && <p>Cargando discotecas...</p>}
-            {errorDisco && <p style={{ color: "red" }}>{errorDisco}</p>}
+            {errorDisco && <p className="error-text">{errorDisco}</p>}
             {!loadingDisco && !errorDisco && (
               <table className="admin-table">
                 <thead>
@@ -271,11 +334,16 @@ export const SectbodyAdmin = () => {
                     <th>Capacidad</th>
                     <th>Horario</th>
                     <th>Imagen</th>
+                    <th>Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
                   {discotecas.length === 0 ? (
-                    <tr><td colSpan="6" style={{ textAlign: "center" }}>No hay discotecas disponibles.</td></tr>
+                    <tr>
+                      <td colSpan="7" style={{ textAlign: "center" }}>
+                        No hay discotecas disponibles.
+                      </td>
+                    </tr>
                   ) : (
                     discotecas.map((d) => (
                       <tr key={d.nit}>
@@ -294,10 +362,20 @@ export const SectbodyAdmin = () => {
                                 height: "50px",
                                 objectFit: "cover",
                                 borderRadius: "8px",
-                                border: "2px solid #8b08a5"
+                                border: "2px solid #8b08a5",
                               }}
                             />
-                          ) : "Sin imagen"}
+                          ) : (
+                            "Sin imagen"
+                          )}
+                        </td>
+                        <td>
+                          <button className="btn edit" onClick={() => updateEvent(d)}>
+                            Actualizar
+                          </button>
+                          <button className="btn delete" onClick={() => deleteEvent(d.nit)}>
+                            Eliminar
+                          </button>
                         </td>
                       </tr>
                     ))

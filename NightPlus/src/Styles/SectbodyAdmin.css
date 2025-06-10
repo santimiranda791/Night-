@@ -1,4 +1,4 @@
-/* Layout general */
+/* Layout General */
 .admin-panel-container {
   display: flex;
   height: 100vh;
@@ -23,15 +23,13 @@
   backdrop-filter: blur(8px);
   border-right: 3px solid #3f0172;
 }
-
-/* Efecto glass */
 .sidebar.glass {
   background: linear-gradient(135deg, rgba(24, 18, 43, 0.92) 60%, rgba(63, 1, 114, 0.92) 100%);
   box-shadow: 0 8px 32px 0 #3f017255;
   backdrop-filter: blur(10px);
 }
 
-/* LOGO animado */
+/* LOGO */
 .logo-container {
   display: flex;
   justify-content: center;
@@ -52,8 +50,8 @@
   transition: box-shadow 0.3s;
 }
 @keyframes spin {
-  from { transform: rotate(0deg);}
-  to { transform: rotate(360deg);}
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
 }
 
 .sidebar h2 {
@@ -64,10 +62,8 @@
   text-align: center;
   color: #3f0172;
   text-shadow: 0 2px 12px #3f009188;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
 }
 
-/* Menú */
 .sidebar ul {
   list-style: none;
   padding: 0;
@@ -86,7 +82,6 @@
   transition: background 0.3s, color 0.3s, box-shadow 0.3s, border 0.3s;
   user-select: none;
   letter-spacing: 0.5px;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
   border: 2px solid transparent;
 }
 .sidebar li.active,
@@ -97,7 +92,7 @@
   border: 2px solid #3f0172;
 }
 
-/* BOTÓN CERRAR SESIÓN */
+/* Logout Button */
 .logout-btn {
   margin-top: auto;
   width: 100%;
@@ -117,7 +112,6 @@
   gap: 0.7rem;
   margin-bottom: 0.5rem;
   letter-spacing: 0.5px;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
   border: 2px solid #3f0172;
 }
 .logout-btn:hover {
@@ -150,7 +144,6 @@
   font-weight: 900;
   color: #3f0172;
   letter-spacing: 1px;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
   text-shadow: 0 2px 12px #18122Baa;
 }
 .btn-add {
@@ -164,13 +157,11 @@
   font-size: 1.12rem;
   box-shadow: 0 4px 12px #3f009144;
   transition: background 0.3s, box-shadow 0.3s;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
   border: 2px solid #3f0172;
 }
 .btn-add:hover {
   background: linear-gradient(90deg, #18122B 70%, #3f0172 100%);
   box-shadow: 0 6px 18px #3f0172aa;
-  color: #fff;
 }
 
 /* Buscador */
@@ -203,20 +194,16 @@
 .admin-table th,
 .admin-table td {
   padding: 0.85rem 1.1rem;
-  text-align: left;
-  border-bottom: none;
   font-size: 1.05rem;
   color: #fff;
 }
 .admin-table th {
   background: linear-gradient(90deg, #3f0172 70%, #18122B 100%);
-  color: #fff;
   font-weight: 900;
   border-radius: 10px 10px 0 0;
   padding-top: 1.1rem;
   padding-bottom: 1.1rem;
   letter-spacing: 0.07em;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
   border-bottom: 3px solid #3f0172;
 }
 .admin-table tbody tr {
@@ -229,7 +216,6 @@
   background: #232046;
 }
 .admin-table tbody td {
-  border-bottom: none;
   vertical-align: middle;
 }
 
@@ -244,40 +230,33 @@
   font-size: 1.05rem;
   box-shadow: 0 2px 8px #3f009122;
   transition: background 0.3s, box-shadow 0.3s;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
 }
 .btn.view {
   background: linear-gradient(90deg, #3b1c68 70%, #3f0172 100%);
-  color: #fff;
   border: 2px solid #3f0172;
 }
 .btn.view:hover {
   background: linear-gradient(90deg, #3f0172 70%, #3b1c68 100%);
   box-shadow: 0 4px 14px #3f0172aa;
-  color: #3f0091;
 }
 .btn.edit {
   background: linear-gradient(90deg, #3f0172 70%, #3f0091 100%);
-  color: #fff;
   border: 2px solid #3f0172;
 }
 .btn.edit:hover {
   background: linear-gradient(90deg, #3f0091 70%, #3f0172 100%);
   box-shadow: 0 4px 14px #3f0091aa;
-  color: #fff;
 }
 .btn.delete {
   background: linear-gradient(90deg, #e74c3c 70%, #3f0172 100%);
-  color: #fff;
   border: 2px solid #e74c3c;
 }
 .btn.delete:hover {
   background: linear-gradient(90deg, #3f0172 70%, #e74c3c 100%);
   box-shadow: 0 4px 14px #e74c3caa;
-  color: #3f0091;
 }
 
-/* Scrollbar styling for main content */
+/* Scrollbar for main content */
 .main-content::-webkit-scrollbar {
   width: 8px;
 }
@@ -290,7 +269,7 @@
   border-radius: 10px;
 }
 
-/* SweetAlert2 custom styles para agregar evento */
+/* SweetAlert2 Custom Styles */
 .swal2-popup {
   background: linear-gradient(120deg, #18122B 60%, #3f0172 100%) !important;
   color: #fff !important;
@@ -298,7 +277,6 @@
   font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
   box-shadow: 0 4px 32px #3f017288 !important;
 }
-
 .swal2-input {
   background: #232046 !important;
   color: #fff !important;
@@ -306,52 +284,136 @@
   border-radius: 12px !important;
   font-size: 1.05rem !important;
   margin-bottom: 10px !important;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
   box-shadow: 0 2px 8px #3f009122 !important;
   transition: border-color 0.3s, box-shadow 0.3s;
 }
-
 .swal2-input:focus {
   border-color: #3f0091 !important;
   box-shadow: 0 0 10px #3f009188 !important;
   outline: none !important;
 }
-
 .swal2-confirm {
   background: linear-gradient(90deg, #3f0172 70%, #18122B 100%) !important;
   color: #fff !important;
   border-radius: 12px !important;
   font-weight: 900 !important;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
   border: 2px solid #3f0172 !important;
   box-shadow: 0 4px 12px #3f009144 !important;
   transition: background 0.3s, box-shadow 0.3s;
 }
-
 .swal2-confirm:hover {
   background: linear-gradient(90deg, #18122B 70%, #3f0172 100%) !important;
   border: 2px solid #fff !important;
 }
-
 .swal2-cancel {
   background: linear-gradient(90deg, #232046 70%, #3f0172 100%) !important;
   color: #fff !important;
   border-radius: 12px !important;
   font-weight: 900 !important;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
   border: 2px solid #3f0172 !important;
   box-shadow: 0 4px 12px #3f009144 !important;
   transition: background 0.3s, box-shadow 0.3s;
 }
-
 .swal2-cancel:hover {
   background: linear-gradient(90deg, #3f0172 70%, #232046 100%) !important;
   border: 2px solid #fff !important;
 }
-
-/* Personaliza el fondo oscuro detrás del modal SweetAlert2 */
+/* Fondo oscuro detrás del modal SweetAlert2 */
 .swal2-container.swal2-backdrop-show, 
 .swal2-container.swal2-noanimation {
-  background: rgba(24, 18, 43, 0.85) !important; /* Cambia el color y opacidad aquí */
-  backdrop-filter: blur(2px); /* Opcional: agrega un leve blur */
+  background: rgba(24, 18, 43, 0.85) !important;
+  backdrop-filter: blur(2px);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.logout-btn {
+    background: linear-gradient(90deg, #232046 70%, #3f0172 100%) !important;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  color: #fff;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: auto;
+}
+
+
+
+.profile-container,
+.events-container {
+  background: #000000;
+  padding: 30px;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.profile-container h2,
+.events-container h2 {
+  margin-bottom: 20px;
+  color: #ffffff;
+}
+
+.profile-card {
+  border: 1px solid #000000;
+  padding: 20px;
+  border-radius: 8px;
+  background: #000000;
+}
+
+.profile-card p {
+  margin: 10px 0;
+  font-size: 1em;
+  color: #ffffff;
+}
+
+.btn-update,
+.btn-add {
+  background: #8b08a5;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 20px;
+  font-weight: bold;
+  transition: background 0.3s;
+}
+
+.btn-update:hover,
+.btn-add:hover {
+  background: #70067f;
+}
+
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 12px 8px;
+  border: 1px solid #000000;
+  text-align: center;
+}
+
+.admin-table th {
+  background: #8b08a5;
+  color: #fff;
+}
+
+.error-text {
+  color: red;
+  font-weight: bold;
+  text-align: center;
 }

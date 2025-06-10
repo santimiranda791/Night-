@@ -63,10 +63,16 @@ export const StartSessionAdmin = () => {
         showConfirmButton: false
       });
 
-      localStorage.setItem('usuarioAdmin', data.usuario || '');
-      localStorage.setItem('nombreAdmin', data.nombre || '');
-      localStorage.setItem('correoAdmin', data.correo || '');
-      localStorage.setItem('token', data.token || '');
+     // Después de obtener 'data' en el handleSubmit:
+const currentAdmin = {
+    id: data.id,             // Asegúrate de que 'data' tenga una propiedad 'id' o usa otra propiedad que identifique al admin.
+    usuario: data.usuario || '',
+    nombre: data.nombre || '',
+    correo: data.correo || '',
+    token: data.token || '',
+};
+
+localStorage.setItem('currentAdmin', JSON.stringify(currentAdmin));
 
       setTimeout(() => {
         navigate('/PrincipalAdmin');
