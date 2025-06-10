@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Header } from '../../Header/Header'
+import { NavLink } from 'react-router-dom'
 import '../../../../Styles/ViewEvent.css'
 
 export const ViewEvent = () => {
@@ -57,9 +58,11 @@ export const ViewEvent = () => {
                     required
                   />
                 </label>
-                <button type="submit" className="btnPagar">
-                  Ir a pagar
-                </button>
+                <NavLink to="/mapa">
+                  <button type="button" className="btnPagar">
+                    Pagar
+                  </button>
+                </NavLink>
               </form>
             )}
           </div>
