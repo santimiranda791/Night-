@@ -1,21 +1,38 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Header } from '../../Header/Header'
 import { EventCard } from '../../EventCard/EventCard'
-
-const events = [
-  {
-    id: 1,
-    date: 'VIERNES 09 MAYO',
-    title: 'Noche de Chicas',
-    description: 'Evento Oficial De Chicas: ¡Combo de 5 Amigas NO SE COBRA COVER!',
-    club: 'Discoteca Tropikal-Club',
-    image: '/card.png',
-    mapRoute: '/mapa'
-  },
-  // Puedes agregar más eventos aquí
-]
+import Swal from 'sweetalert2'
 
 export const Eventos = () => {
+  const [events, setEvents] = useState([])
+
+  useEffect(() => {
+  fetch('http://localhost:8080/servicio/eventos-list')
+    .then(response => {
+      if (!response.ok) {
+        throw new Error('Error al cargar eventos')
+      }
+      return response.json()
+    })
+    .then(data => {
+      const eventos = data.map(evento => ({
+        id: evento.idEvento,
+        date: `${evento.fecha} ${evento.hora}`, // usa fecha y hora reales
+        title: evento.nombreEvento, // campo correcto
+        description: evento.descripcion, // usa la descripción real
+        club: evento.discoteca?.nombre || 'Sin discoteca', // asegurarse que discoteca no sea null
+        image: evento.discoteca?.imagen || '/card.png',
+        mapRoute: '/mapa'
+      }))
+      setEvents(eventos)
+    })
+    .catch(error => {
+      Swal.fire('Error', 'No se pudieron cargar los eventos', 'error')
+      console.error(error)
+    })
+}, [])
+
+
   return (
     <>
       <Header />
