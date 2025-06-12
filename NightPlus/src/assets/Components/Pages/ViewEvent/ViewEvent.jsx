@@ -58,7 +58,7 @@ export const ViewEvent = () => {
                     required
                   />
                 </label>
-                <NavLink to="/mapa">
+                <NavLink to="/mapa  uede horizontal y ahi se ve muy fea porque la imagen esta">
                   <button type="button" className="btnPagar">
                     Pagar
                   </button>
