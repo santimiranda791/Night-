@@ -1,29 +1,37 @@
 import React, { useState } from 'react';
 
-export const CarritoCompra = ({ zona, onEliminar }) => {
-  const [cantidad, setCantidad] = useState(1);
-
-  // Extraer número de la cadena de precio y convertirlo a número
-const precioUnitario = parseFloat(
-  zona.precio
-    .replace(/[^0-9,.-]+/g, '') // elimina símbolos de moneda y espacios
-    .replace(/\./g, '')         // elimina punto de separador de miles
-    .replace(',', '.')          // convierte la coma decimal en punto
-);
-  const total = precioUnitario * cantidad;
-
+export const CarritoCompra = ({ carrito, onEliminarZona }) => {
   const formatearPrecio = (valor) =>
     new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
 
-  const aumentarCantidad = () => {
-    setCantidad(cantidad + 1);
+  const parsearPrecio = (precioStr) =>
+    parseFloat(
+      precioStr
+        .replace(/[^0-9,.-]+/g, '')
+        .replace(/\./g, '')
+        .replace(',', '.')
+    );
+
+  const [cantidades, setCantidades] = useState(
+    carrito.reduce((acc, zona, i) => ({ ...acc, [i]: 1 }), {})
+  );
+
+  const aumentarCantidad = (index) => {
+    setCantidades((prev) => ({ ...prev, [index]: prev[index] + 1 }));
   };
 
-  const disminuirCantidad = () => {
-    if (cantidad > 1) {
-      setCantidad(cantidad - 1);
+  const disminuirCantidad = (index) => {
+    if (cantidades[index] > 1) {
+      setCantidades((prev) => ({ ...prev, [index]: prev[index] - 1 }));
     }
   };
+
+  const calcularTotalZona = (index, precioUnitario) => precioUnitario * cantidades[index];
+
+  const totalGeneral = carrito.reduce((acc, zona, i) => {
+    const precioUnitario = parsearPrecio(zona.precio);
+    return acc + calcularTotalZona(i, precioUnitario);
+  }, 0);
 
   return (
     <div style={{
@@ -32,54 +40,60 @@ const precioUnitario = parseFloat(
       marginTop: '20px',
       backgroundColor: '#fff',
       borderRadius: '8px',
-      width: '300px',
+      width: '320px',
       fontFamily: 'Arial, sans-serif'
     }}>
-      <h3>Carrito (1)</h3>
+      <h3>Carrito ({carrito.length})</h3>
 
-      <div style={{ borderLeft: '4px solid orange', paddingLeft: '10px' }}>
-        <div style={{ fontSize: '12px', color: '#555' }}>Sector</div>
-        <div style={{ fontWeight: 'bold' }}>{zona.nombre}</div>
-        <div style={{ marginTop: '5px', fontSize: '12px', color: '#777' }}>{zona.tipo}</div>
-        <div style={{ fontSize: '16px', fontWeight: 'bold', marginTop: '5px' }}>
-          {formatearPrecio(precioUnitario)}
-        </div>
+      {carrito.map((zona, index) => {
+        const precioUnitario = parsearPrecio(zona.precio);
+        const totalZona = calcularTotalZona(index, precioUnitario);
 
-        <div style={{
-          marginTop: '10px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '10px'
-        }}>
-          <button onClick={disminuirCantidad} style={boton}>-</button>
-          <input
-            type="number"
-            value={cantidad}
-            readOnly
-            style={{ width: '60px', textAlign: 'center' }}
-          />
-          <button onClick={aumentarCantidad} style={boton}>+</button>
-        </div>
+        return (
+          <div key={index} style={{ borderLeft: '4px solid orange', paddingLeft: '10px', marginBottom: '16px' }}>
+            <div style={{ fontSize: '12px', color: '#555' }}>Sector</div>
+            <div style={{ fontWeight: 'bold' }}>{zona.nombre}</div>
+            <div style={{ marginTop: '5px', fontSize: '12px', color: '#777' }}>{zona.tipo}</div>
+            <div style={{ fontSize: '16px', fontWeight: 'bold', marginTop: '5px' }}>
+              {formatearPrecio(precioUnitario)}
+            </div>
 
-        <div
-          style={{ marginTop: '10px', color: 'red', cursor: 'pointer' }}
-          onClick={onEliminar}
-        >
-          🗑️ Eliminar del carrito
-        </div>
-      </div>
+            <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <button onClick={() => disminuirCantidad(index)} style={boton}>-</button>
+              <input
+                type="number"
+                value={cantidades[index]}
+                readOnly
+                style={{ width: '60px', textAlign: 'center' }}
+              />
+              <button onClick={() => aumentarCantidad(index)} style={boton}>+</button>
+            </div>
+
+            <div
+              style={{ marginTop: '10px',  color: "#18122B", cursor: 'pointer' }}
+              onClick={() => onEliminarZona(index)}
+            >
+              🗑️ Eliminar del carrito
+            </div>
+
+            <div style={{ marginTop: '10px', fontWeight: 'bold' }}>
+              Total: {formatearPrecio(totalZona)}
+            </div>
+          </div>
+        );
+      })}
 
       <hr style={{ margin: '20px 0' }} />
 
       <div style={{ display: 'flex', justifyContent: 'space-between', fontWeight: 'bold' }}>
-        <span>Total</span>
-        <span>{formatearPrecio(total)}</span>
+        <span>Total general</span>
+        <span>{formatearPrecio(totalGeneral)}</span>
       </div>
 
       <button style={{
         marginTop: '10px',
         width: '100%',
-        backgroundColor: '#f50057',
+        backgroundColor: 'white',
         color: '#fff',
         padding: '10px',
         border: 'none',
@@ -98,7 +112,7 @@ const boton = {
   height: '32px',
   fontSize: '18px',
   fontWeight: 'bold',
-  backgroundColor: '#f3f4f6',
+  backgroundColor: 'black',
   border: '1px solid #ccc',
   borderRadius: '4px',
   cursor: 'pointer'

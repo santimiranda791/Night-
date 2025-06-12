@@ -21,14 +21,12 @@ const ZonaTooltip = ({ nombre, precio, tipo }) => {
         borderTopLeftRadius: '8px',
         borderTopRightRadius: '8px'
       }} />
-
       <div style={{ padding: '10px' }}>
         <div style={{ fontSize: '12px', color: '#444' }}>Sector</div>
         <div style={{ fontSize: '15px', fontWeight: 'bold' }}>{nombre}</div>
         <div style={{ fontSize: '12px', marginTop: '8px' }}>{tipo}</div>
         <div style={{ fontSize: '16px', fontWeight: 'bold', color: '#000' }}>{precio}</div>
       </div>
-
       <div style={{
         position: 'absolute',
         bottom: '-10px',
