@@ -25,7 +25,7 @@ export const Eventos = () => {
         mapRoute: '/mapa'
       }))
       setEvents(eventos)
-    })
+    })  
     .catch(error => {
       Swal.fire('Error', 'No se pudieron cargar los eventos', 'error')
       console.error(error)

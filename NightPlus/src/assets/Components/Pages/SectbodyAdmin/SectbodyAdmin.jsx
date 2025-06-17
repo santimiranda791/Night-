@@ -7,10 +7,18 @@ export const SectbodyAdmin = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("perfil");
   const [currentAdmin, setCurrentAdmin] = useState(null);
+
+  // Discotecas
   const [discotecas, setDiscotecas] = useState([]);
   const [loadingDisco, setLoadingDisco] = useState(false);
   const [errorDisco, setErrorDisco] = useState(null);
 
+  // Eventos
+  const [eventos, setEventos] = useState([]);
+  const [loadingEventos, setLoadingEventos] = useState(false);
+  const [errorEventos, setErrorEventos] = useState(null);
+
+  // --- DISCOTECAS CRUD ---
   const fetchDiscotecas = async () => {
     setLoadingDisco(true);
     setErrorDisco(null);
@@ -34,9 +42,9 @@ export const SectbodyAdmin = () => {
       reader.onerror = (error) => reject(error);
     });
 
-  const addEvent = async () => {
+  const addDiscoteca = async () => {
     const { value: formValues } = await Swal.fire({
-      title: "Añadir Evento",
+      title: "Añadir Discoteca",
       html:
         '<input id="swal-input1" class="swal2-input" placeholder="NIT">' +
         '<input id="swal-input2" class="swal2-input" placeholder="Nombre">' +
@@ -83,7 +91,7 @@ export const SectbodyAdmin = () => {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(formValues),
         });
-        if (!res.ok) throw new Error("No se pudo añadir el evento");
+        if (!res.ok) throw new Error("No se pudo añadir la discoteca");
         const nuevo = await res.json();
         setDiscotecas([...discotecas, nuevo]);
         Swal.fire("¡Guardado!", "Discoteca añadida correctamente", "success");
@@ -93,11 +101,10 @@ export const SectbodyAdmin = () => {
     }
   };
 
-  // Delete event function
-  const deleteEvent = async (nit) => {
+  const deleteDiscoteca = async (nit) => {
     const result = await Swal.fire({
       title: "Confirmar eliminación",
-      text: "¿Estás seguro de eliminar este evento?",
+      text: "¿Estás seguro de eliminar esta discoteca?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
@@ -109,25 +116,24 @@ export const SectbodyAdmin = () => {
           `http://localhost:8080/servicio/eliminar/${nit}`,
           { method: "DELETE" }
         );
-        if (!res.ok) throw new Error("No se pudo eliminar el evento");
+        if (!res.ok) throw new Error("No se pudo eliminar la discoteca");
         setDiscotecas(discotecas.filter((d) => d.nit !== nit));
-        Swal.fire("Eliminado", "El evento ha sido eliminado", "success");
+        Swal.fire("Eliminado", "La discoteca ha sido eliminada", "success");
       } catch (err) {
         Swal.fire("Error", err.message, "error");
       }
     }
   };
 
-  // Update event function
-  const updateEvent = async (eventData) => {
+  const updateDiscoteca = async (discotecaData) => {
     const { value: formValues } = await Swal.fire({
-      title: "Actualizar Evento",
+      title: "Actualizar Discoteca",
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="NIT" value="${eventData.nit}" disabled>
-        <input id="swal-input2" class="swal2-input" placeholder="Nombre" value="${eventData.nombre}">
-        <input id="swal-input3" class="swal2-input" placeholder="Ubicación" value="${eventData.ubicacion}">
-        <input id="swal-input4" class="swal2-input" type="number" placeholder="Capacidad" value="${eventData.capacidad}">
-        <input id="swal-input5" class="swal2-input" placeholder="Horario" value="${eventData.horario}">
+        <input id="swal-input1" class="swal2-input" placeholder="NIT" value="${discotecaData.nit}" disabled>
+        <input id="swal-input2" class="swal2-input" placeholder="Nombre" value="${discotecaData.nombre}">
+        <input id="swal-input3" class="swal2-input" placeholder="Ubicación" value="${discotecaData.ubicacion}">
+        <input id="swal-input4" class="swal2-input" type="number" placeholder="Capacidad" value="${discotecaData.capacidad}">
+        <input id="swal-input5" class="swal2-input" placeholder="Horario" value="${discotecaData.horario}">
         <input id="swal-input6" type="file" accept="image/*" class="swal2-file">
       `,
       focusConfirm: false,
@@ -163,7 +169,115 @@ export const SectbodyAdmin = () => {
     if (formValues) {
       try {
         const res = await fetch(
-          `http://localhost:8080/servicio/actualizar/${eventData.nit}`,
+          `http://localhost:8080/servicio/actualizar/${discotecaData.nit}`,
+          {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formValues),
+          }
+        );
+        if (!res.ok) throw new Error("No se pudo actualizar la discoteca");
+        const updated = await res.json();
+        setDiscotecas(
+          discotecas.map((d) => (d.nit === discotecaData.nit ? updated : d))
+        );
+        Swal.fire("Actualizado", "Discoteca actualizada correctamente", "success");
+      } catch (err) {
+        Swal.fire("Error", err.message, "error");
+      }
+    }
+  };
+
+  // --- EVENTOS CRUD (agregar, actualizar, eliminar) ---
+  const addEvento = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: "Añadir Evento",
+      html:
+        '<input id="swal-input1" class="swal2-input" placeholder="NIT Discoteca">' +
+        '<input id="swal-input2" class="swal2-input" placeholder="Nombre del evento">' +
+        '<input id="swal-input3" class="swal2-input" placeholder="Fecha (YYYY-MM-DD)">' +
+        '<input id="swal-input4" class="swal2-input" placeholder="Hora (HH:MM)">' +
+        '<input id="swal-input5" class="swal2-input" placeholder="Descripción">',
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: "Guardar",
+      cancelButtonText: "Cancelar",
+      preConfirm: () => {
+        const nitDiscoteca = document.getElementById("swal-input1").value.trim();
+        const nombreEvento = document.getElementById("swal-input2").value.trim();
+        const fecha = document.getElementById("swal-input3").value.trim();
+        const hora = document.getElementById("swal-input4").value.trim();
+        const descripcion = document.getElementById("swal-input5").value.trim();
+        if (!nitDiscoteca || !nombreEvento || !fecha || !hora || !descripcion) {
+          Swal.showValidationMessage("Completa todos los campos");
+          return;
+        }
+        return {
+          discoteca: { nit: nitDiscoteca },
+          nombreEvento,
+          fecha,
+          hora,
+          descripcion
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const res = await fetch("http://localhost:8080/servicio/guardar-evento", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formValues),
+        });
+        if (!res.ok) throw new Error("No se pudo añadir el evento");
+        const nuevo = await res.json();
+        setEventos([...eventos, nuevo]);
+        Swal.fire("¡Guardado!", "Evento añadido correctamente", "success");
+      } catch (err) {
+        Swal.fire("Error", err.message, "error");
+      }
+    }
+  };
+
+  const updateEvento = async (eventoData) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Actualizar Evento",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="NIT Discoteca" value="${eventoData.discoteca?.nit || ""}">
+        <input id="swal-input2" class="swal2-input" placeholder="Nombre del evento" value="${eventoData.nombreEvento}">
+        <input id="swal-input3" class="swal2-input" placeholder="Fecha (YYYY-MM-DD)" value="${eventoData.fecha}">
+        <input id="swal-input4" class="swal2-input" placeholder="Hora (HH:MM)" value="${eventoData.hora}">
+        <input id="swal-input5" class="swal2-input" placeholder="Descripción" value="${eventoData.descripcion}">
+      `,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: "Actualizar",
+      cancelButtonText: "Cancelar",
+      preConfirm: () => {
+        const nitDiscoteca = document.getElementById("swal-input1").value.trim();
+        const nombreEvento = document.getElementById("swal-input2").value.trim();
+        const fecha = document.getElementById("swal-input3").value.trim();
+        const hora = document.getElementById("swal-input4").value.trim();
+        const descripcion = document.getElementById("swal-input5").value.trim();
+        if (!nitDiscoteca || !nombreEvento || !fecha || !hora || !descripcion) {
+          Swal.showValidationMessage("Completa todos los campos");
+          return;
+        }
+        return {
+          idEvento: eventoData.idEvento,
+          discoteca: { nit: nitDiscoteca },
+          nombreEvento,
+          fecha,
+          hora,
+          descripcion
+        };
+      },
+    });
+
+    if (formValues) {
+      try {
+        const res = await fetch(
+          "http://localhost:8080/servicio/actualizar-evento",
           {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
@@ -172,8 +286,10 @@ export const SectbodyAdmin = () => {
         );
         if (!res.ok) throw new Error("No se pudo actualizar el evento");
         const updated = await res.json();
-        setDiscotecas(
-          discotecas.map((d) => (d.nit === eventData.nit ? updated : d))
+        setEventos(
+          eventos.map((e) =>
+            (e.idEvento || e.id) === (formValues.idEvento || formValues.id) ? updated : e
+          )
         );
         Swal.fire("Actualizado", "Evento actualizado correctamente", "success");
       } catch (err) {
@@ -182,6 +298,46 @@ export const SectbodyAdmin = () => {
     }
   };
 
+  const deleteEvento = async (idEvento) => {
+    const result = await Swal.fire({
+      title: "Confirmar eliminación",
+      text: "¿Estás seguro de eliminar este evento?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+    if (result.isConfirmed) {
+      try {
+        const res = await fetch(
+          `http://localhost:8080/servicio/eliminar-evento/${idEvento}`,
+          { method: "DELETE" }
+        );
+        if (!res.ok) throw new Error("No se pudo eliminar el evento");
+        setEventos(eventos.filter((e) => (e.idEvento || e.id) !== idEvento));
+        Swal.fire("Eliminado", "El evento ha sido eliminado", "success");
+      } catch (err) {
+        Swal.fire("Error", err.message, "error");
+      }
+    }
+  };
+
+  const fetchEventos = async () => {
+    setLoadingEventos(true);
+    setErrorEventos(null);
+    try {
+      const res = await fetch("http://localhost:8080/servicio/eventos-list");
+      if (!res.ok) throw new Error("Error al obtener eventos");
+      const data = await res.json();
+      setEventos(data);
+    } catch (err) {
+      setErrorEventos(err.message);
+    } finally {
+      setLoadingEventos(false);
+    }
+  };
+
+  // --- PERFIL ---
   const updateProfile = async () => {
     const { value: formValues } = await Swal.fire({
       title: "Actualizar Información",
@@ -228,8 +384,11 @@ export const SectbodyAdmin = () => {
   }, []);
 
   useEffect(() => {
-    if (activeTab === "eventos") {
+    if (activeTab === "discotecas") {
       fetchDiscotecas();
+    }
+    if (activeTab === "eventos") {
+      fetchEventos();
     }
   }, [activeTab]);
 
@@ -283,6 +442,12 @@ export const SectbodyAdmin = () => {
             Perfil
           </li>
           <li
+            className={activeTab === "discotecas" ? "active" : ""}
+            onClick={() => setActiveTab("discotecas")}
+          >
+            Discotecas
+          </li>
+          <li
             className={activeTab === "eventos" ? "active" : ""}
             onClick={() => setActiveTab("eventos")}
           >
@@ -314,12 +479,12 @@ export const SectbodyAdmin = () => {
           </div>
         )}
 
-        {activeTab === "eventos" && (
+        {activeTab === "discotecas" && (
           <div className="events-container">
             <header className="topbar">
-              <h2>Eventos (Discotecas)</h2>
-              <button className="btn-add" onClick={addEvent}>
-                + Añadir evento
+              <h2>Discotecas</h2>
+              <button className="btn-add" onClick={addDiscoteca}>
+                + Añadir discoteca
               </button>
             </header>
             {loadingDisco && <p>Cargando discotecas...</p>}
@@ -370,10 +535,10 @@ export const SectbodyAdmin = () => {
                           )}
                         </td>
                         <td>
-                          <button className="btn edit" onClick={() => updateEvent(d)}>
+                          <button className="btn edit" onClick={() => updateDiscoteca(d)}>
                             Actualizar
                           </button>
-                          <button className="btn delete" onClick={() => deleteEvent(d.nit)}>
+                          <button className="btn delete" onClick={() => deleteDiscoteca(d.nit)}>
                             Eliminar
                           </button>
                         </td>
@@ -385,6 +550,61 @@ export const SectbodyAdmin = () => {
             )}
           </div>
         )}
+
+        {activeTab === "eventos" && (
+          <div className="events-container">
+            <header className="topbar">
+              <h2>Eventos</h2>
+              <button className="btn-add" onClick={addEvento}>
+                + Añadir evento
+              </button>
+            </header>
+            {loadingEventos && <p>Cargando eventos...</p>}
+            {errorEventos && <p className="error-text">{errorEventos}</p>}
+            {!loadingEventos && !errorEventos && (
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>NIT Discoteca</th>
+                    <th>Nombre</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Descripción</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {eventos.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" style={{ textAlign: "center" }}>
+                        No hay eventos disponibles.
+                      </td>
+                    </tr>
+                  ) : (
+                    eventos.map((e) => (
+                      <tr key={e.idEvento || e.id}>
+                        <td>{e.idEvento || e.id}</td>
+                        <td>{e.discoteca?.nit}</td>
+                        <td>{e.nombreEvento}</td>
+                        <td>{e.fecha}</td>
+                        <td>{e.hora}</td>
+                        <td>{e.descripcion}</td>
+                        <td>
+                          <button className="btn edit" onClick={() => updateEvento(e)}>
+                            Actualizar
+                          </button>
+                          <button className="btn delete" onClick={() => deleteEvento(e.idEvento || e.id)}>
+                            Eliminar
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )} </tbody>
+              </table>
+            )}
+          </div>
+         )}
       </main>
     </div>
   );

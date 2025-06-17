@@ -1,12 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PlanoDiscoteca from './PlanoDiscoteca';
-import  {CarritoCompra}  from './CarritoCompra';
+import { CarritoCompra } from './CarritoCompra';
 import { ResumenCompra } from './ResumenCompra';
-
 
 export const MapaDiscoteca = () => {
   const [mostrarPrecios, setMostrarPrecios] = useState(true);
   const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
+  const [evento, setEvento] = useState(null);
+
+  useEffect(() => {
+    fetch('http://localhost:8080/servicio/eventos-list')
+      .then(response => response.json())
+      .then(data => {
+        // Suponiendo que quieres mostrar el primer evento
+        setEvento(data[0]);
+      })
+      .catch(error => {
+        console.error('Error al cargar el evento', error);
+      });
+  }, []);
 
   const handleSeleccionarZona = (zona) => {
     setZonaSeleccionada(zona);
@@ -40,11 +52,24 @@ export const MapaDiscoteca = () => {
           height: '100%'
         }}
       >
-        <h2 style={{ fontSize: '18px', marginBottom: '10px' }}>Pa' Que Retozen - DJ Tian</h2>
-        <p style={{ fontSize: '14px', marginBottom: '10px' }}>
-          13 de jun de 2025, 9:00 p. m. - 14 de jun de 2025, 5:00 a. m.<br />
-          Neiva, Carrera 16 #4156, Comuna 2, Neiva, Huila, Colombia
-        </p>
+        {/* Mostrar datos del evento desde la API */}
+        {evento ? (
+          <>
+            <h2 style={{ fontSize: '18px', marginBottom: '10px' }}>
+              {evento.nombreEvento}
+            </h2>
+
+            <p style={{ fontSize: '14px', marginBottom: '10px' }}>
+              {evento.fecha} {evento.hora}<br /> 
+             
+            </p>
+
+            <p>La fiesta es en:  {evento.discoteca?.nombre || 'Dirección no disponible'}</p>
+            <br />    
+          </>
+        ) : (
+          <p>Cargando evento...</p>
+        )}
 
         {zonaSeleccionada ? (
           <>
@@ -73,8 +98,6 @@ export const MapaDiscoteca = () => {
               🗑️ Eliminar del carrito
             </button>
 
-          
-
             <div style={{ marginTop: '10px', fontSize: '14px', fontWeight: 'bold' }}>
               TOTAL: ${zonaSeleccionada.precio.toLocaleString()}
             </div>
@@ -85,7 +108,7 @@ export const MapaDiscoteca = () => {
                 color: 'white',
                 padding: '10px',
                 border: 'none',
-                borderRadius: '6px',    
+                borderRadius: '6px',
                 cursor: 'pointer',
                 width: '100%',
                 fontWeight: 'bold',
