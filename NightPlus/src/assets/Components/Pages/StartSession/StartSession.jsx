@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import '../../../../Styles/StartSession.css';
 import Swal from 'sweetalert2';
+import { LoadingAlert } from '../../LoadingAlert/LoadingAlert';
 
 export const StartSession = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export const StartSession = () => {
   });
 
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -23,6 +25,7 @@ export const StartSession = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
 
     const payload = {
       usuarioCliente: formData.usuarioCliente,
@@ -60,6 +63,7 @@ export const StartSession = () => {
             text: 'Error al iniciar sesión',
           });
         }
+        setLoading(false);
         return;
       }
 
@@ -96,11 +100,14 @@ export const StartSession = () => {
         title: 'Error de conexión',
         text: 'No se pudo conectar con el servidor',
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="page-container">
+      {loading && <LoadingAlert />}
       <img src="/logito.svg" alt="Logo" className="logo" />
 
       <div className="login-container">
@@ -142,9 +149,9 @@ export const StartSession = () => {
 
           {error && <p className="error-message" style={{ color: 'red' }}>{error}</p>}
 
-          <button type="submit" className="user-profile">
+          <button type="submit" className="user-profile" disabled={loading}>
             <div className="user-profile-inner">
-              <p>Inicia Sesión</p>
+              <p>{loading ? 'Iniciando...' : 'Inicia Sesión'}</p>
             </div>
           </button>
 

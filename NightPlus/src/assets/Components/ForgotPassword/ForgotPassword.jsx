@@ -2,6 +2,7 @@
 import React, { useState } from 'react'
 import Swal from 'sweetalert2'
 import { useNavigate } from 'react-router-dom'
+import { LoadingAlert } from '../LoadingAlert/LoadingAlert'
 
 export const ForgotPassword = () => {
   const [email, setEmail] = useState('')
@@ -66,6 +67,7 @@ export const ForgotPassword = () => {
 
   return (
     <div className="page-container">
+      {loading && <LoadingAlert />}
       <img src="/logito.svg" alt="Logo" className="logo" />
       <div className="login-container">
         <h1 className="login-title">Recuperar Contraseña</h1>

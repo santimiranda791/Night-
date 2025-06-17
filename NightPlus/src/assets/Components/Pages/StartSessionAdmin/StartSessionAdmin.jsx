@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../../../../Styles/StartSessionAdmin.css';
+import { LoadingAlert } from '../../LoadingAlert/LoadingAlert';
 
 export const StartSessionAdmin = () => {
   const navigate = useNavigate();
@@ -12,6 +13,7 @@ export const StartSessionAdmin = () => {
   });
 
   const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -23,6 +25,7 @@ export const StartSessionAdmin = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError(null);
+    setLoading(true);
 
     const payload = {
       usuarioAdmin: formData.usuario,
@@ -46,6 +49,7 @@ export const StartSessionAdmin = () => {
           title: 'Error de inicio',
           text: 'Credenciales inválidas o error del servidor',
         });
+        setLoading(false);
         return;
       }
 
@@ -86,11 +90,14 @@ localStorage.setItem('currentAdmin', JSON.stringify(currentAdmin));
         title: 'Error de conexión',
         text: 'No se pudo conectar al servidor',
       });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="page-container">
+      {loading && <LoadingAlert />}
       <img src="/logito.svg" alt="Logo" className="logo" />
       <div className="login-container">
         <NavLink to="/" className="back-arrow">
@@ -131,9 +138,9 @@ localStorage.setItem('currentAdmin', JSON.stringify(currentAdmin));
 
           {error && <p className="error-message" style={{ color: 'red' }}>{error}</p>}
 
-          <button type="submit" className="user-profile">
+          <button type="submit" className="user-profile" disabled={loading}>
             <div className="user-profile-inner">
-              <p>Inicia Sesión</p>
+              <p>{loading ? 'Iniciando...' : 'Inicia Sesión'}</p>
             </div>
           </button>
 

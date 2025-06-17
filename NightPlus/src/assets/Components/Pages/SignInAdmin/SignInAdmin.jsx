@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../../../../Styles/SignInCliente.css'; // Reutilizamos estilos
+import { LoadingAlert } from '../../LoadingAlert/LoadingAlert';
 
 export const SignInAdmin = () => {
   const [formData, setFormData] = useState({
@@ -101,6 +102,7 @@ export const SignInAdmin = () => {
 
   return (
     <div className="page-container">
+      {loading && <LoadingAlert />}
       <img src="/logito.svg" alt="Logo" className="logo" />
       <div className="login-container">
         <NavLink to="/" className="back-arrow">

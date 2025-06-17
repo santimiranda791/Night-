@@ -5,6 +5,7 @@ import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../../../firebaseConfig/config';
 import Swal from 'sweetalert2';
 import { LoadingContext } from '../../../../Context/LoadingContext';
+import { LoadingAlert } from '../../../LoadingAlert/LoadingAlert';
 
 export const SignInCliente = () => {
   const [formData, setFormData] = useState({
@@ -171,6 +172,7 @@ navigate('/VerifyCode', { state: { email: cliente.correo } });
 
   return (
     <div className="page-container">
+      {loading && <LoadingAlert />}
       <img src="/logito.svg" alt="Logo" className="logo" />
 
       <div className="login-container">
