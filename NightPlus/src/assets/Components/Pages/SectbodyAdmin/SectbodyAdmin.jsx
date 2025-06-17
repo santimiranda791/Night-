@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import "../../../../Styles/SectbodyAdmin.css";
+import "../../../../Styles/SectbodyAdmin.css"; // Asegúrate que esta ruta CSS sea correcta
 
 export const SectbodyAdmin = () => {
   const navigate = useNavigate();
@@ -233,6 +233,13 @@ export const SectbodyAdmin = () => {
         const nuevo = await res.json();
         setEventos([...eventos, nuevo]);
         Swal.fire("¡Guardado!", "Evento añadido correctamente", "success");
+
+        // Despacha el CustomEvent para notificar al Header
+        console.log("SectbodyAdmin: Despachando evento 'newEventAdded' con detalle:", { eventName: nuevo.nombreEvento });
+        window.dispatchEvent(new CustomEvent('newEventAdded', {
+          detail: { eventName: nuevo.nombreEvento }
+        }));
+
       } catch (err) {
         Swal.fire("Error", err.message, "error");
       }
@@ -315,7 +322,7 @@ export const SectbodyAdmin = () => {
         );
         if (!res.ok) throw new Error("No se pudo eliminar el evento");
         setEventos(eventos.filter((e) => (e.idEvento || e.id) !== idEvento));
-        Swal.fire("Eliminado", "El evento ha sido eliminado", "success");
+        Swal.fire("Eliminado", "El evento ha sido eliminada", "success");
       } catch (err) {
         Swal.fire("Error", err.message, "error");
       }
@@ -342,9 +349,9 @@ export const SectbodyAdmin = () => {
     const { value: formValues } = await Swal.fire({
       title: "Actualizar Información",
       html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Nombre" value="${currentAdmin.nombre}">
-        <input id="swal-input2" class="swal2-input" placeholder="Apellido" value="${currentAdmin.apellido || ''}">
-        <input id="swal-input3" class="swal2-input" placeholder="Correo" value="${currentAdmin.correo}">
+        <input id="swal-input1" class="swal2-input" placeholder="Nombre" value="${currentAdmin?.nombre || ''}">
+        <input id="swal-input2" class="swal2-input" placeholder="Apellido" value="${currentAdmin?.apellido || ''}">
+        <input id="swal-input3" class="swal2-input" placeholder="Correo" value="${currentAdmin?.correo || ''}">
       `,
       focusConfirm: false,
       showCancelButton: true,
@@ -408,7 +415,7 @@ export const SectbodyAdmin = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.clear();
+        localStorage.clear(); // Limpia todo el localStorage
         Swal.fire({
           background: "#18122B",
           color: "#fff",
@@ -455,7 +462,7 @@ export const SectbodyAdmin = () => {
           </li>
         </ul>
         <button className="logout-btn" onClick={handleLogout} title="Cerrar sesión">
-          <span style={{ fontSize: "1.3em" }}>⎋</span> Cerrar sesión
+          <span style={{ fontSize: "1.3em" }}>&#x2388;</span> Cerrar sesión
         </button>
       </aside>
 
@@ -502,50 +509,48 @@ export const SectbodyAdmin = () => {
                     <th>Acciones</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {discotecas.length === 0 ? (
-                    <tr>
-                      <td colSpan="7" style={{ textAlign: "center" }}>
-                        No hay discotecas disponibles.
+                <tbody>{discotecas.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: "center" }}>
+                      No hay discotecas disponibles.
+                    </td>
+                  </tr>
+                ) : (
+                  discotecas.map((d) => (
+                    <tr key={d.nit}>
+                      <td>{d.nit}</td>
+                      <td>{d.nombre}</td>
+                      <td>{d.ubicacion}</td>
+                      <td>{d.capacidad}</td>
+                      <td>{d.horario}</td>
+                      <td>
+                        {d.imagen ? (
+                          <img
+                            src={d.imagen}
+                            alt={d.nombre}
+                            style={{
+                              width: "80px",
+                              height: "50px",
+                              objectFit: "cover",
+                              borderRadius: "8px",
+                              border: "2px solid #8b08a5",
+                            }}
+                          />
+                        ) : (
+                          "Sin imagen"
+                        )}
+                      </td>
+                      <td>
+                        <button className="btn edit" onClick={() => updateDiscoteca(d)}>
+                          Actualizar
+                        </button>
+                        <button className="btn delete" onClick={() => deleteDiscoteca(d.nit)}>
+                          Eliminar
+                        </button>
                       </td>
                     </tr>
-                  ) : (
-                    discotecas.map((d) => (
-                      <tr key={d.nit}>
-                        <td>{d.nit}</td>
-                        <td>{d.nombre}</td>
-                        <td>{d.ubicacion}</td>
-                        <td>{d.capacidad}</td>
-                        <td>{d.horario}</td>
-                        <td>
-                          {d.imagen ? (
-                            <img
-                              src={d.imagen}
-                              alt={d.nombre}
-                              style={{
-                                width: "80px",
-                                height: "50px",
-                                objectFit: "cover",
-                                borderRadius: "8px",
-                                border: "2px solid #8b08a5",
-                              }}
-                            />
-                          ) : (
-                            "Sin imagen"
-                          )}
-                        </td>
-                        <td>
-                          <button className="btn edit" onClick={() => updateDiscoteca(d)}>
-                            Actualizar
-                          </button>
-                          <button className="btn delete" onClick={() => deleteDiscoteca(d.nit)}>
-                            Eliminar
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
+                  ))
+                )}</tbody>
               </table>
             )}
           </div>
@@ -574,37 +579,36 @@ export const SectbodyAdmin = () => {
                     <th>Acciones</th>
                   </tr>
                 </thead>
-                <tbody>
-                  {eventos.length === 0 ? (
-                    <tr>
-                      <td colSpan="7" style={{ textAlign: "center" }}>
-                        No hay eventos disponibles.
+                <tbody>{eventos.length === 0 ? (
+                  <tr>
+                    <td colSpan="7" style={{ textAlign: "center" }}>
+                      No hay eventos disponibles.
+                    </td>
+                  </tr>
+                ) : (
+                  eventos.map((e) => (
+                    <tr key={e.idEvento || e.id}>
+                      <td>{e.idEvento || e.id}</td>
+                      <td>{e.discoteca?.nit}</td>
+                      <td>{e.nombreEvento}</td>
+                      <td>{e.fecha}</td>
+                      <td>{e.hora}</td>
+                      <td>{e.descripcion}</td>
+                      <td>
+                        <button className="btn edit" onClick={() => updateEvento(e)}>
+                          Actualizar
+                        </button>
+                        <button className="btn delete" onClick={() => deleteEvento(e.idEvento || e.id)}>
+                          Eliminar
+                        </button>
                       </td>
                     </tr>
-                  ) : (
-                    eventos.map((e) => (
-                      <tr key={e.idEvento || e.id}>
-                        <td>{e.idEvento || e.id}</td>
-                        <td>{e.discoteca?.nit}</td>
-                        <td>{e.nombreEvento}</td>
-                        <td>{e.fecha}</td>
-                        <td>{e.hora}</td>
-                        <td>{e.descripcion}</td>
-                        <td>
-                          <button className="btn edit" onClick={() => updateEvento(e)}>
-                            Actualizar
-                          </button>
-                          <button className="btn delete" onClick={() => deleteEvento(e.idEvento || e.id)}>
-                            Eliminar
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )} </tbody>
+                  ))
+                )}</tbody>
               </table>
             )}
           </div>
-         )}
+        )}
       </main>
     </div>
   );

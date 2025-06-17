@@ -5,7 +5,7 @@ import { signInWithPopup } from 'firebase/auth';
 import { auth, googleProvider } from '../../../../firebaseConfig/config';
 import Swal from 'sweetalert2';
 import { LoadingContext } from '../../../../Context/LoadingContext';
-import { LoadingAlert } from '../../../LoadingAlert/LoadingAlert';
+import { LoadingAlert } from '../../LoadingAlert/LoadingAlert';
 
 export const SignInCliente = () => {
   const [formData, setFormData] = useState({
