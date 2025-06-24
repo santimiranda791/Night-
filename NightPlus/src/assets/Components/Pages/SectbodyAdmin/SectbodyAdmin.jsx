@@ -18,16 +18,54 @@ export const SectbodyAdmin = () => {
   const [loadingEventos, setLoadingEventos] = useState(false);
   const [errorEventos, setErrorEventos] = useState(null);
 
+  // Helper para obtener el token del admin logueado
+  const getToken = () => {
+    const storedUser = localStorage.getItem("currentAdmin");
+    if (storedUser) {
+      const parsedUser = JSON.parse(storedUser);
+      console.log("getToken: Parsed user from localStorage:", parsedUser); // Debug
+      return parsedUser.token;
+    }
+    console.log("getToken: No user found in localStorage."); // Debug
+    return null;
+  };
+
+  // Helper para obtener los encabezados de autorización
+  const getAuthHeaders = () => {
+    const token = getToken();
+    if (token) {
+      console.log("getAuthHeaders: Sending token:", token); // Debug
+      return {
+        Authorization: `Bearer ${token}`,
+      };
+    }
+    console.log("getAuthHeaders: No token available, sending empty headers."); // Debug
+    return {};
+  };
+
   // --- DISCOTECAS CRUD ---
   const fetchDiscotecas = async () => {
     setLoadingDisco(true);
     setErrorDisco(null);
     try {
-      const res = await fetch("http://localhost:8080/servicio/discotecas-list");
-      if (!res.ok) throw new Error("Error al obtener discotecas");
-      const data = await res.json();
+      // CAMBIADO: Ahora llama al endpoint específico de ADMIN
+      const response = await fetch("http://localhost:8080/servicio/admin/discotecas", {
+        headers: getAuthHeaders(),
+      });
+
+      if (response.status === 401 || response.status === 403) {
+        Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
+        handleLogout();
+        return;
+      }
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error al obtener discotecas: ${response.status} ${response.statusText} - ${errorText}`);
+      }
+      const data = await response.json();
       setDiscotecas(data);
     } catch (err) {
+      console.error("Error fetching discotecas:", err);
       setErrorDisco(err.message);
     } finally {
       setLoadingDisco(false);
@@ -74,7 +112,7 @@ export const SectbodyAdmin = () => {
           imagenBase64 = await toBase64(imagenArchivo);
         }
         return {
-          nit,
+          nit: Number(nit),
           nombre,
           ubicacion,
           capacidad: Number(capacidad),
@@ -86,16 +124,28 @@ export const SectbodyAdmin = () => {
 
     if (formValues) {
       try {
-        const res = await fetch("http://localhost:8080/servicio/guardar", {
+        const response = await fetch("http://localhost:8080/servicio/guardar", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...getAuthHeaders(),
+          },
           body: JSON.stringify(formValues),
         });
-        if (!res.ok) throw new Error("No se pudo añadir la discoteca");
-        const nuevo = await res.json();
+        if (response.status === 401 || response.status === 403) {
+            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
+            handleLogout();
+            return;
+        }
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`No se pudo añadir la discoteca: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+        const nuevo = await response.json();
         setDiscotecas([...discotecas, nuevo]);
         Swal.fire("¡Guardado!", "Discoteca añadida correctamente", "success");
       } catch (err) {
+        console.error("Error adding discoteca:", err);
         Swal.fire("Error", err.message, "error");
       }
     }
@@ -112,14 +162,26 @@ export const SectbodyAdmin = () => {
     });
     if (result.isConfirmed) {
       try {
-        const res = await fetch(
+        const response = await fetch(
           `http://localhost:8080/servicio/eliminar/${nit}`,
-          { method: "DELETE" }
+          {
+            method: "DELETE",
+            headers: getAuthHeaders(),
+          }
         );
-        if (!res.ok) throw new Error("No se pudo eliminar la discoteca");
+        if (response.status === 401 || response.status === 403) {
+            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
+            handleLogout();
+            return;
+        }
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`No se pudo eliminar la discoteca: ${response.status} ${response.statusText} - ${errorText}`);
+        }
         setDiscotecas(discotecas.filter((d) => d.nit !== nit));
         Swal.fire("Eliminado", "La discoteca ha sido eliminada", "success");
       } catch (err) {
+        console.error("Error deleting discoteca:", err);
         Swal.fire("Error", err.message, "error");
       }
     }
@@ -157,6 +219,7 @@ export const SectbodyAdmin = () => {
           imagenBase64 = await toBase64(imagenArchivo);
         }
         return {
+          nit: discotecaData.nit,
           nombre,
           ubicacion,
           capacidad: Number(capacidad),
@@ -168,21 +231,33 @@ export const SectbodyAdmin = () => {
 
     if (formValues) {
       try {
-        const res = await fetch(
+        const response = await fetch(
           `http://localhost:8080/servicio/actualizar/${discotecaData.nit}`,
           {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              ...getAuthHeaders(),
+            },
             body: JSON.stringify(formValues),
           }
         );
-        if (!res.ok) throw new Error("No se pudo actualizar la discoteca");
-        const updated = await res.json();
+        if (response.status === 401 || response.status === 403) {
+            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
+            handleLogout();
+            return;
+        }
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`No se pudo actualizar la discoteca: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+        const updated = await response.json();
         setDiscotecas(
           discotecas.map((d) => (d.nit === discotecaData.nit ? updated : d))
         );
         Swal.fire("Actualizado", "Discoteca actualizada correctamente", "success");
       } catch (err) {
+        console.error("Error updating discoteca:", err);
         Swal.fire("Error", err.message, "error");
       }
     }
@@ -213,7 +288,7 @@ export const SectbodyAdmin = () => {
           return;
         }
         return {
-          discoteca: { nit: nitDiscoteca },
+          discoteca: { nit: Number(nitDiscoteca) },
           nombreEvento,
           fecha,
           hora,
@@ -224,23 +299,34 @@ export const SectbodyAdmin = () => {
 
     if (formValues) {
       try {
-        const res = await fetch("http://localhost:8080/servicio/guardar-evento", {
+        const response = await fetch("http://localhost:8080/servicio/guardar-evento", {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...getAuthHeaders(),
+          },
           body: JSON.stringify(formValues),
         });
-        if (!res.ok) throw new Error("No se pudo añadir el evento");
-        const nuevo = await res.json();
+        if (response.status === 401 || response.status === 403) {
+            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
+            handleLogout();
+            return;
+        }
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`No se pudo añadir el evento: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+        const nuevo = await response.json();
         setEventos([...eventos, nuevo]);
         Swal.fire("¡Guardado!", "Evento añadido correctamente", "success");
 
-        // Despacha el CustomEvent para notificar al Header
         console.log("SectbodyAdmin: Despachando evento 'newEventAdded' con detalle:", { eventName: nuevo.nombreEvento });
         window.dispatchEvent(new CustomEvent('newEventAdded', {
           detail: { eventName: nuevo.nombreEvento }
         }));
 
       } catch (err) {
+        console.error("Error adding evento:", err);
         Swal.fire("Error", err.message, "error");
       }
     }
@@ -272,7 +358,7 @@ export const SectbodyAdmin = () => {
         }
         return {
           idEvento: eventoData.idEvento,
-          discoteca: { nit: nitDiscoteca },
+          discoteca: { nit: Number(nitDiscoteca) },
           nombreEvento,
           fecha,
           hora,
@@ -283,16 +369,27 @@ export const SectbodyAdmin = () => {
 
     if (formValues) {
       try {
-        const res = await fetch(
+        const response = await fetch(
           "http://localhost:8080/servicio/actualizar-evento",
           {
             method: "PUT",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              ...getAuthHeaders(),
+            },
             body: JSON.stringify(formValues),
           }
         );
-        if (!res.ok) throw new Error("No se pudo actualizar el evento");
-        const updated = await res.json();
+        if (response.status === 401 || response.status === 403) {
+            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
+            handleLogout();
+            return;
+        }
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`No se pudo actualizar el evento: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+        const updated = await response.json();
         setEventos(
           eventos.map((e) =>
             (e.idEvento || e.id) === (formValues.idEvento || formValues.id) ? updated : e
@@ -300,6 +397,7 @@ export const SectbodyAdmin = () => {
         );
         Swal.fire("Actualizado", "Evento actualizado correctamente", "success");
       } catch (err) {
+        console.error("Error updating evento:", err);
         Swal.fire("Error", err.message, "error");
       }
     }
@@ -316,14 +414,26 @@ export const SectbodyAdmin = () => {
     });
     if (result.isConfirmed) {
       try {
-        const res = await fetch(
+        const response = await fetch(
           `http://localhost:8080/servicio/eliminar-evento/${idEvento}`,
-          { method: "DELETE" }
+          {
+            method: "DELETE",
+            headers: getAuthHeaders(),
+          }
         );
-        if (!res.ok) throw new Error("No se pudo eliminar el evento");
+        if (response.status === 401 || response.status === 403) {
+            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
+            handleLogout();
+            return;
+        }
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`No se pudo eliminar el evento: ${response.status} ${response.statusText} - ${errorText}`);
+        }
         setEventos(eventos.filter((e) => (e.idEvento || e.id) !== idEvento));
         Swal.fire("Eliminado", "El evento ha sido eliminada", "success");
       } catch (err) {
+        console.error("Error deleting evento:", err);
         Swal.fire("Error", err.message, "error");
       }
     }
@@ -333,11 +443,23 @@ export const SectbodyAdmin = () => {
     setLoadingEventos(true);
     setErrorEventos(null);
     try {
-      const res = await fetch("http://localhost:8080/servicio/eventos-list");
-      if (!res.ok) throw new Error("Error al obtener eventos");
-      const data = await res.json();
+      // CAMBIADO: Ahora llama al endpoint específico de ADMIN
+      const response = await fetch("http://localhost:8080/servicio/admin/eventos", {
+        headers: getAuthHeaders(),
+      });
+      if (response.status === 401 || response.status === 403) {
+          Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
+          handleLogout();
+          return;
+      }
+      if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Error al obtener eventos: ${response.status} ${response.statusText} - ${errorText}`);
+      }
+      const data = await response.json();
       setEventos(data);
     } catch (err) {
+      console.error("Error fetching eventos:", err);
       setErrorEventos(err.message);
     } finally {
       setLoadingEventos(false);
@@ -386,18 +508,31 @@ export const SectbodyAdmin = () => {
   useEffect(() => {
     const storedUser = localStorage.getItem("currentAdmin");
     if (storedUser) {
-      setCurrentAdmin(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      if (parsedUser.usuario && !parsedUser.usuario_admin) {
+        parsedUser.usuario_admin = parsedUser.usuario;
+      }
+      setCurrentAdmin(parsedUser);
+      console.log("useEffect: currentAdmin loaded:", parsedUser);
+    } else {
+      console.log("useEffect: No currentAdmin found in localStorage.");
     }
   }, []);
 
   useEffect(() => {
-    if (activeTab === "discotecas") {
-      fetchDiscotecas();
+    if (currentAdmin && currentAdmin.token) {
+        if (activeTab === "discotecas") {
+            fetchDiscotecas();
+        }
+        if (activeTab === "eventos") {
+            fetchEventos();
+        }
+    } else if (activeTab === "discotecas" || activeTab === "eventos") {
+        console.warn("No token available to fetch data for:", activeTab);
+        setErrorDisco("No hay sesión de administrador activa para cargar discotecas.");
+        setErrorEventos("No hay sesión de administrador activa para cargar eventos.");
     }
-    if (activeTab === "eventos") {
-      fetchEventos();
-    }
-  }, [activeTab]);
+  }, [activeTab, currentAdmin]);
 
   const handleLogout = () => {
     Swal.fire({
@@ -415,7 +550,8 @@ export const SectbodyAdmin = () => {
       cancelButtonText: "Cancelar",
     }).then((result) => {
       if (result.isConfirmed) {
-        localStorage.clear(); // Limpia todo el localStorage
+        localStorage.clear();
+        setCurrentAdmin(null);
         Swal.fire({
           background: "#18122B",
           color: "#fff",
@@ -472,8 +608,9 @@ export const SectbodyAdmin = () => {
             <h2>Perfil del Administrador</h2>
             {currentAdmin ? (
               <div className="profile-card">
-                <p><b>ID:</b> {currentAdmin.id}</p>
-                <p><b>Nombre:</b> {currentAdmin.nombre} {currentAdmin.apellido}</p>
+                <p><b>Usuario:</b> {currentAdmin.usuario_admin || 'No disponible'}</p>
+                <p><b>ID:</b> {currentAdmin.idAdmin || 'No disponible'}</p>
+                <p><b>Nombre:</b> {currentAdmin.nombre}</p>
                 <p><b>Correo:</b> {currentAdmin.correo}</p>
                 <p><b>Última actualización:</b> {currentAdmin.actualizado || "N/A"}</p>
                 <button className="btn-update" onClick={updateProfile}>
@@ -587,8 +724,8 @@ export const SectbodyAdmin = () => {
                   </tr>
                 ) : (
                   eventos.map((e) => (
-                    <tr key={e.idEvento || e.id}>
-                      <td>{e.idEvento || e.id}</td>
+                    <tr key={e.idEvento}>
+                      <td>{e.idEvento}</td>
                       <td>{e.discoteca?.nit}</td>
                       <td>{e.nombreEvento}</td>
                       <td>{e.fecha}</td>
@@ -598,7 +735,7 @@ export const SectbodyAdmin = () => {
                         <button className="btn edit" onClick={() => updateEvento(e)}>
                           Actualizar
                         </button>
-                        <button className="btn delete" onClick={() => deleteEvento(e.idEvento || e.id)}>
+                        <button className="btn delete" onClick={() => deleteEvento(e.idEvento)}>
                           Eliminar
                         </button>
                       </td>

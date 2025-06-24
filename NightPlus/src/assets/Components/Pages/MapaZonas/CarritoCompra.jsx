@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export const CarritoCompra = ({ carrito, onEliminarZona }) => {
+  const navigate = useNavigate(); // <-- Hook para navegar
+
   const formatearPrecio = (valor) =>
     new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
 
@@ -32,6 +35,11 @@ export const CarritoCompra = ({ carrito, onEliminarZona }) => {
     const precioUnitario = parsearPrecio(zona.precio);
     return acc + calcularTotalZona(i, precioUnitario);
   }, 0);
+
+  const finalizarCompra = () => {
+    // Aquí puedes enviar info al backend o al nuevo componente vía estado
+    navigate('/reserva', { state: { carrito, cantidades, total: totalGeneral } });
+  };
 
   return (
     <div style={{
@@ -90,17 +98,20 @@ export const CarritoCompra = ({ carrito, onEliminarZona }) => {
         <span>{formatearPrecio(totalGeneral)}</span>
       </div>
 
-      <button style={{
-        marginTop: '10px',
-        width: '100%',
-        backgroundColor: 'white',
-        color: '#fff',
-        padding: '10px',
-        border: 'none',
-        borderRadius: '4px',
-        cursor: 'pointer',
-        fontWeight: 'bold'
-      }}>
+      <button
+        onClick={finalizarCompra}
+        style={{
+          marginTop: '10px',
+          width: '100%',
+          backgroundColor: 'black',
+          color: '#fff',
+          padding: '10px',
+          border: 'none',
+          borderRadius: '4px',
+          cursor: 'pointer',
+          fontWeight: 'bold'
+        }}
+      >
         Finalizar compra
       </button>
     </div>
