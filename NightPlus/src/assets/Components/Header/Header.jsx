@@ -30,7 +30,8 @@ export const Header = () => {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        setUsuario(decoded.nombre || decoded.usuarioCliente || decoded.email || '');
+        // CAMBIO AQUÍ: Prioriza 'name' (como lo envía el backend), luego 'usuarioCliente', 'usuario', y finalmente 'email'
+        setUsuario(decoded.name || decoded.usuarioCliente || decoded.usuario || decoded.email || '');
       } catch (e) {
         console.error("Header: Error decodificando token", e);
         setUsuario('');
@@ -38,6 +39,7 @@ export const Header = () => {
         // localStorage.removeItem('token');
       }
     } else {
+      // Fallback a localStorage si no hay token o no se puede decodificar
       setUsuario(localStorage.getItem('nombre') || localStorage.getItem('usuario') || '');
     }
   }, []);

@@ -1,15 +1,16 @@
+// App.js
 import React, { useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
 // Importa tus componentes y contextos
 import { LoadingAlert } from './assets/Components/LoadingAlert/LoadingAlert';
-import { LoadingProvider, LoadingContext } from './Context/LoadingContext'; // Asegúrate que esta ruta sea correcta
+import { LoadingProvider, LoadingContext } from './Context/LoadingContext';
 
-// Importa tus páginas
+// Importa tus páginas (ajusta las rutas si son diferentes en tu proyecto)
 import { PrincipalPage } from './assets/Components/Pages/PrincipalPage/PrincipalPage';
 import { Discotecas } from './assets/Components/Pages/Discotecas/Discotecas';
 import { Eventos } from './assets/Components/Pages/Eventos/Eventos';
-import { MapaDiscoteca } from './assets/Components/Pages/MapaZonas/MapaDiscoteca'; // Verifica la ruta exacta
+import { MapaDiscoteca } from './assets/Components/Pages/MapaZonas/MapaDiscoteca';
 import { StartSession } from './assets/Components/Pages/StartSession/StartSession';
 import { SignInCliente } from './assets/Components/Pages/SignInCliente/SignInCliente';
 import { StartSessionAdmin } from './assets/Components/Pages/StartSessionAdmin/StartSessionAdmin';
@@ -22,9 +23,7 @@ import { SectbodyAdmin } from './assets/Components/Pages/SectbodyAdmin/SectbodyA
 import { ViewEvent } from './assets/Components/Pages/ViewEvent/ViewEvent';
 
 // Importa el Header (¡VERIFICA ESTA RUTA EN TU PROYECTO!)
-// Si tu Header está en 'src/assets/Components/Layout/Header/Header.jsx', usa esa ruta.
-// Si está en 'src/assets/Components/Header/Header.jsx', usa esa.
-import { Header } from './assets/Components/Header/Header'; // <-- POSIBLE RUTA A AJUSTAR
+import { Header } from './assets/Components/Header/Header'; 
 
 // Componente Wrapper para LoadingAlert
 const LoadingAlertWrapper = () => {
@@ -37,16 +36,18 @@ export const App = () => {
 
   return (
     <LoadingProvider>
-      {/* LoadingAlertWrapper se renderiza siempre */}
       <LoadingAlertWrapper /> 
-
- 
 
       <Routes>
         <Route path="/" element={<PrincipalPage />} />
         <Route path="/discotecas" element={<Discotecas />} />
+        {/*
+          ¡IMPORTANTE! Esta es la ÚNICA ruta para MapaDiscoteca.
+          Si tenías una <Route path="/mapa" element={<MapaDiscoteca />} />, DEBISTE ELIMINARLA.
+          Esto asegura que MapaDiscoteca siempre reciba un ID en la URL.
+        */}
+        <Route path="/mapa/:idEvento" element={<MapaDiscoteca />} />
         <Route path="/eventos" element={<Eventos />} />
-        <Route path="/mapa" element={<MapaDiscoteca />} />
         <Route path="/login" element={<StartSession />} />
         <Route path="/signincliente" element={<SignInCliente />} />
         <Route path="/loginadmin" element={<StartSessionAdmin />} />
