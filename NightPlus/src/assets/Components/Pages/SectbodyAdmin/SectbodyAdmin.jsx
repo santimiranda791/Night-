@@ -54,7 +54,15 @@ export const SectbodyAdmin = () => {
       });
 
       if (response.status === 401 || response.status === 403) {
-        Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
+        Swal.fire({
+          imageUrl: '/logitotriste.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Error",
+          text: "No autorizado. Por favor, inicia sesión de nuevo.",
+        });
         handleLogout();
         return;
       }
@@ -66,6 +74,15 @@ export const SectbodyAdmin = () => {
       setDiscotecas(data);
     } catch (err) {
       console.error("Error fetching discotecas:", err);
+      Swal.fire({
+        imageUrl: '/logitotriste.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
+        title: "Error",
+        text: err.message || "Hubo un error al cargar las discotecas.",
+      });
       setErrorDisco(err.message);
     } finally {
       setLoadingDisco(false);
@@ -133,20 +150,44 @@ export const SectbodyAdmin = () => {
           body: JSON.stringify(formValues),
         });
         if (response.status === 401 || response.status === 403) {
-            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
-            handleLogout();
-            return;
+          Swal.fire({
+            imageUrl: '/logitotriste.png',
+            imageWidth: 130,
+            imageHeight: 130,
+            background: '#000',
+            color: '#fff',
+            title: "Error",
+            text: "No autorizado. Por favor, inicia sesión de nuevo.",
+          });
+          handleLogout();
+          return;
         }
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`No se pudo añadir la discoteca: ${response.status} ${response.statusText} - ${errorText}`);
+          const errorText = await response.text();
+          throw new Error(`No se pudo añadir la discoteca: ${response.status} ${response.statusText} - ${errorText}`);
         }
         const nuevo = await response.json();
         setDiscotecas([...discotecas, nuevo]);
-        Swal.fire("¡Guardado!", "Discoteca añadida correctamente", "success");
+        Swal.fire({
+          imageUrl: '/logitonegro.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "¡Guardado!",
+          text: "Discoteca añadida correctamente",
+        });
       } catch (err) {
         console.error("Error adding discoteca:", err);
-        Swal.fire("Error", err.message, "error");
+        Swal.fire({
+          imageUrl: '/logitotriste.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Error",
+          text: err.message || "Hubo un error al añadir la discoteca.",
+        });
       }
     }
   };
@@ -155,7 +196,12 @@ export const SectbodyAdmin = () => {
     const result = await Swal.fire({
       title: "Confirmar eliminación",
       text: "¿Estás seguro de eliminar esta discoteca?",
-      icon: "warning",
+  
+      imageUrl: '/logitopensativo.webp',
+      imageWidth: 130,
+      imageHeight: 130,
+      background: '#000',
+      color: '#fff',
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
@@ -170,19 +216,43 @@ export const SectbodyAdmin = () => {
           }
         );
         if (response.status === 401 || response.status === 403) {
-            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
-            handleLogout();
-            return;
+          Swal.fire({
+            imageUrl: '/logitotriste.png',
+            imageWidth: 130,
+            imageHeight: 130,
+            background: '#000',
+            color: '#fff',
+            title: "Error",
+            text: "No autorizado. Por favor, inicia sesión de nuevo.",
+          });
+          handleLogout();
+          return;
         }
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`No se pudo eliminar la discoteca: ${response.status} ${response.statusText} - ${errorText}`);
+          const errorText = await response.text();
+          throw new Error(`No se pudo eliminar la discoteca: ${response.status} ${response.statusText} - ${errorText}`);
         }
         setDiscotecas(discotecas.filter((d) => d.nit !== nit));
-        Swal.fire("Eliminado", "La discoteca ha sido eliminada", "success");
+        Swal.fire({
+          imageUrl: '/logitonegro.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Eliminado",
+          text: "La discoteca ha sido eliminada",
+        });
       } catch (err) {
         console.error("Error deleting discoteca:", err);
-        Swal.fire("Error", err.message, "error");
+        Swal.fire({
+          imageUrl: '/logitotriste.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Error",
+          text: err.message || "Hubo un error al eliminar la discoteca.",
+        });
       }
     }
   };
@@ -243,22 +313,46 @@ export const SectbodyAdmin = () => {
           }
         );
         if (response.status === 401 || response.status === 403) {
-            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
-            handleLogout();
-            return;
+          Swal.fire({
+            imageUrl: '/logitotriste.png',
+            imageWidth: 130,
+            imageHeight: 130,
+            background: '#000',
+            color: '#fff',
+            title: "Error",
+            text: "No autorizado. Por favor, inicia sesión de nuevo.",
+          });
+          handleLogout();
+          return;
         }
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`No se pudo actualizar la discoteca: ${response.status} ${response.statusText} - ${errorText}`);
+          const errorText = await response.text();
+          throw new new Error(`No se pudo actualizar la discoteca: ${response.status} ${response.statusText} - ${errorText}`);
         }
         const updated = await response.json();
         setDiscotecas(
           discotecas.map((d) => (d.nit === discotecaData.nit ? updated : d))
         );
-        Swal.fire("Actualizado", "Discoteca actualizada correctamente", "success");
+        Swal.fire({
+          imageUrl: '/logitonegro.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Actualizado",
+          text: "Discoteca actualizada correctamente",
+        });
       } catch (err) {
         console.error("Error updating discoteca:", err);
-        Swal.fire("Error", err.message, "error");
+        Swal.fire({
+          imageUrl: '/logitotriste.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Error",
+          text: err.message || "Hubo un error al actualizar la discoteca.",
+        });
       }
     }
   };
@@ -308,17 +402,33 @@ export const SectbodyAdmin = () => {
           body: JSON.stringify(formValues),
         });
         if (response.status === 401 || response.status === 403) {
-            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
-            handleLogout();
-            return;
+          Swal.fire({
+            imageUrl: '/logitotriste.png',
+            imageWidth: 130,
+            imageHeight: 130,
+            background: '#000',
+            color: '#fff',
+            title: "Error",
+            text: "No autorizado. Por favor, inicia sesión de nuevo.",
+          });
+          handleLogout();
+          return;
         }
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`No se pudo añadir el evento: ${response.status} ${response.statusText} - ${errorText}`);
+          const errorText = await response.text();
+          throw new Error(`No se pudo añadir el evento: ${response.status} ${response.statusText} - ${errorText}`);
         }
         const nuevo = await response.json();
         setEventos([...eventos, nuevo]);
-        Swal.fire("¡Guardado!", "Evento añadido correctamente", "success");
+        Swal.fire({
+          imageUrl: '/logitonegro.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "¡Guardado!",
+          text: "Evento añadido correctamente",
+        });
 
         console.log("SectbodyAdmin: Despachando evento 'newEventAdded' con detalle:", { eventName: nuevo.nombreEvento });
         window.dispatchEvent(new CustomEvent('newEventAdded', {
@@ -327,7 +437,15 @@ export const SectbodyAdmin = () => {
 
       } catch (err) {
         console.error("Error adding evento:", err);
-        Swal.fire("Error", err.message, "error");
+        Swal.fire({
+          imageUrl: '/logitotriste.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Error",
+          text: err.message || "Hubo un error al añadir el evento.",
+        });
       }
     }
   };
@@ -381,13 +499,21 @@ export const SectbodyAdmin = () => {
           }
         );
         if (response.status === 401 || response.status === 403) {
-            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
-            handleLogout();
-            return;
+          Swal.fire({
+            imageUrl: '/logitotriste.png',
+            imageWidth: 130,
+            imageHeight: 130,
+            background: '#000',
+            color: '#fff',
+            title: "Error",
+            text: "No autorizado. Por favor, inicia sesión de nuevo.",
+          });
+          handleLogout();
+          return;
         }
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`No se pudo actualizar el evento: ${response.status} ${response.statusText} - ${errorText}`);
+          const errorText = await response.text();
+          throw new Error(`No se pudo actualizar el evento: ${response.status} ${response.statusText} - ${errorText}`);
         }
         const updated = await response.json();
         setEventos(
@@ -395,10 +521,26 @@ export const SectbodyAdmin = () => {
             (e.idEvento || e.id) === (formValues.idEvento || formValues.id) ? updated : e
           )
         );
-        Swal.fire("Actualizado", "Evento actualizado correctamente", "success");
+        Swal.fire({
+          imageUrl: '/logitonegro.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Actualizado",
+          text: "Evento actualizado correctamente",
+        });
       } catch (err) {
         console.error("Error updating evento:", err);
-        Swal.fire("Error", err.message, "error");
+        Swal.fire({
+          imageUrl: '/logitotriste.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Error",
+          text: err.message || "Hubo un error al actualizar el evento.",
+        });
       }
     }
   };
@@ -407,7 +549,11 @@ export const SectbodyAdmin = () => {
     const result = await Swal.fire({
       title: "Confirmar eliminación",
       text: "¿Estás seguro de eliminar este evento?",
-      icon: "warning",
+      imageUrl: '/logitopensativo.webp',
+      imageWidth: 130,
+      imageHeight: 130,
+      background: '#000',
+      color: '#fff',
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
@@ -422,19 +568,43 @@ export const SectbodyAdmin = () => {
           }
         );
         if (response.status === 401 || response.status === 403) {
-            Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
-            handleLogout();
-            return;
+          Swal.fire({
+            imageUrl: '/logitotriste.png',
+            imageWidth: 130,
+            imageHeight: 130,
+            background: '#000',
+            color: '#fff',
+            title: "Error",
+            text: "No autorizado. Por favor, inicia sesión de nuevo.",
+          });
+          handleLogout();
+          return;
         }
         if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`No se pudo eliminar el evento: ${response.status} ${response.statusText} - ${errorText}`);
+          const errorText = await response.text();
+          throw new Error(`No se pudo eliminar el evento: ${response.status} ${response.statusText} - ${errorText}`);
         }
         setEventos(eventos.filter((e) => (e.idEvento || e.id) !== idEvento));
-        Swal.fire("Eliminado", "El evento ha sido eliminada", "success");
+        Swal.fire({
+          imageUrl: '/logitonegro.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Eliminado",
+          text: "El evento ha sido eliminada",
+        });
       } catch (err) {
         console.error("Error deleting evento:", err);
-        Swal.fire("Error", err.message, "error");
+        Swal.fire({
+          imageUrl: '/logitotriste.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Error",
+          text: err.message || "Hubo un error al eliminar el evento.",
+        });
       }
     }
   };
@@ -448,18 +618,35 @@ export const SectbodyAdmin = () => {
         headers: getAuthHeaders(),
       });
       if (response.status === 401 || response.status === 403) {
-          Swal.fire("Error", "No autorizado. Por favor, inicia sesión de nuevo.", "error");
-          handleLogout();
-          return;
+        Swal.fire({
+          imageUrl: '/logitotriste.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Error",
+          text: "No autorizado. Por favor, inicia sesión de nuevo.",
+        });
+        handleLogout();
+        return;
       }
       if (!response.ok) {
-          const errorText = await response.text();
-          throw new Error(`Error al obtener eventos: ${response.status} ${response.statusText} - ${errorText}`);
+        const errorText = await response.text();
+        throw new Error(`Error al obtener eventos: ${response.status} ${response.statusText} - ${errorText}`);
       }
       const data = await response.json();
       setEventos(data);
     } catch (err) {
       console.error("Error fetching eventos:", err);
+      Swal.fire({
+        imageUrl: '/logitotriste.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
+        title: "Error",
+        text: err.message || "Hubo un error al cargar los eventos.",
+      });
       setErrorEventos(err.message);
     } finally {
       setLoadingEventos(false);
@@ -498,7 +685,11 @@ export const SectbodyAdmin = () => {
       setCurrentAdmin(updatedAdmin);
       localStorage.setItem("currentAdmin", JSON.stringify(updatedAdmin));
       Swal.fire({
-        icon: "success",
+        imageUrl: '/logitonegro.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
         title: "Actualizado",
         text: "Información actualizada correctamente",
       });
@@ -521,16 +712,25 @@ export const SectbodyAdmin = () => {
 
   useEffect(() => {
     if (currentAdmin && currentAdmin.token) {
-        if (activeTab === "discotecas") {
-            fetchDiscotecas();
-        }
-        if (activeTab === "eventos") {
-            fetchEventos();
-        }
+      if (activeTab === "discotecas") {
+        fetchDiscotecas();
+      }
+      if (activeTab === "eventos") {
+        fetchEventos();
+      }
     } else if (activeTab === "discotecas" || activeTab === "eventos") {
-        console.warn("No token available to fetch data for:", activeTab);
-        setErrorDisco("No hay sesión de administrador activa para cargar discotecas.");
-        setErrorEventos("No hay sesión de administrador activa para cargar eventos.");
+      console.warn("No token available to fetch data for:", activeTab);
+      Swal.fire({
+        imageUrl: '/logitotriste.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
+        title: "Error",
+        text: "No hay sesión de administrador activa para cargar discotecas y eventos.",
+      });
+      setErrorDisco("No hay sesión de administrador activa para cargar discotecas.");
+      setErrorEventos("No hay sesión de administrador activa para cargar eventos.");
     }
   }, [activeTab, currentAdmin]);
 
@@ -749,4 +949,4 @@ export const SectbodyAdmin = () => {
       </main>
     </div>
   );
-};
+};  
