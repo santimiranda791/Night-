@@ -1,0 +1,13 @@
+.eventos-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px; /* Espacio entre tarjetas */
+  justify-content: center;
+  padding: 32px 0;
+}
+
+.eventos-container > * {
+  flex: 1 1 300px; /* Mínimo 300px, crece si hay espacio */
+  max-width: 350px; /* Opcional: limita el ancho máximo de cada card */
+}
+

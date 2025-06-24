@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Header } from '../../Header/Header'
 import { EventCard } from '../../EventCard/EventCard'
 import Swal from 'sweetalert2'
-
+import '../../../../Styles/Eventos.css'
 export const Eventos = () => {
   const [events, setEvents] = useState([])
 
@@ -36,17 +36,19 @@ export const Eventos = () => {
   return (
     <>
       <Header />
-      {events.map(event => (
-        <EventCard
-          key={event.id}
-          date={event.date}
-          title={event.title}
-          description={event.description}
-          club={event.club}
-          image={event.image}
-          mapRoute={event.mapRoute}
-        />
-      ))}
+      <div className="eventos-container">
+        {events.map(event => (
+          <EventCard
+            key={event.id}
+            date={event.date}
+            title={event.title}
+            description={event.description}
+            club={event.club}
+            image={event.image}
+            mapRoute={event.mapRoute}
+          />
+        ))}
+      </div>
     </>
   )
 }
