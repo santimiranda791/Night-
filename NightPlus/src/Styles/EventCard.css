@@ -4,8 +4,7 @@
   border-radius: 18px;
   box-shadow: 0 4px 24px 0 rgba(80, 80, 160, 0.18);
   color: #f3f3fa;
-  width: 420px;
-  max-width: 95vw;
+  width: 2rem; /* Cambiado a 47% */
   min-height: 180px;
   margin: 32px auto;
   display: flex;
