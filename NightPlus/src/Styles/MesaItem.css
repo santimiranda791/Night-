@@ -1,13 +1,37 @@
 .mesa-button {
-  padding: 10px;
-  border: 1px solid green;
-  border-radius: 8px;
-  background-color: #e6ffe6;
-  cursor: pointer;
-  font-size: 14px;
-  transition: background-color 0.3s ease;
+    padding: 10px; /* Base padding */
+    border: 1px solid green;
+    border-radius: 8px;
+    background-color: #e6ffe6;
+    cursor: pointer;
+    font-size: 14px; /* Base font size */
+    transition: background-color 0.3s ease;
+    box-sizing: border-box; /* Include padding in the element's total width and height */
+    width: auto; /* Allow button to size based on content */
+    display: inline-block; /* Ensure padding and width behave as expected */
+    text-align: center; /* Center text if button gets wider than content */
 }
 
 .mesa-button:hover {
-  background-color: #ccffcc;
+    background-color: #ccffcc;
+}
+
+/* --- Media Queries for Responsiveness --- */
+
+/* Tablets and medium screens */
+@media (max-width: 768px) {
+    .mesa-button {
+        padding: 8px; /* Slightly reduce padding */
+        font-size: 13px; /* Slightly smaller font size */
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+    .mesa-button {
+        padding: 6px; /* Further reduce padding for smaller touch targets */
+        font-size: 12px; /* Smallest font size for mobile */
+        /* Consider making buttons full width in certain layouts if they are stacked */
+        /* If these buttons are in a grid, their container's gap/flex settings will manage their spacing */
+    }
 }

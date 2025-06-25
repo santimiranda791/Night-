@@ -1,9 +1,33 @@
 .eventos-container {
-  display: flex;
-  flex-wrap: wrap; /* Permite que las tarjetas se ajusten en varias filas */
-  gap: 24px; /* Espacio entre tarjetas */
-  justify-content: center;
-  padding: 32px 0;
+    display: flex;
+    flex-wrap: wrap; /* Permite que las tarjetas se ajusten en varias filas */
+    gap: 24px; /* Espacio entre tarjetas */
+    justify-content: center;
+    padding: 32px 0;
 }
 
+/* Media Queries */
 
+/* Tablets y pantallas medianas */
+@media (max-width: 992px) {
+    .eventos-container {
+        gap: 20px; /* Reduce un poco el espacio entre tarjetas */
+        padding: 25px 0;
+    }
+}
+
+/* Teléfonos y pantallas pequeñas */
+@media (max-width: 768px) {
+    .eventos-container {
+        gap: 15px; /* Más espacio reducido para pantallas pequeñas */
+        padding: 20px 10px; /* Añade un padding horizontal para que no se pegue a los bordes */
+    }
+}
+
+/* Teléfonos muy pequeños */
+@media (max-width: 480px) {
+    .eventos-container {
+        gap: 10px; /* Espacio mínimo */
+        padding: 15px 5px; /* Padding aún más reducido */
+    }
+}

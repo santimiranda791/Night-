@@ -1,79 +1,148 @@
-/* From Uiverse.io by asgardOP */ 
+/* From Uiverse.io by asgardOP */
 .loader {
-  width: 100px;
-  height: 3px;
-  background-color: rgb(15, 15, 15);
-  border-radius: 20px;
-  overflow: hidden;
+    width: 100px;
+    height: 3px;
+    background-color: rgb(15, 15, 15);
+    border-radius: 20px;
+    overflow: hidden;
 }
 
 .child {
-  width: 60px;
-  height: 3px;
-  background-color: rgb(107, 27, 255);
-  border-radius: 20px;
-  z-index: 0;
-  margin-left: -60px;
-  animation: go 1s 0s infinite;
+    width: 60px;
+    height: 3px;
+    background-color: rgb(107, 27, 255);
+    border-radius: 20px;
+    z-index: 0;
+    margin-left: -60px;
+    animation: go 1s 0s infinite;
 }
 
 @keyframes go {
-  from {
-    margin-left: -100px;
-    width: 80px;
-  }
-  to {
-    width: 30px;
-    margin-left: 110px;
-  }
+    from {
+        margin-left: -100px;
+        width: 80px;
+    }
+    to {
+        width: 30px;
+        margin-left: 110px;
+    }
 }
 
 ul {
-  list-style: none;
+    list-style: none; /* Keep this if there's a list somewhere else, though not directly used in the loader */
 }
 
 .text {
-  width: 100px;
-  height: 30px;
-  background-color: transparent;
-  margin-top: 20px;
-  text-align: center;
+    width: 100px;
+    height: 30px;
+    background-color: transparent;
+    margin-top: 20px;
+    text-align: center;
 }
 
 .text::before {
-  content: "Loading";
-  color: white;
-  animation: text 1s 0s infinite;
+    content: "Loading";
+    color: white;
+    animation: text 1s 0s infinite;
+    font-size: 1rem; /* Base font size for the loading text */
 }
 
 @keyframes text {
-  0% {
-    content: "Loading";
-  }
+    0% {
+        content: "Loading";
+    }
 
-  30% {
-    content: "Loading.";
-  }
+    30% {
+        content: "Loading.";
+    }
 
-  60% {
-    content: "Loading..";
-  }
+    60% {
+        content: "Loading..";
+    }
 
-  100% {
-    content: "Loading...";
-  }
+    100% {
+        content: "Loading...";
+    }
 }
 
-/* New styles for full page overlay and centering */
+/* Full page overlay and centering */
 .loader-container {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  z-index: 10000;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.7);;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw; /* Ensure it covers the full viewport width */
+    height: 100vh; /* Ensure it covers the full viewport height */
+    z-index: 10000; /* High z-index to be on top of everything */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.7); /* Semi-transparent black overlay */
+    /* Use flexbox for perfect centering, as already done */
+}
+
+
+/* --- Media Queries for Responsiveness --- */
+
+/* Adjustments for smaller screens (e.g., mobile) */
+@media (max-width: 768px) {
+    .loader {
+        width: 80px; /* Slightly smaller loader bar for mobile */
+        height: 2px; /* Thinner bar */
+    }
+
+    .child {
+        height: 2px; /* Match parent height */
+    }
+
+    @keyframes go {
+        from {
+            margin-left: -80px; /* Adjust animation range for smaller width */
+            width: 60px;
+        }
+        to {
+            width: 25px;
+            margin-left: 90px; /* Adjust animation range for smaller width */
+        }
+    }
+
+    .text {
+        width: 80px; /* Match loader width */
+        margin-top: 15px; /* Reduce top margin */
+    }
+
+    .text::before {
+        font-size: 0.9rem; /* Slightly smaller font size for mobile text */
+    }
+}
+
+/* Further adjustments for very small mobile devices */
+@media (max-width: 480px) {
+    .loader {
+        width: 60px; /* Even smaller loader bar */
+        height: 1px; /* Even thinner bar */
+    }
+
+    .child {
+        height: 1px; /* Match parent height */
+    }
+
+    @keyframes go {
+        from {
+            margin-left: -60px; /* Adjust animation range */
+            width: 40px;
+        }
+        to {
+            width: 20px;
+            margin-left: 70px; /* Adjust animation range */
+        }
+    }
+
+    .text {
+        width: 60px; /* Match loader width */
+        margin-top: 10px; /* Reduce top margin further */
+    }
+
+    .text::before {
+        font-size: 0.8rem; /* Smallest font size for text */
+    }
 }

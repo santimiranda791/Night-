@@ -1,31 +1,103 @@
 footer {
-  height: 100px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-   background: linear-gradient(90deg, #1a1a1a 4  5%, #3b1c68);
-  color: #fff; 
-  padding: 20px;
-  gap: 50px;
-  text-align: center;
-  border-top: solid 2px rgb(22, 21, 21)
-  /* position: relative;  <-- Elimina o comenta esta línea */
+    height: 100px; /* This height might need adjusting for very small screens if content wraps */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, #1a1a1a 45%, #3b1c68);
+    color: #fff;
+    padding: 20px;
+    gap: 50px; /* Default gap for larger screens */
+    text-align: center;
+    border-top: solid 2px rgb(22, 21, 21);
+    flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+    box-sizing: border-box; /* Include padding in the element's total width and height */
 }
-footer :hover {
-  color: #3b1c68; 
+
+footer:hover {
+    color: #3b1c68; /* Hover effect for the footer text */
 }
 
 footer h1 {
-  font-size: 24px; 
-  margin: 0; 
+    font-size: 24px;
+    margin: 0;
+    white-space: nowrap; /* Prevent h1 from wrapping, might need adjustment for very long titles */
 }
 
 .restriction {
-  height: 115px;
-  width:auto;
+    height: 115px; /* Fixed height for the image */
+    width: auto;
+    max-height: 100%; /* Ensure it doesn't exceed footer height */
 }
 
 .loguito {
-  height: 90px; 
-  width: auto;
+    height: 90px; /* Fixed height for the logo */
+    width: auto;
+    max-height: 100%; /* Ensure it doesn't exceed footer height */
+}
+
+/* --- Media Queries for Responsiveness --- */
+
+/* Tablets and medium screens */
+@media (max-width: 992px) {
+    footer {
+        gap: 30px; /* Reduce gap for medium screens */
+        padding: 15px;
+        height: auto; /* Allow height to adjust if content wraps */
+    }
+
+    footer h1 {
+        font-size: 20px; /* Slightly smaller font for h1 */
+    }
+
+    .restriction {
+        height: 100px; /* Slightly smaller image height */
+    }
+
+    .loguito {
+        height: 80px; /* Slightly smaller logo height */
+    }
+}
+
+/* Smaller tablets and large phones */
+@media (max-width: 768px) {
+    footer {
+        flex-direction: column; /* Stack items vertically */
+        height: auto; /* Allow height to expand */
+        padding: 20px 10px; /* More vertical padding, less horizontal */
+        gap: 15px; /* Smaller gap when stacked */
+    }
+
+    footer h1 {
+        font-size: 20px; /* Keep font size consistent with 992px breakpoint */
+        text-align: center;
+        white-space: normal; /* Allow h1 to wrap if necessary */
+    }
+
+    .restriction {
+        height: 90px; /* Further reduce image height */
+    }
+
+    .loguito {
+        height: 70px; /* Further reduce logo height */
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+    footer {
+        padding: 15px 5px; /* Even less padding */
+        gap: 10px; /* Smallest gap */
+    }
+
+    footer h1 {
+        font-size: 18px; /* Smaller font for h1 on small mobiles */
+    }
+
+    .restriction {
+        height: 80px; /* Smallest image height */
+    }
+
+    .loguito {
+        height: 60px; /* Smallest logo height */
+    }
 }

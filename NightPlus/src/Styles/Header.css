@@ -1,164 +1,334 @@
+/* --- Header Base Styles --- */
 header {
-  background: linear-gradient(90deg, #1a1a1a 4  5%, #3b1c68);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: white;
-  height: 8rem;
-  width: 100%;
-  transition: all 0.3s ease-in-out;
-  box-shadow: 0 10px 6px rgba(0, 0, 0, 0.1);
-  position: relative;
-  z-index: 10;
-  
+    background: linear-gradient(90deg, #1a1a1a 45%, #3b1c68);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    height: 8rem;
+    width: 100%;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 10px 6px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
+    padding: 0 2rem; /* Add horizontal padding for spacing */
+    box-sizing: border-box; /* Include padding in element's total width */
 }
 
 header h1 {
-  font-size: 4rem;
-  letter-spacing: 2px;
-  animation: fadeInDown 1s ease-out;
+    font-size: 4rem;
+    letter-spacing: 2px;
+    animation: fadeInDown 1s ease-out;
+    margin: 0; /* Remove default margin */
 }
 
+/* --- Navbar Styles --- */
 .navbar {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  display: flex;
-  justify-content: center;
-  margin-right: 10%;
-  animation: fadeInDown 1s ease-out;
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    display: flex;
+    justify-content: center;
+    /* margin-right: 10%; Removed as padding on header is better */
+    animation: fadeInDown 1s ease-out;
 }
 
 .navbar ul {
-  list-style: none;
-  display: flex;
-  justify-content: center;
-  gap: 15rem;
-  padding: 0;
-  margin: 0;
-  font-size: 1.3rem;
-  margin-left: 10rem;
-  margin-bottom: 0.8rem;
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    gap: 15rem; /* Large gap for desktop */
+    padding: 0;
+    margin: 0;
+    font-size: 1.3rem;
+    /* margin-left: 10rem; Removed, let gap handle spacing */
+    margin-bottom: 0.8rem;
 }
 
 .navbar li {
-  display: inline-block;
+    display: inline-block;
 }
 
 .navbar a {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  position: relative;
-  padding: 0.5rem 0;
-  transition: color 0.3s ease;
+    color: white;
+    text-decoration: none;
+    font-weight: 500;
+    position: relative;
+    padding: 0.5rem 0;
+    transition: color 0.3s ease;
 }
 
 .navbar a::after {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  width: 0%;
-  height: 2px;
-  background-color: #a374ff;
-  transition: all 0.3s ease;
-  transform: translateX(-50%);
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    width: 0%;
+    height: 2px;
+    background-color: #a374ff;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
 }
 
 .navbar a:hover {
-  color: #a374ff;
+    color: #a374ff;
 }
 
 .navbar a:hover::after {
-  width: 100%;
+    width: 100%;
 }
 
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-30px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-.logito {
-  fill: rgb(255, 255, 255);
-}
-
-img{
-  width: 8rem;
-}
-
-/* Estilo para el contenedor del usuario */
+/* --- User Section Styles --- */
 .user {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1rem;
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-  cursor: pointer;
-  margin-right: 8rem;
-  margin-bottom: 1rem;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+    margin-right: 8rem; /* Keep this for desktop separation, adjusted in media queries */
+    margin-bottom: 1rem;
+    position: relative; /* Needed for dropdown positioning */
 }
 
 .user:hover {
-  transform: scale(1.05);
+    transform: scale(1.05);
 }
 
 .user p {
-  margin: 0;
-  font-size: 1.1rem;
-  color: #ffffff;
-  text-decoration: none; /* Corregido */
-  transition: color 0.3s ease;
-  
+    margin: 0;
+    font-size: 1.1rem;
+    color: #ffffff;
+    text-decoration: none;
+    transition: color 0.3s ease;
 }
 
 .user:hover p {
-  color: #a374ff;
+    color: #a374ff;
 }
 
 .user .dropdown {
-  display: none; /* Oculta el dropdown por defecto */
-  position: absolute;
-  top: 100%; /* Posiciona el dropdown debajo del contenedor */
-  left: 0;
-  background-color: #1a1a1a;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  border-radius: 5px;
-  z-index: 1000; /* Asegura que el dropdown esté por encima del video */
-  padding: 0.5rem 0;
-  min-width: 220px; 
-  min-height: 50px;/* <<<<< Añadido para mayor ancho */
+    display: none; /* Hidden by default */
+    position: absolute;
+    top: 100%; /* Position below the user container */
+    right: 0; /* Align to the right of the user container */
+    background-color: #1a1a1a;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    z-index: 1000;
+    padding: 0.5rem 0;
+    min-width: 220px;
 }
 
-
 .user:hover .dropdown {
-  display: block; /* Muestra el dropdown al hacer hover */
+    display: block; /* Show on hover */
 }
 
 .dropdown-item {
-  color: white;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  display: block;
-  transition: background-color 0.3s ease;
-}
-.user .dropdown-item:hover {
-  background-color: #3b1c68;
-  color: #a374ff;
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem 1rem;
+    display: block;
+    transition: background-color 0.3s ease;
 }
 
-.user .dropdown-item {
-  color: white;
-  text-decoration: none;
-  padding: 0.5rem 1rem;
-  display: block;
-  transition: background-color 0.3s ease;
-  
+.user .dropdown-item:hover {
+    background-color: #3b1c68;
+    color: #a374ff;
+}
+
+/* --- General Elements --- */
+.logito {
+    fill: rgb(255, 255, 255);
+}
+
+img {
+    width: 8rem; /* Width for the logo image */
+}
+
+/* --- Hamburger Menu Icon (Hidden by default) --- */
+.menu-toggle {
+    display: none; /* Hidden on large screens */
+    flex-direction: column;
+    justify-content: space-around;
+    width: 30px;
+    height: 25px;
+    cursor: pointer;
+    z-index: 11; /* Above header content */
+    margin-right: 1rem; /* Space from edge */
+}
+
+.menu-toggle .bar {
+    width: 100%;
+    height: 3px;
+    background-color: white;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+/* Animation for menu toggle (when active) */
+.menu-toggle.active .bar:nth-child(1) {
+    transform: translateY(11px) rotate(45deg);
+}
+
+.menu-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.menu-toggle.active .bar:nth-child(3) {
+    transform: translateY(-11px) rotate(-45deg);
+}
+
+/* --- Animations --- */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* --- Media Queries for Responsiveness --- */
+
+/* Tablets and medium screens (adjusting main navbar and user section) */
+@media (max-width: 1200px) {
+    header h1 {
+        font-size: 3rem; /* Slightly smaller title */
+    }
+
+    .navbar ul {
+        gap: 8rem; /* Reduce gap significantly */
+        font-size: 1.2rem;
+    }
+
+    .user {
+        margin-right: 4rem; /* Reduce right margin */
+    }
+}
+
+@media (max-width: 992px) {
+    header {
+        height: 7rem; /* Reduce header height */
+        padding: 0 1.5rem;
+    }
+
+    header h1 {
+        font-size: 2.5rem; /* Further reduce title size */
+    }
+
+    .navbar ul {
+        gap: 3rem; /* Further reduce gap */
+        font-size: 1.1rem;
+    }
+
+    .user {
+        margin-right: 2rem; /* Even less right margin */
+    }
+
+    img {
+        width: 6rem; /* Smaller logo image */
+    }
+}
+
+/* Mobile Devices (Hamburger Menu Activation) */
+@media (max-width: 768px) {
+    header {
+        justify-content: space-between; /* Space out elements */
+        padding: 0 1rem;
+        height: 6rem; /* Standard mobile header height */
+    }
+
+    header h1 {
+        font-size: 2rem; /* Suitable for mobile */
+        margin-left: 1rem; /* Adjust title position */
+    }
+
+    img {
+        width: 5rem; /* Smaller logo for mobile */
+    }
+
+    .navbar {
+        display: none; /* Hide the standard navbar */
+        flex-direction: column; /* Stack menu items */
+        position: absolute;
+        top: 6rem; /* Position below header */
+        left: 0;
+        width: 100%;
+        background: linear-gradient(90deg, #1a1a1a 45%, #3b1c68); /* Background for mobile menu */
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+        padding: 1rem 0;
+        text-align: center;
+        transition: transform 0.3s ease-in-out;
+        transform: translateY(-100%); /* Start off-screen */
+    }
+
+    .navbar.active {
+        display: flex; /* Show when active */
+        transform: translateY(0); /* Slide into view */
+    }
+
+    .navbar ul {
+        flex-direction: column; /* Stack list items */
+        gap: 1rem; /* Smaller gap for stacked items */
+        margin-left: 0; /* Remove left margin */
+        margin-bottom: 0;
+    }
+
+    .navbar li {
+        padding: 0.5rem 0;
+    }
+
+    .navbar a {
+        font-size: 1.1rem; /* Adjust link font size */
+    }
+
+    .menu-toggle {
+        display: flex; /* Show the hamburger icon */
+    }
+
+    .user {
+        margin-right: 0.5rem; /* Reduce margin to fit icon */
+        margin-bottom: 0; /* Remove bottom margin */
+        padding: 0.5rem; /* Smaller padding */
+        z-index: 12; /* Ensure user icon is above menu toggle */
+    }
+
+    .user .dropdown {
+        left: auto; /* Allow dropdown to position correctly */
+        right: 0; /* Align to the right of user icon */
+        min-width: 180px; /* Smaller min-width for mobile dropdown */
+        top: calc(100% + 5px); /* Ensure space from user icon */
+    }
+}
+
+/* Smaller Mobile Devices */
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.5rem; /* Even smaller title */
+    }
+
+    img {
+        width: 4rem; /* Even smaller logo */
+    }
+
+    .navbar.active {
+        top: 5rem; /* Adjust mobile menu position for smaller header */
+    }
+
+    .user p {
+        font-size: 0.9rem; /* Smaller font for username */
+    }
+
+    .user .dropdown {
+        min-width: 150px; /* Smallest min-width for dropdown */
+        font-size: 0.9rem;
+    }
+
+    .dropdown-item {
+        padding: 0.4rem 0.8rem;
+    }
 }

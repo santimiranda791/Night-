@@ -1,15 +1,53 @@
 .mapa-container {
-  padding: 40px;
-  text-align: center;
-  background-color: #f0f0f0;
-  min-height: 100vh;
+    padding: 40px; /* Base padding for larger screens */
+    text-align: center;
+    background-color: #f0f0f0;
+    min-height: 100vh;
+    box-sizing: border-box; /* Ensures padding is included in the total width/height */
 }
 
 .zonas-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 24px;
-  margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap; /* Allows items to wrap to the next line */
+    justify-content: center;
+    gap: 24px; /* Base gap between items */
+    margin-top: 30px;
 }
 
+/* --- Media Queries for Responsiveness --- */
+
+/* Tablets and medium screens */
+@media (max-width: 992px) {
+    .mapa-container {
+        padding: 30px; /* Reduce padding for smaller screens */
+    }
+
+    .zonas-container {
+        gap: 20px; /* Slightly reduce gap between zones */
+        margin-top: 25px;
+    }
+}
+
+/* Smaller tablets and large phones */
+@media (max-width: 768px) {
+    .mapa-container {
+        padding: 20px; /* Further reduce padding */
+    }
+
+    .zonas-container {
+        gap: 16px; /* Further reduce gap */
+        margin-top: 20px;
+    }
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+    .mapa-container {
+        padding: 15px; /* Minimum padding for small screens */
+    }
+
+    .zonas-container {
+        gap: 12px; /* Smallest gap for mobile */
+        margin-top: 15px;
+    }
+}
