@@ -274,7 +274,7 @@ h1 {
 /* Imagen del evento dentro de la tarjeta */
 .event-image {
     width: 100%;
-    height: 200px; /* Altura ligeramente aumentada */
+   
     object-fit: cover;
     border-bottom: 1px solid #333333;
 }
