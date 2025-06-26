@@ -37,7 +37,7 @@ export const Eventos = () => {
             title: evento.nombreEvento,
             description: evento.descripcion,
             club: evento.discoteca?.nombre || 'Sin discoteca',
-            image: evento.discoteca?.imagen || '/card.png',
+            image: evento.imagen || '/card.png',
           };
         }).filter(Boolean); // Filtra cualquier 'null' si omitiste eventos sin ID
 

@@ -1,21 +1,11 @@
 /* Estilo general para el fondo */
 body {
-<<<<<<< HEAD
-    background: linear-gradient(120deg, #f8f8ff 0%, #f3e6fa 100%);
-    font-family: 'Montserrat', Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    line-height: 1.6;
-    color: #333;
-    overflow-x: hidden; /* Evita el scroll horizontal */
-=======
     background-color: #121212; /* Fondo muy oscuro, casi negro, para una experiencia inmersiva */
     font-family: 'Arial', sans-serif; /* Fuente limpia y legible */
     margin: 0;
     padding: 0;
     line-height: 1.7; /* Mejora la legibilidad del texto aumentando el interlineado */
     color: #e0e0e0; /* Color de texto predeterminado para el body, claro sobre oscuro */
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 /* Estilo para el título principal de la página de discotecas */
@@ -24,15 +14,8 @@ h1 {
     text-align: center;
     font-size: 3.5rem; /* Tamaño de fuente más grande */
     color: #8b08a5; /* Color púrpura vibrante (Púrpura Principal) */
-<<<<<<< HEAD
-    margin-bottom: 30px;
-    text-shadow: 4px 4px 6px rgba(0, 0, 0, 0.3); /* Sombra para resaltar el título */
-    font-family: 'Montserrat', 'Orbitron', Arial, sans-serif;
-    letter-spacing: 1px;
-=======
     margin-bottom: 40px; /* Espacio inferior aumentado */
     text-shadow: 4px 4px 8px rgba(0, 0, 0, 0.5); /* Sombra más pronunciada para resaltar */
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 /* Estilos para las tarjetas individuales de discotecas en la lista */
@@ -47,22 +30,12 @@ h1 {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
-<<<<<<< HEAD
-    justify-content: space-between; /* Empuja el botón al final */
-    transition: box-shadow 0.25s, transform 0.18s;
-}
-
-.card:hover {
-    transform: translateY(-6px) scale(1.02); /* Mayor elevación al pasar el mouse */
-    box-shadow: 0 8px 32px #a78bfa33; /* Sombra aún más marcada */
-=======
     justify-content: space-between;
 }
 
 .card:hover {
     transform: translateY(-15px); /* Mayor elevación al pasar el mouse */
     box-shadow: 0 18px 35px rgba(0, 0, 0, 0.6); /* Sombra aún más marcada y difusa */
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 .card-image {
@@ -77,8 +50,6 @@ h1 {
     font-size: 2.2rem; /* Tamaño del texto aumentado */
     margin-bottom: 18px; /* Espacio aumentado */
     color: #8b08a5; /* Tono púrpura principal para el título de la tarjeta */
-    font-family: 'Montserrat', 'Orbitron', Arial, sans-serif;
-    letter-spacing: 1px;
 }
 
 .card p {
@@ -109,25 +80,12 @@ h1 {
     font-weight: bold;
     letter-spacing: 1.2px;
     transition: background-color 0.3s ease, transform 0.2s ease;
-<<<<<<< HEAD
-    margin-top: auto; /* Empuja el botón al final de la tarjeta */
-    box-shadow: 0 2px 8px #a533cc22;
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-weight: 600;
-    letter-spacing: 1px;
-    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
-=======
     margin-top: auto;
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 .ver-discoteca-btn:hover {
     background-color: #8b08a5;
     transform: translateY(-3px);
-}
-
-.ver-discoteca-btn:active {
-    transform: scale(0.97);
 }
 
 /* ************************************************************ */
@@ -193,13 +151,7 @@ h1 {
     margin-bottom: 20px; /* Espacio aumentado */
     color: #a533cc;
     font-weight: bold;
-<<<<<<< HEAD
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3); /* Sombra sutil para el título */
-    font-family: 'Montserrat', 'Orbitron', Arial, sans-serif;
-    letter-spacing: 1px;
-=======
     text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.6); /* Sombra más intensa */
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 /* Descripción de la discoteca */
@@ -241,26 +193,13 @@ h1 {
     font-weight: bold;
     letter-spacing: 1.8px; /* Mayor espaciado */
     transition: background-color 0.3s ease, transform 0.2s ease;
-<<<<<<< HEAD
-    margin-top: 30px; /* Espacio arriba */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Sombra para el botón */
-    box-shadow: 0 2px 8px #a533cc22;
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-weight: 600;
-    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
-=======
     margin-top: 40px; /* Espacio aumentado */
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.4);
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 .reserve-btn:hover {
     background-color: #a533cc;
     transform: translateY(-4px); /* Mayor elevación */
-}
-
-.reserve-btn:active {
-    transform: scale(0.97);
 }
 
 /* Botón "Volver a la lista" */
@@ -273,26 +212,12 @@ h1 {
     border-radius: 10px; /* Bordes más redondeados */
     cursor: pointer;
     transition: background-color 0.3s ease;
-<<<<<<< HEAD
-    margin-top: 25px; /* Espacio debajo de la imagen */
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2); /* Sombra sutil */
-    box-shadow: 0 2px 8px #a533cc22;
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-weight: 600;
-    letter-spacing: 1px;
-    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
-=======
     margin-top: 30px; /* Espacio aumentado */
     box-shadow: 0 3px 12px rgba(0, 0, 0, 0.3);
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 .back-to-list-btn:hover {
     background-color: #555555;
-}
-
-.back-to-list-btn:active {
-    transform: scale(0.97);
 }
 
 /* ************************************************************ */
@@ -300,15 +225,6 @@ h1 {
 /* ************************************************************ */
 
 .discoteca-events-section {
-<<<<<<< HEAD
-    padding: 30px; /* Relleno interno */
-    background: linear-gradient(120deg, #f8f8ff 80%, #f3e6fa 100%); /* Un gris muy claro, casi blanco, para la sección */
-    border-radius: 12px; /* Bordes redondeados */
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
-    border: 2px solid #a533cc22; /* Borde muy sutil */
-    color: #333333; /* Texto oscuro para contraste en esta sección */
-    margin-top: 20px; /* Espacio con la sección de arriba */
-=======
     padding: 40px; /* Relleno interno aumentado */
     background-color: #0a0a0a; /* Un negro muy oscuro para la sección de eventos */
     border-radius: 15px; /* Bordes más redondeados */
@@ -317,24 +233,14 @@ h1 {
     color: #e0e0e0;
     margin-top: 50px; /* Aumentado: crea una separación clara con la sección de detalles */
     margin-bottom: 40px; /* Espacio inferior para la sección de eventos */
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 .discoteca-events-section h3 {
     text-align: center;
-<<<<<<< HEAD
-    font-size: 2.2em;
-    color: #8b08a5; /* Tu púrpura principal para el título de la sección de eventos */
-    margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
-    font-family: 'Montserrat', 'Orbitron', Arial, sans-serif;
-    letter-spacing: 1px;
-=======
     font-size: 2.5em; /* Título de sección más grande */
     color: #8b08a5;
     margin-bottom: 40px; /* Espacio aumentado */
     text-shadow: 2px 2px 7px rgba(0, 0, 0, 0.4);
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 /* Contenedor para las tarjetas de eventos */
@@ -347,26 +253,6 @@ h1 {
 
 /* Estilos para cada tarjeta de evento individual */
 .event-card {
-<<<<<<< HEAD
-    background: rgba(34, 34, 60, 0.85); /* Fondo oscuro translúcido */
-    backdrop-filter: blur(6px);
-    border: 1.5px solid #a533cc33;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.18);
-    width: 300px; /* Ancho fijo para la tarjeta de evento */
-    overflow: hidden; /* Asegura que los elementos internos no se desborden */
-    transition: transform 0.3s, box-shadow 0.3s; /* Transición para efectos hover */
-    color: #f3f3fa;
-    display: flex; /* Usa flexbox para organizar contenido */
-    flex-direction: column;
-    justify-content: space-between; /* Empuja el botón al final */
-    transition: box-shadow 0.25s, transform 0.18s;
-}
-
-.event-card:hover {
-    transform: translateY(-6px) scale(1.02); /* Pequeña elevación al pasar el mouse */
-    box-shadow: 0 8px 32px #a78bfa33; /* Sombra más pronunciada al pasar el mouse */
-=======
     background-color: #1a1a1a; /* Fondo oscuro para las tarjetas de evento */
     border: 1px solid #333333;
     border-radius: 12px; /* Bordes redondeados */
@@ -383,7 +269,6 @@ h1 {
 .event-card:hover {
     transform: translateY(-8px); /* Mayor elevación */
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4); /* Sombra más pronunciada */
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 /* Imagen del evento dentro de la tarjeta */
@@ -403,39 +288,21 @@ h1 {
 
 /* Título del evento */
 .event-details h4 {
-<<<<<<< HEAD
-    font-size: 1.4em;
-    color: #8b08a5; /* Púrpura principal para el título del evento */
-    margin-bottom: 10px;
-    font-family: 'Montserrat', 'Orbitron', Arial, sans-serif;
-    letter-spacing: 1px;
-=======
     font-size: 1.5em; /* Título del evento más grande */
     color: #a533cc;
     margin-bottom: 12px; /* Espacio aumentado */
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 /* Párrafos de detalles del evento */
 .event-details p {
-<<<<<<< HEAD
-    font-size: 0.95em;
-    margin: 5px 0;
-    color: #c0c0c0; /* Un gris más oscuro para la info del evento */
-=======
     font-size: 1.05em; /* Texto de detalles del evento más grande */
     margin: 8px 0; /* Espacio aumentado */
     color: #c0c0c0;
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 /* Etiquetas en negrita dentro de los detalles del evento */
 .event-details strong {
-<<<<<<< HEAD
-    color: #f3f3fa; /* Texto oscuro en negrita */
-=======
     color: #ffffff;
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 /* Botón "Ver Detalles del Evento" */
@@ -448,27 +315,13 @@ h1 {
     border-radius: 8px; /* Bordes más redondeados */
     cursor: pointer;
     transition: background-color 0.3s ease;
-<<<<<<< HEAD
-    margin-top: 15px;
-    width: 100%; /* Botón de ancho completo */
-    box-shadow: 0 2px 8px #a533cc22;
-    font-family: 'Montserrat', Arial, sans-serif;
-    font-weight: 600;
-    letter-spacing: 1px;
-    transition: background 0.2s, box-shadow 0.2s, transform 0.15s;
-=======
     margin-top: 20px; /* Espacio aumentado */
     width: 100%;
     font-weight: bold;
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
 }
 
 .event-view-btn:hover {
     background-color: #8b08a5;
-}
-
-.event-view-btn:active {
-    transform: scale(0.97);
 }
 
 /* Mensajes de estado (cargando, error, sin eventos) */
@@ -490,34 +343,19 @@ h1 {
 /* MEDIA QUERIES PARA RESPONSIVIDAD */
 /* ************************************************************ */
 
-<<<<<<< HEAD
-@media (max-width: 1200px) {
-    .single-discoteca-page-container {
-        max-width: 95%; /* Ajusta el ancho máximo para pantallas más pequeñas */
-        margin: 20px auto;
-=======
 @media (max-width: 1000px) {
     /* Ajustes para la vista de lista */
     .card {
         width: 400px;
         padding: 30px;
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
     }
 
-<<<<<<< HEAD
-@media (max-width: 1000px) {
-    /* Ajustes para la vista de lista */
-    .card {
-        width: 350px; /* Ligeramente más pequeñas en tabletas */
-        padding: 30px;
-=======
     .card h2 {
         font-size: 2rem;
     }
 
     .card p {
         font-size: 1em;
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
     }
 
     /* Ajustes para la vista de una sola discoteca */
@@ -530,36 +368,13 @@ h1 {
     }
 
     .single-discoteca-image-container {
-<<<<<<< HEAD
-        flex: 0 0 auto; /* Permite que el contenedor de la imagen se ajuste */
-        width: 100%; /* La imagen ocupa todo el ancho disponible */
-        max-width: 450px; /* Limita el tamaño de la imagen en dispositivos más pequeños */
-=======
         flex: 0 0 auto;
         width: 100%;
         max-width: 400px;
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
         margin-bottom: 20px;
     }
 
     .single-discoteca-image {
-<<<<<<< HEAD
-        height: 300px; /* Altura ajustada para la imagen en tabletas */
-    }
-
-    .single-discoteca-details {
-        padding-left: 0; /* Elimina el padding izquierdo */
-        text-align: center; /* Centra el texto en tabletas */
-    }
-
-    .single-discoteca-details h2 {
-        font-size: 2.5em; /* Ajusta el tamaño del título para tabletas */
-    }
-
-    .discoteca-info-grid {
-        grid-template-columns: 1fr; /* Una sola columna para la información en tabletas */
-        gap: 8px; /* Reduce el espacio */
-=======
         height: 300px;
     }
 
@@ -581,7 +396,6 @@ h1 {
         grid-template-columns: 1fr;
         gap: 10px;
         font-size: 1em;
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
     }
 
     .reserve-btn {
@@ -595,10 +409,6 @@ h1 {
     }
 
     /* Ajustes para la sección de eventos */
-<<<<<<< HEAD
-    .discoteca-events-section {
-        padding: 20px;
-=======
     .single-discoteca-page-container {
         padding: 0; /* Asegurar que no haya padding aquí en móvil */
         margin: 20px auto;
@@ -608,15 +418,11 @@ h1 {
         padding: 25px;
         margin-top: 30px; /* Ajustar margen */
         margin-bottom: 20px;
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
     }
 
     .discoteca-events-section h3 {
         font-size: 2em;
-<<<<<<< HEAD
-=======
         margin-bottom: 30px;
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
     }
 
     .events-container {
@@ -624,10 +430,6 @@ h1 {
     }
 
     .event-card {
-<<<<<<< HEAD
-        width: calc(50% - 30px); /* Dos tarjetas por fila en tabletas */
-        max-width: 350px;
-=======
         width: 95%; /* Las tarjetas de evento ocupan casi todo el ancho en móviles */
     }
 
@@ -646,189 +448,14 @@ h1 {
     .event-view-btn {
         font-size: 0.95em;
         padding: 10px 15px;
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
     }
 }
-
-@media (max-width: 768px) {
-    /* Ajustes generales */
-    body {
-        font-size: 0.95em;
-    }
-
-    h1 {
-        font-size: 2.8rem;
-        margin-top: 40px;
-    }
-
-    /* Ajustes para la vista de lista */
-    .discotecas-container {
-        padding: 20px;
-        gap: 20px;
-    }
-
-    .card {
-        width: 85%; /* Las tarjetas ocupan un mayor porcentaje del ancho */
-        max-width: 380px; /* Limita el ancho máximo para evitar que sean demasiado grandes */
-        padding: 25px;
-    }
-
-    .card-image {
-        height: 250px;
-    }
-
-    .card h2 {
-        font-size: 1.6rem;
-    }
-
-    /* Ajustes para la vista de una sola discoteca */
-    .single-discoteca-image-container {
-        max-width: 90%; /* Ajusta el ancho de la imagen en dispositivos más pequeños */
-    }
-
-    .single-discoteca-image {
-        height: 280px;
-    }
-
-    .single-discoteca-details h2 {
-        font-size: 2em;
-    }
-
-    .discoteca-description {
-        font-size: 1em;
-    }
-
-    .reserve-btn {
-        padding: 12px 20px;
-        font-size: 1em;
-    }
-
-    /* Ajustes para la sección de eventos */
-    .event-card {
-        width: 100%; /* Las tarjetas de evento ocupan todo el ancho en móviles */
-        max-width: 350px; /* Limita el ancho máximo de las tarjetas de evento */
-    }
-
-    .event-image {
-        height: 160px;
-    }
-
-    .event-details h4 {
-        font-size: 1.2em;
-    }
-}
-
 
 @media (max-width: 500px) {
     /* Ajustes adicionales para móviles muy pequeños */
     h1 {
         font-size: 2.2rem;
         margin-top: 20px;
-<<<<<<< HEAD
-        margin-bottom: 20px;
-    }
-
-    .discotecas-container {
-        padding: 15px;
-    }
-
-    .card {
-        width: 95%; /* Las tarjetas ocupan casi todo el ancho */
-        padding: 15px;
-    }
-
-    .card-image {
-        height: 200px; /* Altura más pequeña para imágenes en móviles muy pequeños */
-    }
-
-    .card h2 {
-        font-size: 1.5rem;
-    }
-
-    /* Ajustes para la vista de una sola discoteca */
-    .single-discoteca-page-container {
-        padding: 10px;
-        margin: 10px auto;
-    }
-
-    .single-discoteca-view {
-        padding: 15px;
-    }
-
-    .single-discoteca-image-container {
-        max-width: 100%;
-        margin-bottom: 15px;
-    }
-
-    .single-discoteca-image {
-        height: 220px;
-    }
-
-    .single-discoteca-details h2 {
-        font-size: 1.8em;
-    }
-
-    .discoteca-description {
-        font-size: 0.9em;
-        margin-bottom: 15px;
-    }
-
-    .discoteca-info-grid {
-        gap: 5px;
-        font-size: 0.9em;
-    }
-
-    .reserve-btn {
-        padding: 10px 15px;
-        font-size: 0.9em;
-        margin-top: 20px;
-    }
-
-    .back-to-list-btn {
-        padding: 8px 15px;
-        font-size: 0.8em;
-        margin-top: 15px;
-    }
-
-    /* Ajustes para la sección de eventos */
-    .discoteca-events-section {
-        padding: 10px;
-    }
-
-    .discoteca-events-section h3 {
-        font-size: 1.6em;
-        margin-bottom: 20px;
-    }
-
-    .events-container {
-        gap: 15px;
-    }
-
-    .event-card {
-        padding: 0; /* Remove padding if not needed, as event-details has padding */
-    }
-
-    .event-image {
-        height: 140px;
-    }
-
-    .event-details {
-        padding: 10px;
-    }
-
-    .event-details h4 {
-        font-size: 1.1em;
-    }
-
-    .event-details p {
-        font-size: 0.85em;
-    }
-
-    .event-view-btn {
-        padding: 8px 10px;
-        font-size: 0.8em;
-        margin-top: 10px;
-=======
         margin-bottom: 30px;
     }
 
@@ -873,6 +500,5 @@ h1 {
 
     .event-card {
         width: 100%; /* Asegura ancho completo */
->>>>>>> 83c2f059f39db9efd6c3444df28eb7194f789e3b
     }
 }

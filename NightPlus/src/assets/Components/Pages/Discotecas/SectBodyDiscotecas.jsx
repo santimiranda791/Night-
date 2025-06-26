@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom"; // Importa useNavigate
 import '../../../../Styles/Discotecas.css'; // Asegúrate de que esta ruta sea correcta
 
 export const SectBodyDiscotecas = () => {
+    const navigate = useNavigate(); // Inicializa useNavigate
     const [discotecas, setDiscotecas] = useState([]);
     const [error, setError] = useState(null);
     const [selectedDiscoteca, setSelectedDiscoteca] = useState(null);
@@ -117,14 +119,19 @@ export const SectBodyDiscotecas = () => {
                         )}
                         <div className="events-container">
                             {discotecaEvents.length > 0 && discotecaEvents.map(event => (
-                                <div className="event-card" key={event.id}> {/* Asume 'id' es el ID único del evento */}
-                                    <img src={event.imagen || '/placeholder-event.jpg'} alt={event.nombre} className="event-image" />
+                                <div className="event-card" key={event.idEvento}> {/* Asume 'idEvento' es el ID único del evento */}
+                                    <img src={event.imagen || '/placeholder-event.jpg'} alt={event.nombreEvento} className="event-image" />
                                     <div className="event-details">
-                                        <h4>{event.nombre}</h4>
+                                        <h4>{event.nombreEvento}</h4>
                                         <p><strong>Fecha:</strong> {new Date(event.fecha).toLocaleDateString('es-CO', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                                         <p><strong>Hora:</strong> {event.hora}</p> {/* Asume 'hora' existe */}
                                         <p><strong>Precio:</strong> {event.precio ? `$${event.precio.toLocaleString('es-CO')}` : 'Gratis'}</p> {/* Asume 'precio' existe */}
-                                        <button className="event-view-btn">Ver Detalles del Evento</button>
+                                        <button
+                                            className="event-view-btn"
+                                            onClick={() => navigate(`/mapa/${event.idEvento}`)} // Aquí se usa navigate
+                                        >
+                                            Ver Detalles del Evento
+                                        </button>
                                     </div>
                                 </div>
                             ))}

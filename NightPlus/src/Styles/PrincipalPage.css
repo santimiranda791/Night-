@@ -1,42 +1,23 @@
-@import url('https://fonts.googleapis.com/css2?family=Syncopate&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syncopate&display=swap" rel="stylesheet');
+@import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&display=swap" rel="stylesheet');
 
-/* Global Reset */
 * {
-    font-family: "Syncopate", sans-serif;
-    font-weight: 400;
-    font-style: normal;
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box; /* Crucial for responsive design */
+  font-family: "Syncopate", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  margin: 0;
+  padding: 0;
 }
 
-/* Body Styles */
 body {
-    background: linear-gradient(90deg, #1a1a1a 45%, #3b1c68);
-    width: 100%;
-    min-height: 100vh; /* Use min-height instead of height to ensure content fits */
-    overflow-x: hidden; /* Prevents horizontal scrolling */
-    overflow-y: auto; /* Allows vertical scrolling */
+  background: linear-gradient(90deg, #1a1a1a 45%, #3b1c68);
+  width: 100%;
+  height: 100%;
+  
 }
 
-/* --- Media Queries for Responsiveness --- */
-
-/* Tablets and medium screens */
-@media (max-width: 992px) {
-    /* No major changes needed here for body/global.
-       Specific component adjustments will handle sizing. */
-}
-
-/* Mobile devices */
-@media (max-width: 768px) {
-    body {
-        /* Consider adjusting the background gradient if needed for very narrow screens */
-        /* background: linear-gradient(90deg, #1a1a1a 60%, #3b1c68); */
-    }
-}
-
-/* Smaller mobile devices */
-@media (max-width: 480px) {
-    /* No additional body/global changes usually needed here. */
+body {
+  /* ...otros estilos... */
+  overflow-x: hidden;
+  overflow-y: auto;
 }
