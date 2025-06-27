@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export const CarritoCompra = ({ carrito, onEliminarZona }) => {
-  const navigate = useNavigate(); // <-- Hook para navegar
+  const navigate = useNavigate();
 
   const formatearPrecio = (valor) =>
     new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
@@ -36,9 +36,54 @@ export const CarritoCompra = ({ carrito, onEliminarZona }) => {
     return acc + calcularTotalZona(i, precioUnitario);
   }, 0);
 
-  const finalizarCompra = () => {
-    // Aquí puedes enviar info al backend o al nuevo componente vía estado
-    navigate('/reserva', { state: { carrito, cantidades, total: totalGeneral } });
+  const finalizarCompra = async () => {
+    // Prepare items for Mercado Pago
+    const items = carrito.map((zona, index) => ({
+      title: zona.nombre,
+      unit_price: parsearPrecio(zona.precio),
+      quantity: cantidades[index],
+      currency_id: "COP", // Assuming Colombian Pesos
+      picture_url: zona.imagen || "", // Add an image if available
+      description: `Entrada para el sector ${zona.nombre} (${zona.tipo})`,
+    }));
+
+    // Example of data structure for your backend
+    const orderData = {
+      items: items,
+      total: totalGeneral,
+      // You might also want to send buyer info, event ID, etc.
+      // buyer_info: { email: 'user@example.com' },
+      // event_id: 'some-event-id',
+    };
+
+    try {
+      const response = await fetch('http://localhost:8080/servicio/create-mercadopago-preference', { // <-- Endpoint en tu backend
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error al crear preferencia de pago: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      const checkoutUrl = data.checkoutUrl; // Assuming your backend returns a 'checkoutUrl'
+
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl; // Redirect to Mercado Pago
+      } else {
+        console.error('No se recibió una URL de checkout de Mercado Pago.');
+        alert('Hubo un problema al iniciar el proceso de pago. Intenta de nuevo.');
+      }
+
+    } catch (error) {
+      console.error('Error en finalizarCompra:', error);
+      alert(`Error al procesar la compra: ${error.message}`);
+    }
   };
 
   return (

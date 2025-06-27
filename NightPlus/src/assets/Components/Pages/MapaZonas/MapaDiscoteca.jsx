@@ -4,29 +4,39 @@ import { useParams } from 'react-router-dom';
 import PlanoDiscoteca from './PlanoDiscoteca'; // Asegúrate de que la ruta sea correcta
 
 export const MapaDiscoteca = () => {
-  const { idEvento } = useParams(); // Obtiene el ID del evento de la URL
+  const { idEvento } = useParams();
   const [mostrarPrecios, setMostrarPrecios] = useState(true);
   const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
   const [evento, setEvento] = useState(null);
   const [error, setError] = useState(null);
 
+  // Helper function to parse price strings to numbers
+  const parsearPrecio = (precioStr) =>
+    parseFloat(
+      precioStr
+        .replace(/[^0-9,.-]+/g, '') // Remove non-numeric characters except comma/dot
+        .replace(/\./g, '')         // Remove thousands separators (dots)
+        .replace(',', '.')          // Replace comma with dot for decimal
+    );
+
+  // Helper function to format price for display (optional, can be kept)
+  const formatearPrecio = (valor) =>
+    new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
+
+
   useEffect(() => {
-    // Este log te mostrará el ID exacto que recibió MapaDiscoteca de la URL.
     console.log(`MapaDiscoteca.jsx: idEvento obtenido de la URL: "${idEvento}" (Tipo: ${typeof idEvento})`);
 
-    // Validamos que idEvento sea un número válido y no el string "undefined"
-    // parseInt convertirá "3" a 3, pero "undefined" a NaN. Number.isNaN(NaN) es true.
     const numericId = parseInt(idEvento);
 
-    if (idEvento && !Number.isNaN(numericId) && numericId > 0) { // Asegura que es un número positivo válido
-      const apiUrl = `http://localhost:8080/servicio/evento/${numericId}`; // Usar numericId aquí
+    if (idEvento && !Number.isNaN(numericId) && numericId > 0) {
+      const apiUrl = `http://localhost:8080/servicio/evento/${numericId}`;
       console.log(`MapaDiscoteca.jsx: Realizando fetch a: ${apiUrl}`);
 
       fetch(apiUrl)
         .then(response => {
           console.log(`MapaDiscoteca.jsx: Respuesta de la API - Estado: ${response.status}`);
           if (!response.ok) {
-            // Intenta leer el cuerpo de la respuesta para obtener más detalles del error del backend.
             return response.text().then(text => {
               throw new Error(`No se pudo cargar el evento con ID: ${numericId}. Estado: ${response.status}. Mensaje del backend: ${text}`);
             });
@@ -41,23 +51,90 @@ export const MapaDiscoteca = () => {
         .catch(err => {
           console.error('MapaDiscoteca.jsx: Error al cargar el evento:', err);
           setEvento(null);
-          // Actualiza el estado de error con el mensaje detallado.
           setError(`Error al cargar el evento: ${err.message}. Por favor, verifica los logs del servidor.`);
         });
     } else {
       console.warn("MapaDiscoteca.jsx: ID de evento inválido o no proporcionado. No se realizará la petición API.");
-      setEvento(null); // Limpiar datos de evento si el ID no es válido
+      setEvento(null);
       setError("No se ha proporcionado un ID de evento válido para mostrar el mapa.");
     }
-  }, [idEvento]); // Este efecto se re-ejecutará si el idEvento en la URL cambia
+  }, [idEvento]);
 
   const handleSeleccionarZona = (zona) => {
-    setZonaSeleccionada(zona);
+    // When a zone is selected, ensure its price is parsed and quantity is 1
+    setZonaSeleccionada({
+      ...zona,
+      precio: parsearPrecio(zona.precio), // Store as number
+      cantidad: 1 // Default quantity to 1 when selected
+    });
   };
 
   const handleEliminarCarrito = () => {
     setZonaSeleccionada(null);
   };
+
+  // --- Mercado Pago Integration Logic ---
+  const finalizarCompra = async () => {
+    if (!zonaSeleccionada) {
+      alert("Por favor, selecciona una zona para finalizar la compra.");
+      return;
+    }
+    if (!evento || !evento.id) { // Ensure event data and ID are available
+      alert("No se pudo obtener la información del evento para procesar el pago.");
+      return;
+    }
+
+    // Prepare items for Mercado Pago (using a single item from zonaSeleccionada)
+    const items = [{
+      id: zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(' ', '-')}`, // Use zona ID or create one
+      title: zonaSeleccionada.nombre,
+      description: `Entrada para el sector ${zonaSeleccionada.nombre} (${zonaSeleccionada.tipo || 'N/A'})`,
+      pictureUrl: "", // Add a picture URL if available for zones
+      quantity: zonaSeleccionada.cantidad, // Should be 1
+      unitPrice: zonaSeleccionada.precio, // Already parsed to number
+      currencyId: "COP", // Assuming Colombian Pesos
+    }];
+
+    const totalCalculated = zonaSeleccionada.precio * zonaSeleccionada.cantidad; // Recalculate based on selected zone
+
+    // Data structure for your backend, matching MercadoPagoCreatePreferenceRequest
+    const orderData = {
+      items: items,
+      total: totalCalculated,
+      eventId: evento.id.toString(), // Send event ID as string
+    };
+
+    try {
+      const response = await fetch('http://localhost:8080/servicio/create-mercadopago-preference', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(orderData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Error al crear preferencia de pago: ${response.status} - ${errorText}`);
+      }
+
+      const data = await response.json();
+      const checkoutUrl = data.checkoutUrl; // Assuming your backend returns a 'checkoutUrl'
+
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl; // Redirect to Mercado Pago
+      } else {
+        console.error('No se recibió una URL de checkout de Mercado Pago.');
+        alert('Hubo un problema al iniciar el proceso de pago. Intenta de nuevo.');
+      }
+
+    } catch (error) {
+      console.error('Error en finalizarCompra:', error);
+      alert(`Error al procesar la compra: ${error.message}`);
+    }
+  };
+  // --- End Mercado Pago Integration Logic ---
+
 
   return (
     <div
@@ -80,10 +157,10 @@ export const MapaDiscoteca = () => {
           margin: '20px',
           padding: '20px',
           boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-          height: 'calc(100vh - 40px)', // Ajustar altura para tener espacio para el margin
+          height: 'calc(100vh - 40px)',
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between' // Para empujar los botones abajo
+          justifyContent: 'space-between'
         }}
       >
         <div>
@@ -111,7 +188,7 @@ export const MapaDiscoteca = () => {
                 <div style={{ fontSize: '14px', marginBottom: '4px' }}>
                   <strong>Sector:</strong> {zonaSeleccionada.nombre}
                 </div>
-                <div style={{ fontSize: '14px' }}><strong>Precio:</strong> ${zonaSeleccionada.precio.toLocaleString()}</div>
+                <div style={{ fontSize: '14px' }}><strong>Precio:</strong> {formatearPrecio(zonaSeleccionada.precio)}</div>
               </div>
             </>
           ) : (
@@ -120,7 +197,7 @@ export const MapaDiscoteca = () => {
         </div>
 
         {zonaSeleccionada && (
-          <div style={{ marginTop: 'auto' }}> {/* Empuja esto hacia abajo */}
+          <div style={{ marginTop: 'auto' }}>
             <button
               onClick={handleEliminarCarrito}
               style={{
@@ -139,10 +216,11 @@ export const MapaDiscoteca = () => {
             </button>
 
             <div style={{ marginTop: '10px', fontSize: '14px', fontWeight: 'bold', textAlign: 'center' }}>
-              TOTAL: ${zonaSeleccionada.precio.toLocaleString()}
+              TOTAL: {formatearPrecio(zonaSeleccionada.precio)}
             </div>
 
             <button
+              onClick={finalizarCompra} // Hooked up to the Mercado Pago logic!
               style={{
                 backgroundColor: '#500073',
                 color: 'white',
@@ -166,11 +244,9 @@ export const MapaDiscoteca = () => {
         <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Mapa de la Discoteca</h2>
 
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {/* Aquí podrías pasarle el ID del evento o los detalles del evento a PlanoDiscoteca si los necesita */}
           <PlanoDiscoteca onSeleccionarZona={handleSeleccionarZona} />
         </div>
 
-        {/* Cuadro de precios */}
         {mostrarPrecios ? (
           <div
             style={{
