@@ -37,27 +37,27 @@ export const CarritoCompra = ({ carrito, onEliminarZona }) => {
   }, 0);
 
   const finalizarCompra = async () => {
-    // Prepare items for Mercado Pago
     const items = carrito.map((zona, index) => ({
       title: zona.nombre,
       unit_price: parsearPrecio(zona.precio),
       quantity: cantidades[index],
-      currency_id: "COP", // Assuming Colombian Pesos
-      picture_url: zona.imagen || "", // Add an image if available
+      currency_id: "COP",
+      picture_url: zona.imagen || "",
       description: `Entrada para el sector ${zona.nombre} (${zona.tipo})`,
     }));
 
-    // Example of data structure for your backend
     const orderData = {
       items: items,
       total: totalGeneral,
-      // You might also want to send buyer info, event ID, etc.
-      // buyer_info: { email: 'user@example.com' },
-      // event_id: 'some-event-id',
+      // Si este carrito es global y no está ligado a un evento específico de MapaDiscoteca,
+      // es posible que no tengas un eventId aquí.
+      // Puedes pasarlo como null o manejarlo según tu lógica de negocio.
+      // Si siempre está ligado a un evento, necesitarías pasar el eventId como prop a este componente.
+      eventId: null, // O el id del evento si lo tienes disponible en este contexto
     };
 
     try {
-      const response = await fetch('http://localhost:8080/servicio/create-mercadopago-preference', { // <-- Endpoint en tu backend
+      const response = await fetch('http://localhost:8080/servicio/create-mercadopago-preference', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -71,10 +71,10 @@ export const CarritoCompra = ({ carrito, onEliminarZona }) => {
       }
 
       const data = await response.json();
-      const checkoutUrl = data.checkoutUrl; // Assuming your backend returns a 'checkoutUrl'
+      const checkoutUrl = data.checkoutUrl;
 
       if (checkoutUrl) {
-        window.location.href = checkoutUrl; // Redirect to Mercado Pago
+        window.location.href = checkoutUrl;
       } else {
         console.error('No se recibió una URL de checkout de Mercado Pago.');
         alert('Hubo un problema al iniciar el proceso de pago. Intenta de nuevo.');
@@ -123,7 +123,7 @@ export const CarritoCompra = ({ carrito, onEliminarZona }) => {
             </div>
 
             <div
-              style={{ marginTop: '10px',  color: "#18122B", cursor: 'pointer' }}
+              style={{ marginTop: '10px', color: "#18122B", cursor: 'pointer' }}
               onClick={() => onEliminarZona(index)}
             >
               🗑️ Eliminar del carrito

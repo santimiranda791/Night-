@@ -1,10 +1,9 @@
-// src/assets/Components/Pages/MapaZonas/MapaDiscoteca.jsx
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PlanoDiscoteca from './PlanoDiscoteca'; // Asegúrate de que la ruta sea correcta
 
 export const MapaDiscoteca = () => {
-  const { idEvento } = useParams();
+  const { idEvento: idEventoParam } = useParams(); // Renombrar para evitar conflicto con el estado
   const [mostrarPrecios, setMostrarPrecios] = useState(true);
   const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
   const [evento, setEvento] = useState(null);
@@ -14,9 +13,9 @@ export const MapaDiscoteca = () => {
   const parsearPrecio = (precioStr) =>
     parseFloat(
       precioStr
-        .replace(/[^0-9,.-]+/g, '') // Remove non-numeric characters except comma/dot
-        .replace(/\./g, '')         // Remove thousands separators (dots)
-        .replace(',', '.')          // Replace comma with dot for decimal
+        .replace(/[^0-9,.-]+/g, '')
+        .replace(/\./g, '')
+        .replace(',', '.')
     );
 
   // Helper function to format price for display (optional, can be kept)
@@ -25,11 +24,12 @@ export const MapaDiscoteca = () => {
 
 
   useEffect(() => {
-    console.log(`MapaDiscoteca.jsx: idEvento obtenido de la URL: "${idEvento}" (Tipo: ${typeof idEvento})`);
+    // Usamos idEventoParam que viene de useParams
+    console.log(`MapaDiscoteca.jsx: idEvento obtenido de la URL: "${idEventoParam}" (Tipo: ${typeof idEventoParam})`);
 
-    const numericId = parseInt(idEvento);
+    const numericId = parseInt(idEventoParam);
 
-    if (idEvento && !Number.isNaN(numericId) && numericId > 0) {
+    if (idEventoParam && !Number.isNaN(numericId) && numericId > 0) {
       const apiUrl = `http://localhost:8080/servicio/evento/${numericId}`;
       console.log(`MapaDiscoteca.jsx: Realizando fetch a: ${apiUrl}`);
 
@@ -46,6 +46,10 @@ export const MapaDiscoteca = () => {
         .then(data => {
           console.log("MapaDiscoteca.jsx: Datos del evento cargados con éxito:", data);
           setEvento(data);
+          // *** IMPORTANTE: AQUI SE VE LA ESTRUCTURA REAL DEL OBJETO EVENTO ***
+          // Copia este console.log en tu consola del navegador cuando cargue la página
+          // para verificar el contenido de 'data'.
+          console.log("MapaDiscoteca.jsx: Objeto 'evento' establecido en el estado:", data);
           setError(null);
         })
         .catch(err => {
@@ -58,10 +62,9 @@ export const MapaDiscoteca = () => {
       setEvento(null);
       setError("No se ha proporcionado un ID de evento válido para mostrar el mapa.");
     }
-  }, [idEvento]);
+  }, [idEventoParam]); // Dependencia actualizada a idEventoParam
 
   const handleSeleccionarZona = (zona) => {
-    // When a zone is selected, ensure its price is parsed and quantity is 1
     setZonaSeleccionada({
       ...zona,
       precio: parsearPrecio(zona.precio), // Store as number
@@ -73,36 +76,44 @@ export const MapaDiscoteca = () => {
     setZonaSeleccionada(null);
   };
 
-  // --- Mercado Pago Integration Logic ---
   const finalizarCompra = async () => {
+    // *** Depuración clave aquí ***
+    console.log("MapaDiscoteca.jsx: Estado 'evento' al iniciar finalizarCompra:", evento);
+    // *** CAMBIO CLAVE: ACCEDIENDO A evento.idEvento ***
+    console.log("MapaDiscoteca.jsx: Valor de 'evento.idEvento' al iniciar finalizarCompra:", evento ? evento.idEvento : 'N/A');
+
     if (!zonaSeleccionada) {
       alert("Por favor, selecciona una zona para finalizar la compra.");
       return;
     }
-    if (!evento || !evento.id) { // Ensure event data and ID are available
-      alert("No se pudo obtener la información del evento para procesar el pago.");
+    // Asegúrate de que 'evento' y 'evento.idEvento' estén disponibles antes de continuar
+    // *** CAMBIO CLAVE: VALIDACIÓN DE evento.idEvento ***
+    if (!evento || !evento.idEvento) {
+      console.error("MapaDiscoteca.jsx: ERROR - 'evento' o 'evento.idEvento' no están disponibles en finalizarCompra.");
+      alert("No se pudo obtener la información del evento para procesar el pago. Por favor, recarga la página e intenta de nuevo.");
       return;
     }
 
-    // Prepare items for Mercado Pago (using a single item from zonaSeleccionada)
     const items = [{
-      id: zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(' ', '-')}`, // Use zona ID or create one
+      id: zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(' ', '-')}`,
       title: zonaSeleccionada.nombre,
       description: `Entrada para el sector ${zonaSeleccionada.nombre} (${zonaSeleccionada.tipo || 'N/A'})`,
-      pictureUrl: "", // Add a picture URL if available for zones
-      quantity: zonaSeleccionada.cantidad, // Should be 1
-      unitPrice: zonaSeleccionada.precio, // Already parsed to number
-      currencyId: "COP", // Assuming Colombian Pesos
+      pictureUrl: "",
+      quantity: zonaSeleccionada.cantidad,
+      unitPrice: zonaSeleccionada.precio,
+      currencyId: "COP",
     }];
 
-    const totalCalculated = zonaSeleccionada.precio * zonaSeleccionada.cantidad; // Recalculate based on selected zone
+    const totalCalculated = zonaSeleccionada.precio * zonaSeleccionada.cantidad;
 
-    // Data structure for your backend, matching MercadoPagoCreatePreferenceRequest
     const orderData = {
       items: items,
-      total: totalCalculated,
-      eventId: evento.id.toString(), // Send event ID as string
+      total: totalCalculated, // Se envía, pero el backend debe recalcularlo para seguridad
+      // *** CAMBIO CLAVE: ENVIANDO evento.idEvento AL BACKEND ***
+      eventId: String(evento.idEvento), // Asegúrate de que 'evento.idEvento' contenga el ID numérico
     };
+
+    console.log("MapaDiscoteca.jsx: Datos a enviar a Mercado Pago:", orderData);
 
     try {
       const response = await fetch('http://localhost:8080/servicio/create-mercadopago-preference', {
@@ -115,26 +126,25 @@ export const MapaDiscoteca = () => {
 
       if (!response.ok) {
         const errorText = await response.text();
+        console.error("MapaDiscoteca.jsx: Error detallado de la API al crear preferencia:", errorText);
         throw new Error(`Error al crear preferencia de pago: ${response.status} - ${errorText}`);
       }
 
       const data = await response.json();
-      const checkoutUrl = data.checkoutUrl; // Assuming your backend returns a 'checkoutUrl'
+      const checkoutUrl = data.checkoutUrl;
 
       if (checkoutUrl) {
-        window.location.href = checkoutUrl; // Redirect to Mercado Pago
+        window.location.href = checkoutUrl;
       } else {
-        console.error('No se recibió una URL de checkout de Mercado Pago.');
+        console.error('MapaDiscoteca.jsx: No se recibió una URL de checkout de Mercado Pago.');
         alert('Hubo un problema al iniciar el proceso de pago. Intenta de nuevo.');
       }
 
     } catch (error) {
-      console.error('Error en finalizarCompra:', error);
+      console.error('MapaDiscoteca.jsx: Error en finalizarCompra:', error);
       alert(`Error al procesar la compra: ${error.message}`);
     }
   };
-  // --- End Mercado Pago Integration Logic ---
-
 
   return (
     <div
@@ -169,10 +179,10 @@ export const MapaDiscoteca = () => {
           ) : evento ? (
             <>
               <h2 style={{ fontSize: '18px', marginBottom: '10px' }}>
-                {evento.nombreEvento}
+                {evento.nombreEvento || 'Nombre de Evento no disponible'}
               </h2>
               <p style={{ fontSize: '14px', marginBottom: '10px' }}>
-                {evento.fecha} {evento.hora}<br />
+                {evento.fecha || 'Fecha no disponible'} {evento.hora || 'Hora no disponible'}<br />
               </p>
               <p>La fiesta es en: {evento.discoteca?.nombre || 'Dirección no disponible'}</p>
               <br />
@@ -220,7 +230,7 @@ export const MapaDiscoteca = () => {
             </div>
 
             <button
-              onClick={finalizarCompra} // Hooked up to the Mercado Pago logic!
+              onClick={finalizarCompra}
               style={{
                 backgroundColor: '#500073',
                 color: 'white',
@@ -232,6 +242,8 @@ export const MapaDiscoteca = () => {
                 fontWeight: 'bold',
                 marginTop: '10px'
               }}
+              // *** CAMBIO CLAVE: HABILITAR/DESHABILITAR BOTÓN CON evento.idEvento ***
+              disabled={!evento || !evento.idEvento}
             >
               Finalizar compra
             </button>
