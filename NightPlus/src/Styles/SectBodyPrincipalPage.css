@@ -118,6 +118,28 @@
   transform: translateY(-12px) scale(1.04);
 }
 
+/* Quitar borde y fondo de la card e imagen wrap */
+.carousel-gold-card.no-border {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+}
+.carousel-gold-img-wrap.no-bg {
+  background: none !important;
+  border-bottom: none !important;
+}
+
+/* Imagen con proporción más estilizada */
+.carousel-gold-img.proportion-img {
+  width: 100%;
+  height: 350px;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+  border-radius: 32px;
+  box-shadow: 0 2px 24px #7f53ac44;
+  border: none;
+}
+
 .carousel-gold-img-wrap {
   width: 100%;
   background: #fff;
@@ -131,7 +153,6 @@
 .carousel-gold-img {
   width: 100%;
   height: 600px;
-
   border-radius: 40px 40px 0 0;
   box-shadow: 0 2px 24px #7f53acaa;
 }
@@ -194,60 +215,31 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: #000000;
-  color: #3f0172;
+  background: none;
+  color: #fff; /* Blancas por defecto */
   border: none;
-  font-size: 3rem;
-  padding: 0.7rem 1.5rem;
-  border-radius: 50%;
-  box-shadow: 0 4px 24px #6f00ff88;
+  font-size: 5rem;
+  padding: 0 2.2rem;
+  border-radius: 0;
+  box-shadow: none;
   cursor: pointer;
   z-index: 20;
-  transition: background 0.3s, color 0.3s;
-  opacity: 0.92;
+  transition: color 0.3s, transform 0.2s;
+  opacity: 1;
 }
-
 .carousel-gold-btn.left {
-  left: 0;
+  left: -80px;
 }
-
 .carousel-gold-btn.right {
-  right: 0;
+  right: -80px;
 }
-
 .carousel-gold-btn:hover,
 .carousel-gold-btn:focus {
-  background: #fff;
-  color: #7f53ac;
+  color: #a259e4; /* Morado principal del diseño */
+  transform: scale(1.15);
   outline: none;
 }
 
-/* --- Indicadores --- */
-.carousel-gold-indicators {
-  display: flex;
-  justify-content: center;
-  margin-top: 2rem;
-  gap: 1rem;
-}
-
-.carousel-gold-dot {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  border: 3px solid #000000;
-  background: #fff;
-  cursor: pointer;
-  transition: background 0.3s, border 0.3s;
-  outline: none;
-}
-
-.carousel-gold-dot.active,
-.carousel-gold-dot:hover {
-  background: #000000;
-  border: 3px solid #fff;
-}
-
-/* --- Responsive --- */
 @media (max-width: 900px) {
   .carousel-gold-card {
     min-width: 99vw;
@@ -269,6 +261,16 @@
   }
   .carousel-gold-info p {
     font-size: 1rem;
+  }
+  .carousel-gold-btn {
+    font-size: 3.5rem;
+    padding: 0 1.2rem;
+  }
+  .carousel-gold-btn.left {
+    left: -40px;
+  }
+  .carousel-gold-btn.right {
+    right: -40px;
   }
 }
 
@@ -293,5 +295,15 @@
   }
   .carousel-gold-info {
     padding: 0.7rem 0.3rem 0.7rem 0.3rem;
+  }
+  .carousel-gold-btn {
+    font-size: 2.2rem;
+    padding: 0 0.5rem;
+  }
+  .carousel-gold-btn.left {
+    left: -18px;
+  }
+  .carousel-gold-btn.right {
+    right: -18px;
   }
 }

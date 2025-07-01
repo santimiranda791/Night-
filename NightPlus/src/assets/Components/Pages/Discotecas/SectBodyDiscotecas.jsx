@@ -55,6 +55,27 @@ export const SectBodyDiscotecas = () => {
         }
     }, [selectedDiscoteca]); // Este efecto se ejecuta cada vez que selectedDiscoteca cambia
 
+    // Modificación para incluir nombre del cliente en las reseñas
+    useEffect(() => {
+        if (selectedDiscoteca) {
+            fetch(`http://localhost:8080/servicio/reseñas/discoteca/${selectedDiscoteca.nit}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('No se pudieron obtener las reseñas de esta discoteca.');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Aquí podrías manejar las reseñas si las quieres mostrar en esta sección
+                    // Por ejemplo, console.log(data);
+                    console.log('Reseñas:', data);
+                })
+                .catch(error => {
+                    console.error('Error al cargar reseñas:', error);
+                });
+        }
+    }, [selectedDiscoteca]);
+
     const handleViewDiscoteca = (discoteca) => {
         setSelectedDiscoteca(discoteca);
     };

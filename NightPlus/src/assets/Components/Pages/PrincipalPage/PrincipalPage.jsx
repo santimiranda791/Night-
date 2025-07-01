@@ -3,14 +3,14 @@ import '../../../../Styles/PrincipalPage.css'
 import { Header } from '../../Header/Header'
 import { Footer } from '../../Footer/Footer'
 import { SectBodyPrincipalPage } from '../../SectBodyPrincipalPage/SectBodyPrincipalPage'
-import { SectBodyDiscotecas } from '../Discotecas/SectBodyDiscotecas'
+import { SectBodyBuzonResenas } from '../../SectBodyBuzonResenas/SectBodyBuzonResenas'
 
 export const PrincipalPage = () => {
   return (
     <>
       <Header/> 
       <SectBodyPrincipalPage />
-      <SectBodyDiscotecas />
+      <SectBodyBuzonResenas nitDiscoteca={1} />
       <Footer /> {/* Usa el componente Footer aquí */}
     </>
   )

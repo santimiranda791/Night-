@@ -1,11 +1,62 @@
-.eventos-container {
+.eventos14-container {
   display: flex;
-  flex-wrap: wrap; /* Permite que las tarjetas se ajusten en varias filas */
-  gap: 24px; /* Espacio entre tarjetas */
+  flex-wrap: wrap;
+  padding: 2rem;
+  background-color: #0b0b14;
+  color: white;
+  gap: 2rem;
   justify-content: center;
-  padding: 32px 0;
 }
 
-.eventos-container .event-card{
-  width: 47%; /* Ancho de la tarjeta */
+.evento-principal {
+  flex: 2;
+  min-width: 300px;
+  max-width: 600px;
+}
+
+.evento-principal h2 {
+  font-size: 2.2rem;
+  font-weight: bold;
+  color: white;
+}
+
+.evento-principal .hashtag {
+  font-size: 1.1rem;
+  color: #f50082;
+  margin-top: 0.3rem;
+  font-weight: bold;
+}
+
+.boton-fucsia {
+  margin: 1rem 0;
+  padding: 0.7rem 1.5rem;
+  background: #ff006a;
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: not-allowed;
+}
+
+.ver-otros-eventos {
+  display: inline-block;
+  margin-top: 0.5rem;
+  color: #fff;
+  text-decoration: underline;
+  font-size: 0.9rem;
+}
+
+.ubicacion {
+  margin-top: 2rem;
+}
+
+.ubicacion h3 {
+  color: #ffcc00;
+}
+
+.eventos-lateral {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }

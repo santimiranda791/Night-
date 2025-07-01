@@ -38,7 +38,7 @@ export const SectBodyPrincipalPage = () => {
       image: "/card.png"
     }
   ];
-
+  
 
 const handleVerEvento = (id) => {
 
@@ -67,6 +67,23 @@ const handleVerEvento = (id) => {
     if (diff > 50) prevSlide();
     else if (diff < -50) nextSlide();
     touchStartX.current = null;
+  };
+
+  // Estado para reseñas
+  const [reviews, setReviews] = useState([]);
+  const [reviewName, setReviewName] = useState("");
+  const [reviewText, setReviewText] = useState("");
+
+  const handleSubmitReview = (e) => {
+    e.preventDefault();
+    if (reviewName.trim() && reviewText.trim()) {
+      setReviews(prev => [
+        { name: reviewName, text: reviewText },
+        ...prev
+      ]);
+      setReviewName("");
+      setReviewText("");
+    }
   };
 
   return (
@@ -104,12 +121,6 @@ const handleVerEvento = (id) => {
                       <div className="carousel-gold-img-wrap">
                         <img src={event.image} alt={`Imagen del ${event.title}`} className="carousel-gold-img" />
                       </div>
-                      <div className="carousel-gold-info">
-                        <strong>{event.title}</strong>
-                        <div className="carousel-gold-date">Fecha: {event.date}</div>
-                        <p>{event.description}</p>
-                        <button className="carousel-gold-event-btn" onClick={() => handleVerEvento(event.id)}>Ver Evento</button>
-                      </div>
                     </li>
                   ))}
                 </ul>
@@ -118,17 +129,21 @@ const handleVerEvento = (id) => {
             </div>
             <div className="carousel-gold-indicators">
               {events.map((_, idx) => (
-                <button
+                <span
                   key={idx}
-                  className={`carousel-gold-dot${currentIndex === idx ? ' active' : ''}`}
+                  className={`carousel-dot${currentIndex === idx ? ' active' : ''}`}
                   onClick={() => goToSlide(idx)}
                   aria-label={`Ir al evento ${idx + 1}`}
-                />
+                  style={{ cursor: 'pointer', fontSize: '2rem', margin: '0 6px', color: currentIndex === idx ? '#a259e4' : '#fff', transition: 'color 0.3s' }}
+                >
+                  &bull;
+                </span>
               ))}
             </div>
           </section>
         </div>
       </div>
+     
     </>
   )
 }
