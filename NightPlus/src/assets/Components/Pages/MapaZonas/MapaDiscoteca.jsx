@@ -1,30 +1,39 @@
+// src/components/MapaDiscoteca.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PlanoDiscoteca from './PlanoDiscoteca'; // Asegúrate de que la ruta sea correcta
 
+// --- ¡IMPORTANTE! REEMPLAZA ESTO CON EL ID REAL DEL USUARIO LOGUEADO ---
+// Esto debe venir de tu sistema de autenticación (contexto, Redux, local storage, etc.)
+const CURRENT_USER_ID = 1; // <--- VALOR DE PRUEBA. ¡CÁMBIALO POR EL ID DEL USUARIO LOGUEADO!
+
 export const MapaDiscoteca = () => {
-  const { idEvento: idEventoParam } = useParams(); // Renombrar para evitar conflicto con el estado
+  const { idEvento: idEventoParam } = useParams();
   const [mostrarPrecios, setMostrarPrecios] = useState(true);
   const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
   const [evento, setEvento] = useState(null);
   const [error, setError] = useState(null);
 
   // Helper function to parse price strings to numbers
-  const parsearPrecio = (precioStr) =>
-    parseFloat(
-      precioStr
+  const parsearPrecio = (precioStr) => {
+    if (typeof precioStr === 'number') {
+      return precioStr; // Ya es un número, devolverlo directamente
+    }
+    // Si es un string, intentar parsearlo
+    return parseFloat(
+      String(precioStr) // Asegúrate de que sea un string para .replace
         .replace(/[^0-9,.-]+/g, '')
         .replace(/\./g, '')
         .replace(',', '.')
     );
+  };
 
-  // Helper function to format price for display (optional, can be kept)
+  // Helper function to format price for display
   const formatearPrecio = (valor) =>
     new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
 
-
   useEffect(() => {
-    // Usamos idEventoParam que viene de useParams
     console.log(`MapaDiscoteca.jsx: idEvento obtenido de la URL: "${idEventoParam}" (Tipo: ${typeof idEventoParam})`);
 
     const numericId = parseInt(idEventoParam);
@@ -46,10 +55,6 @@ export const MapaDiscoteca = () => {
         .then(data => {
           console.log("MapaDiscoteca.jsx: Datos del evento cargados con éxito:", data);
           setEvento(data);
-          // *** IMPORTANTE: AQUI SE VE LA ESTRUCTURA REAL DEL OBJETO EVENTO ***
-          // Copia este console.log en tu consola del navegador cuando cargue la página
-          // para verificar el contenido de 'data'.
-          console.log("MapaDiscoteca.jsx: Objeto 'evento' establecido en el estado:", data);
           setError(null);
         })
         .catch(err => {
@@ -62,14 +67,20 @@ export const MapaDiscoteca = () => {
       setEvento(null);
       setError("No se ha proporcionado un ID de evento válido para mostrar el mapa.");
     }
-  }, [idEventoParam]); // Dependencia actualizada a idEventoParam
+  }, [idEventoParam]);
 
   const handleSeleccionarZona = (zona) => {
+    // Es CRUCIAL que 'zona' que viene de PlanoDiscoteca tenga un 'id' numérico válido.
+    // Si no lo tiene, aquí se propagará como 'undefined' o un valor no deseado.
+    console.log("Zona seleccionada recibida de PlanoDiscoteca:", zona);
     setZonaSeleccionada({
       ...zona,
-      precio: parsearPrecio(zona.precio), // Store as number
+      id: zona.id, // <--- Asegúrate que 'zona.id' NO ES UNDEFINED/NULL AQUÍ
+      nombre: zona.nombre || 'ZONA DESCONOCIDA', // Fallback por si acaso
+      precio: parsearPrecio(zona.precio), // Convertir a número
       cantidad: 1 // Default quantity to 1 when selected
     });
+    console.log("Zona seleccionada establecida en estado:", { ...zona, id: zona.id, precio: parsearPrecio(zona.precio), cantidad: 1 });
   };
 
   const handleEliminarCarrito = () => {
@@ -77,43 +88,62 @@ export const MapaDiscoteca = () => {
   };
 
   const finalizarCompra = async () => {
-    // *** Depuración clave aquí ***
     console.log("MapaDiscoteca.jsx: Estado 'evento' al iniciar finalizarCompra:", evento);
-    // *** CAMBIO CLAVE: ACCEDIENDO A evento.idEvento ***
     console.log("MapaDiscoteca.jsx: Valor de 'evento.idEvento' al iniciar finalizarCompra:", evento ? evento.idEvento : 'N/A');
 
-    if (!zonaSeleccionada) {
-      alert("Por favor, selecciona una zona para finalizar la compra.");
+    if (!zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null) {
+      alert("Por favor, selecciona una zona válida para finalizar la compra. El ID de la zona no está definido.");
+      console.error("MapaDiscoteca.jsx: ERROR - Zona seleccionada inválida o sin ID:", zonaSeleccionada);
       return;
     }
-    // Asegúrate de que 'evento' y 'evento.idEvento' estén disponibles antes de continuar
-    // *** CAMBIO CLAVE: VALIDACIÓN DE evento.idEvento ***
+
     if (!evento || !evento.idEvento) {
       console.error("MapaDiscoteca.jsx: ERROR - 'evento' o 'evento.idEvento' no están disponibles en finalizarCompra.");
       alert("No se pudo obtener la información del evento para procesar el pago. Por favor, recarga la página e intenta de nuevo.");
       return;
     }
 
-    const items = [{
-      id: zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(' ', '-')}`,
-      title: zonaSeleccionada.nombre,
-      description: `Entrada para el sector ${zonaSeleccionada.nombre} (${zonaSeleccionada.tipo || 'N/A'})`,
-      pictureUrl: "",
-      quantity: zonaSeleccionada.cantidad,
-      unitPrice: zonaSeleccionada.precio,
-      currencyId: "COP",
+    // --- CAMBIOS CRÍTICOS INICIO ---
+
+    // 1. Define los tickets para la reserva, incluyendo zonaId
+    const ticketsParaReserva = [{
+        zonaId: zonaSeleccionada.id, // <-- ¡AHORA INCLUYE EL ID DE LA ZONA!
+        quantity: zonaSeleccionada.cantidad,
+        unitPrice: zonaSeleccionada.precio,
     }];
 
-    const totalCalculated = zonaSeleccionada.precio * zonaSeleccionada.cantidad;
-
-    const orderData = {
-      items: items,
-      total: totalCalculated, // Se envía, pero el backend debe recalcularlo para seguridad
-      // *** CAMBIO CLAVE: ENVIANDO evento.idEvento AL BACKEND ***
-      eventId: String(evento.idEvento), // Asegúrate de que 'evento.idEvento' contenga el ID numérico
+    // 2. Construye el objeto reservationDetails con todos los campos esperados por el backend
+    const reservationDetails = {
+        eventId: parseInt(evento.idEvento), // Convertir a Integer si es necesario para el backend
+        userId: CURRENT_USER_ID, // Usar el ID del usuario logueado (CÁMBIALO!)
+        tickets: ticketsParaReserva,
+        totalAmount: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
     };
 
-    console.log("MapaDiscoteca.jsx: Datos a enviar a Mercado Pago:", orderData);
+    // 3. Construye el objeto items para Mercado Pago, asegurando un ID válido
+    // Si zonaSeleccionada.id es numérico, lo usa. Si no, usa un fallback basado en el nombre.
+    const itemId = String(zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(' ', '-')}-fallback`);
+
+    const itemsParaMercadoPago = [{
+        id: itemId, // <-- ¡AHORA SIEMPRE TENDRÁ UN VALOR DE STRING VÁLIDO!
+        title: zonaSeleccionada.nombre,
+        description: `Entrada para el sector ${zonaSeleccionada.nombre} (${zonaSeleccionada.tipo || 'N/A'})`,
+        picture_url: "", // Usar snake_case
+        quantity: zonaSeleccionada.cantidad,
+        unit_price: zonaSeleccionada.precio, // Usar snake_case
+        currency_id: "COP", // Usar snake_case
+    }];
+
+    // 4. Construye el objeto orderData que se envía al backend
+    const orderData = {
+      items: itemsParaMercadoPago,
+      total: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
+      reservationDetails: reservationDetails, // <-- ESTE ES EL CAMPO QUE NECESITA TU BACKEND
+    };
+
+    // --- CAMBIOS CRÍTICOS FIN ---
+
+    console.log("MapaDiscoteca.jsx: Datos a enviar a Mercado Pago:", JSON.stringify(orderData, null, 2));
 
     try {
       const response = await fetch('http://localhost:8080/servicio/create-mercadopago-preference', {
@@ -242,8 +272,8 @@ export const MapaDiscoteca = () => {
                 fontWeight: 'bold',
                 marginTop: '10px'
               }}
-              // *** CAMBIO CLAVE: HABILITAR/DESHABILITAR BOTÓN CON evento.idEvento ***
-              disabled={!evento || !evento.idEvento}
+              // Deshabilitar si no hay evento o si la zona seleccionada no tiene un ID válido
+              disabled={!evento || !evento.idEvento || !zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null}
             >
               Finalizar compra
             </button>
@@ -256,6 +286,7 @@ export const MapaDiscoteca = () => {
         <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Mapa de la Discoteca</h2>
 
         <div style={{ display: 'flex', justifyContent: 'center' }}>
+          {/* Aquí PlanoDiscoteca DEBE pasar un objeto 'zona' con un 'id' numérico */}
           <PlanoDiscoteca onSeleccionarZona={handleSeleccionarZona} />
         </div>
 
@@ -288,6 +319,10 @@ export const MapaDiscoteca = () => {
               <span>⌄</span>
             </div>
 
+            {/* Estos son los datos de las zonas estáticas para mostrar precios.
+                Asegúrate de que tus zonas en la base de datos (y las que carga PlanoDiscoteca)
+                coincidan con estos colores y nombres/precios para una experiencia consistente.
+            */}
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
               <span style={{ width: '10px', height: '10px', backgroundColor: '#0ea5e9', borderRadius: '50%', marginRight: '8px' }}></span>
               <span style={{ flex: 1 }}>ZONA GENERAL</span>

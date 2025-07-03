@@ -10,23 +10,23 @@ export const SectBodyBuzonResenas = ({ nitDiscoteca }) => {
   const [formError, setFormError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Function to get auth token from localStorage or other storage
+  // Función para obtener el token de autenticación del localStorage u otro almacenamiento
   const getAuthToken = () => {
     return localStorage.getItem('token') || '';
   };
 
-  // Fetch reviews for the discoteca
+  // Obtener reseñas para la discoteca
   const fetchReviews = async () => {
     try {
       setLoading(true);
       const response = await fetch(`http://localhost:8080/servicio/reseñas/discoteca/${nitDiscoteca}`);
       if (!response.ok) {
-        throw new Error('Error fetching reviews');
+        throw new Error('Error al obtener las reseñas');
       }
       const data = await response.json();
       setReviews(data);
     } catch (error) {
-      console.error('Failed to fetch reviews:', error);
+      console.error('Fallo al obtener reseñas:', error);
     } finally {
       setLoading(false);
     }
@@ -73,14 +73,14 @@ export const SectBodyBuzonResenas = ({ nitDiscoteca }) => {
       });
       if (response.status === 201) {
         setFormData({ puntuacion: 5, comentario: '' });
-        fetchReviews(); // Refresh reviews
+        fetchReviews(); // Actualizar reseñas
       } else if (response.status === 401) {
         setFormError('No autorizado. Por favor inicia sesión.');
       } else {
         setFormError('Error al enviar la reseña.');
       }
     } catch (error) {
-      console.error('Error submitting review:', error);
+      console.error('Error al enviar la reseña:', error);
       setFormError('Error al enviar la reseña.');
     }
   };
@@ -115,7 +115,8 @@ export const SectBodyBuzonResenas = ({ nitDiscoteca }) => {
         ) : (
           reviews.map((review) => (
             <div key={review.idReseña} className="review-card">
-              <h4>{review.cliente?.nombreCliente || 'Anónimo'}</h4>
+              {/* CAMBIA ESTA LÍNEA */}
+              <h4>{review.cliente?.nombre || 'Anónimo'}</h4>
               <p>⭐ {review.puntuacion}</p>
               <p>{review.comentario}</p>
             </div>

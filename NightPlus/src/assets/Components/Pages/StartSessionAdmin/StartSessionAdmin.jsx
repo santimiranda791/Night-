@@ -28,8 +28,8 @@ export const StartSessionAdmin = () => {
     setLoading(true);
 
     const payload = {
-      usuarioAdmin: formData.usuario,
-      contrasenaAdmin: formData.contrasena,
+      usuario: formData.usuario,      // <-- CORREGIDO: De usuarioAdmin a usuario
+      contrasena: formData.contrasena, // <-- CORREGIDO: De contrasenaAdmin a contrasena
     };
 
     try {
@@ -40,6 +40,9 @@ export const StartSessionAdmin = () => {
       });
 
       if (!response.ok) {
+        // Leer el mensaje de error del backend si está disponible
+        const errorData = await response.text(); // Lee como texto para manejar cualquier tipo de error (no solo JSON)
+        console.error("Error response from server:", errorData);
         Swal.fire({
           imageUrl: '/logitotriste.png',
           imageWidth: 130,
@@ -47,7 +50,7 @@ export const StartSessionAdmin = () => {
           background: '#000',
           color: '#fff',
           title: 'Error de inicio',
-          text: 'Credenciales inválidas o error del servidor',
+          text: errorData || 'Credenciales inválidas o error del servidor', // Muestra el error del backend
         });
         setLoading(false);
         return;
@@ -67,28 +70,29 @@ export const StartSessionAdmin = () => {
         showConfirmButton: false
       });
 
-     // Después de obtener 'data' en el handleSubmit:
-const currentAdmin = {
-    id: data.id,             // Asegúrate de que 'data' tenga una propiedad 'id' o usa otra propiedad que identifique al admin.
-    usuario: data.usuario || '',
-    nombre: data.nombre || '',
-    correo: data.correo || '',
-    token: data.token || '',
-};
+      // Después de obtener 'data' en el handleSubmit:
+      const currentAdmin = {
+          id: data.idAdmin, // <-- CORREGIDO: Usar data.idAdmin que viene del backend
+          usuario: data.usuario || '',
+          nombre: data.nombre || '',
+          correo: data.correo || '',
+          token: data.token || '',
+      };
 
-localStorage.setItem('currentAdmin', JSON.stringify(currentAdmin));
+      localStorage.setItem('currentAdmin', JSON.stringify(currentAdmin));
 
       setTimeout(() => {
         navigate('/PrincipalAdmin');
       }, 1500);
 
     } catch (err) {
+      console.error("Error en el login (conexión o parseo):", err);
       Swal.fire({
         imageUrl: '/logitotriste.png',
         imageWidth: 130,
         imageHeight: 130,
         title: 'Error de conexión',
-        text: 'No se pudo conectar al servidor',
+        text: 'No se pudo conectar al servidor: ' + err.message, // Muestra el mensaje de error de conexión
       });
     } finally {
       setLoading(false);

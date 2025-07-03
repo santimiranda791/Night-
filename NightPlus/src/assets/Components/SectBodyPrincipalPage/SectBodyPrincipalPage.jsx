@@ -1,6 +1,7 @@
-import React, { useState, useRef } from 'react'
-import { useNavigate } from 'react-router-dom'
-import '../../../Styles/SectBodyPrincipalPage.css'
+import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import '../../../Styles/SectBodyPrincipalPage.css';
+import Swal from 'sweetalert2';
 
 export const SectBodyPrincipalPage = () => {
   const VideoBackground = "/Video.mp4";
@@ -8,43 +9,42 @@ export const SectBodyPrincipalPage = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const touchStartX = useRef(null);
 
-  const events = [
-    {
-      id: 1,
-      title: "Evento 1",
-      date: "2024-07-01",
-      description: "Descripción breve del evento 1.",
-      image: "/card.png"
-    },
-    {
-      id: 2,
-      title: "Evento 2",
-      date: "2024-07-15",
-      description: "Descripción breve del evento 2.",
-      image: "/card.png"
-    },
-    {
-      id: 3,
-      title: "Evento 3",
-      date: "2024-08-05",
-      description: "Descripción breve del evento 3.",
-      image: "/card.png"
-    },
-    {
-      id: 4,
-      title: "Evento 4",
-      date: "2024-08-20",
-      description: "Descripción breve del evento 4.",
-      image: "/card.png"
-    }
-  ];
-  
+  const [events, setEvents] = useState([]);
+  const [loadingEvents, setLoadingEvents] = useState(true);
 
-const handleVerEvento = (id) => {
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        const response = await fetch('http://localhost:8080/servicio/eventos-list');
+        if (!response.ok) {
+          throw new Error(`Error al cargar eventos: ${response.status} ${response.statusText}`);
+        }
+        const data = await response.json();
+        
+        const processedEvents = data.map(evento => ({
+          id: evento.idEvento,
+          title: evento.nombreEvento,
+          date: `${evento.fecha} ${evento.hora}`,
+          description: evento.descripcion,
+          image: evento.imagen || '/card.png'
+        }));
+        
+        setEvents(processedEvents);
+      } catch (error) {
+        console.error("Error al cargar los eventos para el carrusel:", error);
+        Swal.fire('Error', 'No se pudieron cargar los eventos para el carrusel.', 'error');
+      } finally {
+        setLoadingEvents(false);
+      }
+    };
 
-  navigate(`/view-event/${id}`);
-};
+    fetchEvents();
+  }, []);
 
+
+  const handleVerEvento = (id) => {
+    navigate(`/view-event/${id}`);
+  };
 
   const prevSlide = () => {
     setCurrentIndex((prevIndex) => (prevIndex === 0 ? events.length - 1 : prevIndex - 1));
@@ -56,7 +56,6 @@ const handleVerEvento = (id) => {
 
   const goToSlide = (idx) => setCurrentIndex(idx);
 
-  // Touch events for mobile
   const handleTouchStart = (e) => {
     touchStartX.current = e.touches[0].clientX;
   };
@@ -69,7 +68,6 @@ const handleVerEvento = (id) => {
     touchStartX.current = null;
   };
 
-  // Estado para reseñas
   const [reviews, setReviews] = useState([]);
   const [reviewName, setReviewName] = useState("");
   const [reviewText, setReviewText] = useState("");
@@ -102,48 +100,56 @@ const handleVerEvento = (id) => {
 
           <section className="upcoming-events">
             <h2>Próximos Eventos</h2>
-            <div
-              className="carousel-gold-container"
-              onTouchStart={handleTouchStart}
-              onTouchEnd={handleTouchEnd}
-            >
-              <button className="carousel-gold-btn left" onClick={prevSlide} aria-label="Anterior">&#8249;</button>
-              <div className="carousel-gold-wrapper">
-                <ul
-                  className="carousel-gold-list"
-                  style={{
-                    transform: `translateX(-${currentIndex * 100}%)`,
-                    transition: 'transform 0.6s cubic-bezier(.77,0,.18,1)'
-                  }}
-                >
-                  {events.map(event => (
-                    <li key={event.id} className="carousel-gold-card" tabIndex="0">
-                      <div className="carousel-gold-img-wrap">
-                        <img src={event.image} alt={`Imagen del ${event.title}`} className="carousel-gold-img" />
-                      </div>
-                    </li>
-                  ))}
-                </ul>
+            {loadingEvents ? (
+              <p>Cargando eventos...</p>
+            ) : events.length === 0 ? (
+              <p>No hay eventos disponibles en este momento.</p>
+            ) : (
+              <div
+                className="carousel-gold-container"
+                onTouchStart={handleTouchStart}
+                onTouchEnd={handleTouchEnd}
+              >
+                <button className="carousel-gold-btn left" onClick={prevSlide} aria-label="Anterior">&#8249;</button>
+                <div className="carousel-gold-wrapper">
+                  <ul
+                    className="carousel-gold-list"
+                    style={{
+                      transform: `translateX(-${currentIndex * 100}%)`,
+                      transition: 'transform 0.6s cubic-bezier(.77,0,.18,1)'
+                    }}
+                  >
+                    {events.map(event => (
+                      <li key={event.id} className="carousel-gold-card" tabIndex="0">
+                        <div className="carousel-gold-img-wrap">
+                          <img src={event.image} alt={`Imagen del ${event.title}`} className="carousel-gold-img" />
+                        </div>
+                        {/* Se ha eliminado el div con la información del evento aquí */}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <button className="carousel-gold-btn right" onClick={nextSlide} aria-label="Siguiente">&#8250;</button>
               </div>
-              <button className="carousel-gold-btn right" onClick={nextSlide} aria-label="Siguiente">&#8250;</button>
-            </div>
-            <div className="carousel-gold-indicators">
-              {events.map((_, idx) => (
-                <span
-                  key={idx}
-                  className={`carousel-dot${currentIndex === idx ? ' active' : ''}`}
-                  onClick={() => goToSlide(idx)}
-                  aria-label={`Ir al evento ${idx + 1}`}
-                  style={{ cursor: 'pointer', fontSize: '2rem', margin: '0 6px', color: currentIndex === idx ? '#a259e4' : '#fff', transition: 'color 0.3s' }}
-                >
-                  &bull;
-                </span>
-              ))}
-            </div>
+            )}
+            {events.length > 0 && !loadingEvents && (
+              <div className="carousel-gold-indicators">
+                {events.map((_, idx) => (
+                  <span
+                    key={idx}
+                    className={`carousel-dot${currentIndex === idx ? ' active' : ''}`}
+                    onClick={() => goToSlide(idx)}
+                    aria-label={`Ir al evento ${idx + 1}`}
+                    style={{ cursor: 'pointer', fontSize: '2rem', margin: '0 6px', color: currentIndex === idx ? '#a259e4' : '#fff', transition: 'color 0.3s' }}
+                  >
+                    &bull;
+                  </span>
+                ))}
+              </div>
+            )}
           </section>
         </div>
       </div>
-     
     </>
-  )
-}
+  );
+};  

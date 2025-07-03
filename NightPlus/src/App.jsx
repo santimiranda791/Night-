@@ -24,6 +24,7 @@ import { ViewEvent } from './assets/Components/Pages/ViewEvent/ViewEvent';
 
 // Importa el Header (¡VERIFICA ESTA RUTA EN TU PROYECTO!)
 import { Header } from './assets/Components/Header/Header'; 
+import CompraExitosa from './assets/Components/CompraExitosa';
 
 // Componente Wrapper para LoadingAlert
 const LoadingAlertWrapper = () => {
@@ -46,6 +47,7 @@ export const App = () => {
           Si tenías una <Route path="/mapa" element={<MapaDiscoteca />} />, DEBISTE ELIMINARLA.
           Esto asegura que MapaDiscoteca siempre reciba un ID en la URL.
         */}
+        <Route path="/CompraExitosa" element={<CompraExitosa />} />
         <Route path="/mapa/:idEvento" element={<MapaDiscoteca />} />
         <Route path="/eventos" element={<Eventos />} />
         <Route path="/login" element={<StartSession />} />

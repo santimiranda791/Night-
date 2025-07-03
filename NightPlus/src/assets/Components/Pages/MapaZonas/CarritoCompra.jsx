@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const CarritoCompra = ({ carrito, onEliminarZona }) => {
+export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => { // userId debe venir de tu contexto de usuario
   const navigate = useNavigate();
 
   const formatearPrecio = (valor) =>
@@ -37,24 +37,50 @@ export const CarritoCompra = ({ carrito, onEliminarZona }) => {
   }, 0);
 
   const finalizarCompra = async () => {
+    // Validar que el eventId y userId no sean undefined/null antes de usarlos
+    if (!eventId) {
+      alert("Error: ID del evento no disponible para la compra.");
+      return;
+    }
+
+    // Convertir userId a Integer o null si no existe.
+    // Esto es crucial para evitar parseInt(undefined) -> NaN
+    const parsedUserId = userId ? parseInt(userId) : null;
+    if (userId && isNaN(parsedUserId)) { // Solo si userId no es null/undefined pero parseo falló
+        alert("Error: ID de usuario inválido.");
+        return;
+    }
+    
+    // Detalles para Mercado Pago (items)
     const items = carrito.map((zona, index) => ({
+      id: zona.id,
       title: zona.nombre,
-      unit_price: parsearPrecio(zona.precio),
-      quantity: cantidades[index],
-      currency_id: "COP",
-      picture_url: zona.imagen || "",
       description: `Entrada para el sector ${zona.nombre} (${zona.tipo})`,
+      picture_url: zona.imagen || "",
+      quantity: cantidades[index],
+      unit_price: parsearPrecio(zona.precio),
+      currency_id: "COP",
     }));
+
+    // Detalles para tu sistema de reservas (reservationDetails)
+    const reservationDetails = {
+      eventId: parseInt(eventId), // Aseguramos que sea un número
+      userId: parsedUserId,       // Usamos el userId ya parseado o null
+      tickets: carrito.map((zona, index) => ({
+        zonaId: zona.id,
+        quantity: cantidades[index],
+        unitPrice: parsearPrecio(zona.precio),
+      })),
+      totalAmount: totalGeneral,
+    };
 
     const orderData = {
       items: items,
       total: totalGeneral,
-      // Si este carrito es global y no está ligado a un evento específico de MapaDiscoteca,
-      // es posible que no tengas un eventId aquí.
-      // Puedes pasarlo como null o manejarlo según tu lógica de negocio.
-      // Si siempre está ligado a un evento, necesitarías pasar el eventId como prop a este componente.
-      eventId: null, // O el id del evento si lo tienes disponible en este contexto
+      reservationDetails: reservationDetails,
     };
+
+    console.log("Datos enviados al backend:", JSON.stringify(orderData, null, 2)); // Log más legible
 
     try {
       const response = await fetch('http://localhost:8080/servicio/create-mercadopago-preference', {
@@ -87,6 +113,7 @@ export const CarritoCompra = ({ carrito, onEliminarZona }) => {
   };
 
   return (
+    // ... (tu JSX del carrito)
     <div style={{
       border: '1px solid #ccc',
       padding: '20px',

@@ -1,4 +1,4 @@
-    import React, { useState } from 'react';
+import React, { useState } from 'react';
     import ZonaTooltip from './ZonaTooltip';
 
     const PlanoDiscoteca = ({ onSeleccionarZona }) => {
@@ -25,7 +25,12 @@
         style={{ ...estilosZona, ...extraStyle }}
         onMouseEnter={() => zonaInfo && setZonaActiva(zonaInfo)}
         onMouseLeave={() => setZonaActiva(null)}
-        onClick={() => zonaInfo && onSeleccionarZona && onSeleccionarZona(zonaInfo)}
+        onClick={() => {
+            if (zonaInfo && onSeleccionarZona) {
+                console.log("PlanoDiscoteca: Enviando zona a onSeleccionarZona:", zonaInfo); // Log para depuración
+                onSeleccionarZona(zonaInfo);
+            }
+        }}
         >
         {zonaInfo && zonaActiva?.nombre === zonaInfo.nombre && (
             <ZonaTooltip {...zonaInfo} />
@@ -54,6 +59,8 @@
             height: '230px',
             backgroundColor: '#1d4ed8'
         }, 'ZONA VIP', {
+            // ¡AÑADIDO EL ID!
+            id: 1, // <--- ASIGNA UN ID ÚNICO Y VÁLIDO PARA ESTA ZONA (EJ: ID DE TU DB)
             nombre: 'ZONA VIP',
             precio: '$ 120.000,00',
             tipo: 'VIP'
@@ -68,7 +75,7 @@
             backgroundColor: '#facc15',
             color: '#000',
             fontWeight: '600'
-        }, 'TARIMA')}
+        }, 'TARIMA')} {/* Tarima no es seleccionable, no necesita zonaInfo con ID */}
 
         {renderZona({
             position: 'relative',
@@ -78,9 +85,11 @@
             height: '300px',
             backgroundColor: '#ef4444'
         }, 'ZONA PREFERENCIAL', {
+            // ¡AÑADIDO EL ID!
+            id: 2, // <--- ASIGNA UN ID ÚNICO Y VÁLIDO PARA ESTA ZONA
             nombre: 'ZONA PREFERENCIAL',
             precio: '$ 80.000,00',
-            tipo: 'VIP'
+            tipo: 'PREFERENCIAL' // Corregido de 'VIP' a 'PREFERENCIAL' si ese es el tipo real
         })}
 
         {renderZona({
@@ -90,6 +99,8 @@
             height: '275px',
             backgroundColor: '#0ea5e9'
         }, 'ZONA GENERAL', {
+            // ¡AÑADIDO EL ID!
+            id: 3, // <--- ASIGNA UN ID ÚNICO Y VÁLIDO PARA ESTA ZONA
             nombre: 'ZONA GENERAL',
             precio: '$ 50.000,00',
             tipo: 'GENERAL'
