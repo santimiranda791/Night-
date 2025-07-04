@@ -18,6 +18,9 @@ export const SignInCliente = () => {
   const { loading, setLoading } = useContext(LoadingContext);
   const navigate = useNavigate();
 
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData(prev => ({
@@ -73,7 +76,8 @@ export const SignInCliente = () => {
     try {
       console.log('Enviando cliente:', cliente);
 
-      const response = await fetch('http://localhost:8080/servicio/registrar-cliente', {
+      // Usa la URL base para construir la URL completa del endpoint
+      const response = await fetch(`${BASE_URL}/servicio/registrar-cliente`, { // <--- URL ACTUALIZADA
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(cliente),

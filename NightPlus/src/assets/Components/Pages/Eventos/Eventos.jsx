@@ -8,9 +8,12 @@ import '../../../../Styles/Eventos.css'; // Asegúrate de que la ruta sea correc
 export const Eventos = () => {
   const [events, setEvents] = useState([]);
 
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+
   useEffect(() => {
     console.log("Eventos.jsx: Iniciando fetch de la lista de eventos...");
-    fetch('http://localhost:8080/servicio/eventos-list')
+    fetch(`${BASE_URL}/servicio/eventos-list`) // <--- URL ACTUALIZADA
       .then(response => {
         if (!response.ok) {
           throw new Error(`Error al cargar eventos: ${response.status} ${response.statusText}`);

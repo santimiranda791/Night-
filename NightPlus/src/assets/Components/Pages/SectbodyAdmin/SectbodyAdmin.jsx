@@ -8,6 +8,9 @@ export const SectbodyAdmin = () => {
   const [activeTab, setActiveTab] = useState("perfil");
   const [currentAdmin, setCurrentAdmin] = useState(null);
 
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+
   // Discotecas
   const [discotecas, setDiscotecas] = useState([]);
   const [loadingDisco, setLoadingDisco] = useState(false);
@@ -53,7 +56,7 @@ export const SectbodyAdmin = () => {
     setLoadingDisco(true);
     setErrorDisco(null);
     try {
-      const response = await fetch("http://localhost:8080/servicio/admin/discotecas", {
+      const response = await fetch(`${BASE_URL}/servicio/admin/discotecas`, { // <--- URL ACTUALIZADA
         headers: getAuthHeaders(),
       });
 
@@ -145,7 +148,7 @@ export const SectbodyAdmin = () => {
 
     if (formValues) {
       try {
-        const response = await fetch("http://localhost:8080/servicio/guardar", {
+        const response = await fetch(`${BASE_URL}/servicio/guardar`, { // <--- URL ACTUALIZADA
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -213,7 +216,7 @@ export const SectbodyAdmin = () => {
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:8080/servicio/eliminar/${nit}`,
+          `${BASE_URL}/servicio/eliminar/${nit}`, // <--- URL ACTUALIZADA
           {
             method: "DELETE",
             headers: getAuthHeaders(),
@@ -306,7 +309,7 @@ export const SectbodyAdmin = () => {
     if (formValues) {
       try {
         const response = await fetch(
-          `http://localhost:8080/servicio/actualizar/${discotecaData.nit}`,
+          `${BASE_URL}/servicio/actualizar/${discotecaData.nit}`, // <--- URL ACTUALIZADA
           {
             method: "PUT",
             headers: {
@@ -411,7 +414,7 @@ export const SectbodyAdmin = () => {
 
     if (formValues) {
       try {
-        const response = await fetch("http://localhost:8080/servicio/guardar-evento", {
+        const response = await fetch(`${BASE_URL}/servicio/guardar-evento`, { // <--- URL ACTUALIZADA
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -520,7 +523,7 @@ export const SectbodyAdmin = () => {
     if (formValues) {
       try {
         const response = await fetch(
-          "http://localhost:8080/servicio/actualizar-evento",
+          `${BASE_URL}/servicio/actualizar-evento`, // <--- URL ACTUALIZADA
           {
             method: "PUT",
             headers: {
@@ -593,7 +596,7 @@ export const SectbodyAdmin = () => {
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:8080/servicio/eliminar-evento/${idEvento}`,
+          `${BASE_URL}/servicio/eliminar-evento/${idEvento}`, // <--- URL ACTUALIZADA
           {
             method: "DELETE",
             headers: getAuthHeaders(),
@@ -645,7 +648,7 @@ export const SectbodyAdmin = () => {
     setLoadingEventos(true);
     setErrorEventos(null);
     try {
-      const response = await fetch("http://localhost:8080/servicio/admin/eventos", {
+      const response = await fetch(`${BASE_URL}/servicio/admin/eventos`, { // <--- URL ACTUALIZADA
         headers: getAuthHeaders(),
       });
       if (response.status === 401 || response.status === 403) {
@@ -689,7 +692,7 @@ export const SectbodyAdmin = () => {
     setLoadingReservas(true);
     setErrorReservas(null);
     try {
-      const response = await fetch("http://localhost:8080/servicio/admin/reservas", {
+      const response = await fetch(`${BASE_URL}/servicio/admin/reservas`, { // <--- URL ACTUALIZADA
         headers: getAuthHeaders(),
       });
       if (response.status === 401 || response.status === 403) {
@@ -737,10 +740,10 @@ export const SectbodyAdmin = () => {
         '<input id="swal-input3" class="swal2-input" type="number" placeholder="Cantidad Tickets">' +
         '<input id="swal-input4" class="swal2-input" type="date" placeholder="Fecha Reserva (YYYY-MM-DD)">' +
         '<select id="swal-select5" class="swal2-input">' + // Nuevo campo: Estado de Pago
-          '<option value="">Selecciona Estado de Pago</option>' +
-          '<option value="Pendiente">Pendiente</option>' +
-          '<option value="Pagado">Pagado</option>' +
-          '<option value="Fallido">Fallido</option>' +
+        '<option value="">Selecciona Estado de Pago</option>' +
+        '<option value="Pendiente">Pendiente</option>' +
+        '<option value="Pagado">Pagado</option>' +
+        '<option value="Fallido">Fallido</option>' +
         '</select>' +
         '<input id="swal-input6" class="swal2-input" placeholder="ID Transacción (Mercado Pago simulado)">', // Nuevo campo: ID Transacción
       focusConfirm: false,
@@ -783,7 +786,7 @@ export const SectbodyAdmin = () => {
 
     if (formValues) {
       try {
-        const response = await fetch("http://localhost:8080/servicio/guardar-reserva", {
+        const response = await fetch(`${BASE_URL}/servicio/guardar-reserva`, { // <--- URL ACTUALIZADA
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -888,7 +891,7 @@ export const SectbodyAdmin = () => {
     if (formValues) {
       try {
         const response = await fetch(
-          "http://localhost:8080/servicio/actualizar-reserva", // Endpoint para actualizar reserva
+          `${BASE_URL}/servicio/actualizar-reserva`, // <--- URL ACTUALIZADA
           {
             method: "PUT",
             headers: {
@@ -961,7 +964,7 @@ export const SectbodyAdmin = () => {
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `http://localhost:8080/servicio/eliminar-reserva/${idReserva}`, // Endpoint para eliminar reserva
+          `${BASE_URL}/servicio/eliminar-reserva/${idReserva}`, // <--- URL ACTUALIZADA
           {
             method: "DELETE",
             headers: getAuthHeaders(),
@@ -1348,67 +1351,64 @@ export const SectbodyAdmin = () => {
             {loadingReservas && <p>Cargando reservas...</p>}
             {errorReservas && <p className="error-text">{errorReservas}</p>}
             {!loadingReservas && !errorReservas && (
- <table className="admin-table">
-  <thead>
-    <tr>
-      <th>ID Reserva</th>
-      <th>ID Evento</th>
-      <th>Nombre Usuario</th>
-      <th>Cantidad Tickets</th>
-      <th>Fecha Reserva</th>
-      <th>Estado Pago</th>
-      <th>ID Transacción</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
-  <tbody>
-    {reservas.length === 0 ? (
-      <tr>
-        <td colSpan="8" style={{ textAlign: "center" }}>
-          No hay reservas disponibles.
-        </td>
-      </tr>
-    ) : (
-    // ... (código anterior)
-
-          reservas.map((r) => (
-        <tr key={r.idReserva || r.id}>
-          <td>{r.idReserva || r.id}</td>
-          <td>{r.idEvento || "N/A"}</td>          {/* CAMBIO: Accede directamente a idEvento */}
-          <td>{r.nombreCliente || "N/A"}</td>     {/* CAMBIO: Accede directamente a nombreCliente */}
-                                              {/* Si tu DTO usa 'nombreUsuarioCliente', cambia a {r.nombreUsuarioCliente || "N/A"} */}
-          <td>{r.cantidadTickets}</td>
-          <td>{r.fechaReserva}</td>
-          <td>
-            <span
-              className={`status-badge status-${(
-                r.estadoPago || "N/A"
-              ).toLowerCase()}`}
-            >
-              {r.estadoPago || "N/A"}
-            </span>
-          </td>
-          <td>{r.idTransaccion || "N/A"}</td>
-          <td>
-            <button className="btn edit" onClick={() => updateReserva(r)}>
-              Actualizar
-            </button>
-            <button
-              className="btn delete"
-              onClick={() => deleteReserva(r.idReserva || r.id)}
-            >
-              Eliminar
-            </button>
-          </td>
-        </tr>
-      ))
-    )}
-  </tbody>
-</table>
-            )}
-          </div>
-        )}
-      </main>
-    </div>
-  );
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID Reserva</th>
+                    <th>ID Evento</th>
+                    <th>Nombre Usuario</th>
+                    <th>Cantidad Tickets</th>
+                    <th>Fecha Reserva</th>
+                    <th>Estado Pago</th>
+                    <th>ID Transacción</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reservas.length === 0 ? (
+                    <tr>
+                      <td colSpan="8" style={{ textAlign: "center" }}>
+                        No hay reservas disponibles.
+                      </td>
+                    </tr>
+                  ) : (
+                    reservas.map((r) => (
+                      <tr key={r.idReserva || r.id}>
+                        <td>{r.idReserva || r.id}</td>
+                        <td>{r.evento?.idEvento || "N/A"}</td> {/* CAMBIO: Accede a idEvento dentro de 'evento' */}
+                        <td>{r.nombreUsuario || "N/A"}</td> {/* Asegúrate que tu backend envíe 'nombreUsuario' o 'nombreCliente' */}
+                        <td>{r.cantidadTickets}</td>
+                        <td>{r.fechaReserva}</td>
+                        <td>
+                          <span
+                            className={`status-badge status-${(
+                              r.estadoPago || "N/A"
+                            ).toLowerCase()}`}
+                          >
+                            {r.estadoPago || "N/A"}
+                          </span>
+                        </td>
+                        <td>{r.idTransaccion || "N/A"}</td>
+                        <td>
+                          <button className="btn edit" onClick={() => updateReserva(r)}>
+                            Actualizar
+                          </button>
+                          <button
+                            className="btn delete"
+                            onClick={() => deleteReserva(r.idReserva || r.id)}
+                          >
+                            Eliminar
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
+                </tbody>
+              </table>
+            )}
+          </div>
+        )}
+      </main>
+    </div>
+  );
 };

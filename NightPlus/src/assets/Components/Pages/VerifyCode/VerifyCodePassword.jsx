@@ -12,6 +12,9 @@ export const VerifyCodePassword = () => {
   const [nuevaContrasena, setNuevaContrasena] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+
   if (!correo) {
     navigate('/forgot-password');
     return null;
@@ -19,14 +22,23 @@ export const VerifyCodePassword = () => {
 
   const handleCambiarContrasena = async () => {
     if (!codigo || !nuevaContrasena) {
-      Swal.fire('Error', 'Completa todos los campos', 'error');
+      Swal.fire({
+        imageUrl: '/logitotriste.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
+        title: 'Error',
+        text: 'Completa todos los campos',
+      });
       return;
     }
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8080/servicio/cambiar-contrasena', {
-        method: 'POST', // CAMBIO: aquí es POST, no PUT
+      // Usa la URL base para construir la URL completa del endpoint
+      const response = await fetch(`${BASE_URL}/servicio/cambiar-contrasena`, { // <--- URL ACTUALIZADA
+        method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           correo,
@@ -37,7 +49,16 @@ export const VerifyCodePassword = () => {
 
       if (!response.ok) {
         const errorMsg = await response.text();
-        throw new Error(errorMsg || 'Error al cambiar contraseña.');
+        Swal.fire({
+          imageUrl: '/logitotriste.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: 'Error',
+          text: errorMsg || 'Error al cambiar contraseña.',
+        });
+        return; // Detener la ejecución aquí si hay un error
       }
 
       const data = await response.text();
@@ -64,7 +85,7 @@ export const VerifyCodePassword = () => {
         background: '#000',
         color: '#fff',
         title: 'Error',
-        text: err.message,
+        text: err.message || 'Ocurrió un error inesperado.', // Asegura un mensaje si err.message es undefined
       });
     } finally {
       setLoading(false);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
-import Swal from 'sweetalert2';
 import '../../../../Styles/StartSessionAdmin.css';
+import Swal from 'sweetalert2';
 import { LoadingAlert } from '../../LoadingAlert/LoadingAlert';
 
 export const StartSessionAdmin = () => {
@@ -14,6 +14,9 @@ export const StartSessionAdmin = () => {
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
+
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
 
   const handleChange = (e) => {
     setFormData(prev => ({
@@ -28,12 +31,13 @@ export const StartSessionAdmin = () => {
     setLoading(true);
 
     const payload = {
-      usuario: formData.usuario,      // <-- CORREGIDO: De usuarioAdmin a usuario
-      contrasena: formData.contrasena, // <-- CORREGIDO: De contrasenaAdmin a contrasena
+      usuario: formData.usuario,
+      contrasena: formData.contrasena,
     };
 
     try {
-      const response = await fetch('http://localhost:8080/servicio/login-administrador', {
+      // Usa la URL base para construir la URL completa del endpoint
+      const response = await fetch(`${BASE_URL}/servicio/login-administrador`, { // <--- URL ACTUALIZADA
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 
@@ -7,6 +7,9 @@ const CompraExitosa = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [message, setMessage] = useState("Procesando tu compra...");
+
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -25,7 +28,8 @@ const CompraExitosa = () => {
     if (status === 'approved') {
       const confirmReservation = async () => {
         try {
-          const response = await fetch('http://localhost:8080/servicio/confirmar-reserva', {
+          // Usa la URL base para construir la URL completa del endpoint
+          const response = await fetch(`${BASE_URL}/servicio/confirmar-reserva`, { // <--- URL ACTUALIZADA
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

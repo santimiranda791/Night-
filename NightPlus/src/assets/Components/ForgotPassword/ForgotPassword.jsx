@@ -9,6 +9,9 @@ export const ForgotPassword = () => {
   const [loading, setLoading] = useState(false)
   const navigate = useNavigate()
 
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     if (!email.includes('@')) {
@@ -25,14 +28,17 @@ export const ForgotPassword = () => {
     }
     setLoading(true)
     try {
-      const response = await fetch('http://localhost:8080/servicio/solicitar-recuperacion', {
+      // Usa la URL base para construir la URL completa del endpoint
+      const response = await fetch(`${BASE_URL}/servicio/solicitar-recuperacion`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo: email }),
       })
 
       if (!response.ok) {
-        throw new Error('No se pudo enviar el correo de recuperación.')
+        // Intenta leer el mensaje de error del backend si está disponible
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'No se pudo enviar el correo de recuperación.');
       }
 
       Swal.fire({

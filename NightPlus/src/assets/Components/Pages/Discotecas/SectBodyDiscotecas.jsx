@@ -11,9 +11,12 @@ export const SectBodyDiscotecas = () => {
     const [eventsLoading, setEventsLoading] = useState(false); // Estado para la carga de eventos
     const [eventsError, setEventsError] = useState(null); // Estado para errores de eventos
 
+    // Define la URL base de tu backend desplegado en Railway
+    const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+
     useEffect(() => {
         // Carga inicial de todas las discotecas
-        fetch('http://localhost:8080/servicio/discotecas-list')
+        fetch(`${BASE_URL}/servicio/discotecas-list`) // <--- URL ACTUALIZADA
             .then(response => {
                 if (!response.ok) {
                     throw new Error('No se pudo obtener la lista de discotecas');
@@ -33,7 +36,8 @@ export const SectBodyDiscotecas = () => {
         if (selectedDiscoteca) {
             setEventsLoading(true);
             setEventsError(null);
-            fetch(`http://localhost:8080/servicio/eventos-por-discoteca/${selectedDiscoteca.nit}`) // Asume 'nit' es el ID de la discoteca
+            // Usa la URL base para construir la URL completa del endpoint
+            fetch(`${BASE_URL}/servicio/eventos-por-discoteca/${selectedDiscoteca.nit}`) // <--- URL ACTUALIZADA
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('No se pudieron obtener los eventos de esta discoteca.');
@@ -58,7 +62,8 @@ export const SectBodyDiscotecas = () => {
     // Modificación para incluir nombre del cliente en las reseñas
     useEffect(() => {
         if (selectedDiscoteca) {
-            fetch(`http://localhost:8080/servicio/reseñas/discoteca/${selectedDiscoteca.nit}`)
+            // Usa la URL base para construir la URL completa del endpoint
+            fetch(`${BASE_URL}/servicio/reseñas/discoteca/${selectedDiscoteca.nit}`) // <--- URL ACTUALIZADA
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('No se pudieron obtener las reseñas de esta discoteca.');

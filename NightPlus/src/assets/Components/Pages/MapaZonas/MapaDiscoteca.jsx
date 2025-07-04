@@ -15,6 +15,9 @@ export const MapaDiscoteca = () => {
   const [evento, setEvento] = useState(null);
   const [error, setError] = useState(null);
 
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+
   // Helper function to parse price strings to numbers
   const parsearPrecio = (precioStr) => {
     if (typeof precioStr === 'number') {
@@ -39,7 +42,7 @@ export const MapaDiscoteca = () => {
     const numericId = parseInt(idEventoParam);
 
     if (idEventoParam && !Number.isNaN(numericId) && numericId > 0) {
-      const apiUrl = `http://localhost:8080/servicio/evento/${numericId}`;
+      const apiUrl = `${BASE_URL}/servicio/evento/${numericId}`; // <--- URL ACTUALIZADA
       console.log(`MapaDiscoteca.jsx: Realizando fetch a: ${apiUrl}`);
 
       fetch(apiUrl)
@@ -146,7 +149,7 @@ export const MapaDiscoteca = () => {
     console.log("MapaDiscoteca.jsx: Datos a enviar a Mercado Pago:", JSON.stringify(orderData, null, 2));
 
     try {
-      const response = await fetch('http://localhost:8080/servicio/create-mercadopago-preference', {
+      const response = await fetch(`${BASE_URL}/servicio/create-mercadopago-preference`, { // <--- URL ACTUALIZADA
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -272,7 +275,7 @@ export const MapaDiscoteca = () => {
                 fontWeight: 'bold',
                 marginTop: '10px'
               }}
-              // Deshabilitar si no hay evento o si la zona seleccionada no tiene un ID válido
+              // Deshabilitar si no hay evento o if la zona seleccionada no tiene un ID válido
               disabled={!evento || !evento.idEvento || !zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null}
             >
               Finalizar compra

@@ -7,6 +7,9 @@ export const ResumenCompra = ({ evento, carrito: initialCarrito, onEliminar }) =
     initialCarrito.reduce((acc, zona, i) => ({ ...acc, [i]: zona.cantidad || 1 }), {})
   );
 
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+
   const formatearPrecio = (valor) =>
     new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
 
@@ -53,7 +56,8 @@ export const ResumenCompra = ({ evento, carrito: initialCarrito, onEliminar }) =
     };
 
     try {
-      const response = await fetch('http://localhost:8080/servicio/create-mercadopago-preference', {
+      // Usa la URL base para construir la URL completa del endpoint
+      const response = await fetch(`${BASE_URL}/servicio/create-mercadopago-preference`, { // <--- URL ACTUALIZADA
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

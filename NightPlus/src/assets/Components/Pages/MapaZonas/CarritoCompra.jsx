@@ -4,6 +4,9 @@ import { useNavigate } from 'react-router-dom';
 export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => { // userId debe venir de tu contexto de usuario
   const navigate = useNavigate();
 
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+
   const formatearPrecio = (valor) =>
     new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
 
@@ -83,7 +86,8 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
     console.log("Datos enviados al backend:", JSON.stringify(orderData, null, 2)); // Log más legible
 
     try {
-      const response = await fetch('http://localhost:8080/servicio/create-mercadopago-preference', {
+      // Usa la URL base para construir la URL completa del endpoint
+      const response = await fetch(`${BASE_URL}/servicio/create-mercadopago-preference`, { // <--- URL ACTUALIZADA
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

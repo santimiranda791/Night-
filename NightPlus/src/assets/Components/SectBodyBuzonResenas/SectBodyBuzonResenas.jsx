@@ -10,6 +10,9 @@ export const SectBodyBuzonResenas = ({ nitDiscoteca }) => {
   const [formError, setFormError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+
   // Function to get auth token from localStorage or other storage
   const getAuthToken = () => {
     return localStorage.getItem('token') || '';
@@ -19,7 +22,8 @@ export const SectBodyBuzonResenas = ({ nitDiscoteca }) => {
   const fetchReviews = async () => {
     try {
       setLoading(true);
-      const response = await fetch(`http://localhost:8080/servicio/reseñas/discoteca/${nitDiscoteca}`);
+      // Usa la URL base para construir la URL completa del endpoint
+      const response = await fetch(`${BASE_URL}/servicio/reseñas/discoteca/${nitDiscoteca}`); // <--- URL ACTUALIZADA
       if (!response.ok) {
         throw new Error('Error fetching reviews');
       }
@@ -59,7 +63,8 @@ export const SectBodyBuzonResenas = ({ nitDiscoteca }) => {
         setFormError('Debes iniciar sesión para enviar una reseña.');
         return;
       }
-      const response = await fetch('http://localhost:8080/servicio/reseñas/registrar', {
+      // Usa la URL base para construir la URL completa del endpoint
+      const response = await fetch(`${BASE_URL}/servicio/reseñas/registrar`, { // <--- URL ACTUALIZADA
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

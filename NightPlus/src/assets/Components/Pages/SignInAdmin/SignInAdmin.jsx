@@ -16,6 +16,9 @@ export const SignInAdmin = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
 
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+
   const handleChange = (e) => {
     const { id, value } = e.target;
     setFormData(prev => ({
@@ -52,7 +55,8 @@ export const SignInAdmin = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:8080/servicio/registrar-administrador', {
+      // Usa la URL base para construir la URL completa del endpoint
+      const response = await fetch(`${BASE_URL}/servicio/registrar-administrador`, { // <--- URL ACTUALIZADA
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(admin),

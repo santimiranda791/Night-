@@ -2,12 +2,16 @@ import React, { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import '../../../../Styles/VerifyCode.css';
+
 export const VerifyCode = () => {
   const [digits, setDigits] = useState(['', '', '', '', '', '']);
   const inputsRef = useRef([]);
   const correo = localStorage.getItem('correo');
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+
+  // Define la URL base de tu backend desplegado en Railway
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
 
   const handleChange = (index, value) => {
     if (!/^\d?$/.test(value)) return;
@@ -46,7 +50,8 @@ export const VerifyCode = () => {
 
     setLoading(true);
     try {
-      const response = await fetch('http://localhost:8080/servicio/verificar-codigo', {
+      // Usa la URL base para construir la URL completa del endpoint
+      const response = await fetch(`${BASE_URL}/servicio/verificar-codigo`, { // <--- URL ACTUALIZADA
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo, codigo: code }),
