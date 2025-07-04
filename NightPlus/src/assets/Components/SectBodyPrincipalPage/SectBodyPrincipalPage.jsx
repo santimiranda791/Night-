@@ -1,87 +1,37 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../../../Styles/SectBodyPrincipalPage.css';
-import Swal from 'sweetalert2';
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
+import '../../../Styles/SectBodyPrincipalPage.css'
 
 export const SectBodyPrincipalPage = () => {
   const VideoBackground = "/Video.mp4";
   const navigate = useNavigate();
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const touchStartX = useRef(null);
 
-  const [events, setEvents] = useState([]);
-  const [loadingEvents, setLoadingEvents] = useState(true);
-
-  useEffect(() => {
-    const fetchEvents = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/servicio/eventos-list');
-        if (!response.ok) {
-          throw new Error(`Error al cargar eventos: ${response.status} ${response.statusText}`);
-        }
-        const data = await response.json();
-        
-        const processedEvents = data.map(evento => ({
-          id: evento.idEvento,
-          title: evento.nombreEvento,
-          date: `${evento.fecha} ${evento.hora}`,
-          description: evento.descripcion,
-          image: evento.imagen || '/card.png'
-        }));
-        
-        setEvents(processedEvents);
-      } catch (error) {
-        console.error("Error al cargar los eventos para el carrusel:", error);
-        Swal.fire('Error', 'No se pudieron cargar los eventos para el carrusel.', 'error');
-      } finally {
-        setLoadingEvents(false);
-      }
-    };
-
-    fetchEvents();
-  }, []);
-
+  const events = [
+    {
+      id: 1,
+      title: "Evento 1",
+      date: "2024-07-01",
+      description: "Descripción breve del evento 1.",
+      image: "/card.png"
+    },
+    {
+      id: 2,
+      title: "Evento 2",
+      date: "2024-07-15",
+      description: "Descripción breve del evento 2.",
+      image: "/card.png"
+    },
+    {
+      id: 3,
+      title: "Evento 3",
+      date: "2024-08-05",
+      description: "Descripción breve del evento 3.",
+      image: "/card.png"
+    }
+  ];
 
   const handleVerEvento = (id) => {
     navigate(`/view-event/${id}`);
-  };
-
-  const prevSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? events.length - 1 : prevIndex - 1));
-  };
-
-  const nextSlide = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === events.length - 1 ? 0 : prevIndex + 1));
-  };
-
-  const goToSlide = (idx) => setCurrentIndex(idx);
-
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e) => {
-    if (touchStartX.current === null) return;
-    const diff = e.changedTouches[0].clientX - touchStartX.current;
-    if (diff > 50) prevSlide();
-    else if (diff < -50) nextSlide();
-    touchStartX.current = null;
-  };
-
-  const [reviews, setReviews] = useState([]);
-  const [reviewName, setReviewName] = useState("");
-  const [reviewText, setReviewText] = useState("");
-
-  const handleSubmitReview = (e) => {
-    e.preventDefault();
-    if (reviewName.trim() && reviewText.trim()) {
-      setReviews(prev => [
-        { name: reviewName, text: reviewText },
-        ...prev
-      ]);
-      setReviewName("");
-      setReviewText("");
-    }
   };
 
   return (
@@ -91,6 +41,9 @@ export const SectBodyPrincipalPage = () => {
           <source src={VideoBackground} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
+        <div className="video-overlay-text">
+          <h1>Night+</h1>
+        </div>
       </div>
 
       <div className="body-container">
@@ -100,56 +53,31 @@ export const SectBodyPrincipalPage = () => {
 
           <section className="upcoming-events">
             <h2>Próximos Eventos</h2>
-            {loadingEvents ? (
-              <p>Cargando eventos...</p>
-            ) : events.length === 0 ? (
-              <p>No hay eventos disponibles en este momento.</p>
-            ) : (
-              <div
-                className="carousel-gold-container"
-                onTouchStart={handleTouchStart}
-                onTouchEnd={handleTouchEnd}
-              >
-                <button className="carousel-gold-btn left" onClick={prevSlide} aria-label="Anterior">&#8249;</button>
-                <div className="carousel-gold-wrapper">
-                  <ul
-                    className="carousel-gold-list"
-                    style={{
-                      transform: `translateX(-${currentIndex * 100}%)`,
-                      transition: 'transform 0.6s cubic-bezier(.77,0,.18,1)'
-                    }}
-                  >
-                    {events.map(event => (
-                      <li key={event.id} className="carousel-gold-card" tabIndex="0">
-                        <div className="carousel-gold-img-wrap">
-                          <img src={event.image} alt={`Imagen del ${event.title}`} className="carousel-gold-img" />
-                        </div>
-                        {/* Se ha eliminado el div con la información del evento aquí */}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-                <button className="carousel-gold-btn right" onClick={nextSlide} aria-label="Siguiente">&#8250;</button>
-              </div>
-            )}
-            {events.length > 0 && !loadingEvents && (
-              <div className="carousel-gold-indicators">
-                {events.map((_, idx) => (
-                  <span
-                    key={idx}
-                    className={`carousel-dot${currentIndex === idx ? ' active' : ''}`}
-                    onClick={() => goToSlide(idx)}
-                    aria-label={`Ir al evento ${idx + 1}`}
-                    style={{ cursor: 'pointer', fontSize: '2rem', margin: '0 6px', color: currentIndex === idx ? '#a259e4' : '#fff', transition: 'color 0.3s' }}
-                  >
-                    &bull;
-                  </span>
+            <div className="custom-events-grid">
+              <div className="row">
+                {events.slice(0, 2).map(event => (
+                  <div className="event-card-custom" key={event.id}>
+                    <div className="event-card-img-wrap">
+                      <img src={event.image} alt={`Imagen del ${event.title}`} className="event-card-img" />
+                      <button className="event-btn" onClick={() => handleVerEvento(event.id)}>Ver Evento</button>
+                    </div>
+                  </div>
                 ))}
               </div>
-            )}
+              <div className="row center">
+                {events[2] && (
+                  <div className="event-card-custom">
+                    <div className="event-card-img-wrap">
+                      <img src={events[2].image} alt={`Imagen del ${events[2].title}`} className="event-card-img" />
+                      <button className="event-btn" onClick={() => handleVerEvento(events[2].id)}>Ver Evento</button>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
           </section>
         </div>
       </div>
     </>
-  );
-};  
+  )
+}

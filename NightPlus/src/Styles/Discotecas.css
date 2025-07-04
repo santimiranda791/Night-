@@ -502,3 +502,172 @@ h1 {
         width: 100%; /* Asegura ancho completo */
     }
 }
+
+/* --------- Desktop grande (más de 1200px) --------- */
+@media (min-width: 1200px) {
+  .discotecas-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    gap: 60px;
+    padding: 60px;
+  }
+  .card {
+    width: 480px;
+    padding: 45px;
+  }
+}
+
+/* --------- Tablet horizontal (900px a 1200px) --------- */
+@media (max-width: 1200px) and (min-width: 901px) {
+  .discotecas-container {
+    max-width: 1000px;
+    gap: 40px;
+    padding: 30px;
+  }
+  .card {
+    width: 380px;
+    padding: 30px;
+  }
+}
+
+/* --------- Tablet vertical y móvil grande (601px a 900px) --------- */
+@media (max-width: 900px) and (min-width: 601px) {
+  h1 {
+    font-size: 2.2rem;
+    margin-top: 30px;
+    margin-bottom: 25px;
+  }
+  .discotecas-container {
+    gap: 25px;
+    padding: 15px;
+  }
+  .card {
+    width: 95vw;
+    max-width: 340px;
+    padding: 18px;
+  }
+  .card-image {
+    height: 180px;
+  }
+  .card h2 {
+    font-size: 1.3rem;
+  }
+  .single-discoteca-image {
+    height: 180px;
+  }
+  .single-discoteca-details h2 {
+    font-size: 1.3em;
+  }
+  .reserve-btn {
+    font-size: 1em;
+    padding: 10px 18px;
+  }
+}
+
+/* --------- Móvil (hasta 600px) --------- */
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.4rem;
+    margin-top: 18px;
+    margin-bottom: 18px;
+  }
+  .discotecas-container {
+    flex-direction: column;
+    gap: 12px;
+    padding: 6px;
+  }
+  .card {
+    width: 99vw;
+    max-width: 99vw;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  .card-image {
+    height: 120px;
+    border-radius: 8px;
+  }
+  .card h2 {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+  .single-discoteca-page-container,
+  .single-discoteca-view,
+  .discoteca-events-section {
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+  }
+  .single-discoteca-image {
+    height: 120px;
+    border-radius: 8px;
+  }
+  .single-discoteca-details h2 {
+    font-size: 1.1em;
+  }
+  .discoteca-info-grid {
+    font-size: 0.9em;
+    gap: 6px;
+  }
+  .reserve-btn,
+  .back-to-list-btn {
+    font-size: 0.9em;
+    padding: 8px 10px;
+    border-radius: 8px;
+    margin-top: 10px;
+  }
+  .discoteca-events-section h3 {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+  }
+  .event-card {
+    width: 100%;
+    min-width: unset;
+    padding: 8px;
+    border-radius: 8px;
+  }
+  .event-image {
+    height: 80px;
+    border-radius: 6px;
+  }
+  .event-details h4 {
+    font-size: 1em;
+  }
+  .event-details p {
+    font-size: 0.9em;
+  }
+  .event-view-btn {
+    font-size: 0.9em;
+    padding: 7px 8px;
+    border-radius: 7px;
+  }
+}
+
+/* --------- Móvil extra pequeño (hasta 400px) --------- */
+@media (max-width: 400px) {
+  h1 {
+    font-size: 1.05rem;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .card {
+    padding: 5px;
+    border-radius: 6px;
+  }
+  .card-image,
+  .single-discoteca-image {
+    height: 70px;
+    border-radius: 5px;
+  }
+  .card h2,
+  .single-discoteca-details h2 {
+    font-size: 0.95rem;
+  }
+  .reserve-btn,
+  .back-to-list-btn,
+  .event-view-btn {
+    font-size: 0.8em;
+    padding: 5px 6px;
+    border-radius: 5px;
+  }
+}
