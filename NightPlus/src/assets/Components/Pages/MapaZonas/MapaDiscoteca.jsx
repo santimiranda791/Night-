@@ -1,8 +1,8 @@
-// src/components/MapaDiscoteca.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PlanoDiscoteca from './PlanoDiscoteca'; // Asegúrate de que la ruta sea correcta
+// Importa CarritoCompra (si aún no lo haces, aunque no lo veo en este archivo, es el que usa CarritoCompra)
+// import { CarritoCompra } from './CarritoCompra'; 
 
 // --- ¡IMPORTANTE! REEMPLAZA ESTO CON EL ID REAL DEL USUARIO LOGUEADO ---
 // Esto debe venir de tu sistema de autenticación (contexto, Redux, local storage, etc.)
@@ -11,7 +11,7 @@ const CURRENT_USER_ID = 1; // <--- VALOR DE PRUEBA. ¡CÁMBIALO POR EL ID DEL US
 export const MapaDiscoteca = () => {
   const { idEvento: idEventoParam } = useParams();
   const [mostrarPrecios, setMostrarPrecios] = useState(true);
-  const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
+  const [zonaSeleccionada, setZonaSeleccionada] = useState(null); // Esto es para una sola zona seleccionada, no para el carrito múltiple
   const [evento, setEvento] = useState(null);
   const [error, setError] = useState(null);
 
@@ -74,8 +74,12 @@ export const MapaDiscoteca = () => {
 
   const handleSeleccionarZona = (zona) => {
     // Es CRUCIAL que 'zona' que viene de PlanoDiscoteca tenga un 'id' numérico válido.
-    // Si no lo tiene, aquí se propagará como 'undefined' o un valor no deseado.
     console.log("Zona seleccionada recibida de PlanoDiscoteca:", zona);
+    if (!zona || typeof zona.id === 'undefined' || zona.id === null) {
+      console.error("Error: La zona seleccionada no tiene un ID válido.", zona);
+      alert("No se pudo seleccionar la zona. Por favor, asegúrate de que tiene un ID.");
+      return;
+    }
     setZonaSeleccionada({
       ...zona,
       id: zona.id, // <--- Asegúrate que 'zona.id' NO ES UNDEFINED/NULL AQUÍ
@@ -125,7 +129,7 @@ export const MapaDiscoteca = () => {
 
     // 3. Construye el objeto items para Mercado Pago, asegurando un ID válido
     // Si zonaSeleccionada.id es numérico, lo usa. Si no, usa un fallback basado en el nombre.
-    const itemId = String(zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(' ', '-')}-fallback`);
+    const itemId = String(zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(/ /g, '-')}-fallback`);
 
     const itemsParaMercadoPago = [{
         id: itemId, // <-- ¡AHORA SIEMPRE TENDRÁ UN VALOR DE STRING VÁLIDO!
@@ -224,6 +228,8 @@ export const MapaDiscoteca = () => {
             <p>Cargando evento...</p>
           )}
 
+          {/* Si usaras CarritoCompra aquí, lo pasarías el 'carrito' state y un onEliminarZona adecuado */}
+          {/* Por ahora, mantengo tu lógica de zonaSeleccionada */}
           {zonaSeleccionada ? (
             <>
               <h3 style={{ fontSize: '14px', fontWeight: 'bold', marginTop: '20px' }}>Carrito (1)</h3>

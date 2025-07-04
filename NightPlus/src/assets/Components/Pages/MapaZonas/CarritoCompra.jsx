@@ -18,25 +18,30 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
         .replace(',', '.')
     );
 
+  // *** CAMBIO CLAVE AQUÍ: Usar zona.id como clave para cantidades ***
   const [cantidades, setCantidades] = useState(
-    carrito.reduce((acc, zona, i) => ({ ...acc, [i]: 1 }), {})
+    carrito.reduce((acc, zona) => ({ ...acc, [zona.id]: 1 }), {})
   );
 
-  const aumentarCantidad = (index) => {
-    setCantidades((prev) => ({ ...prev, [index]: prev[index] + 1 }));
+  // *** CAMBIO CLAVE AQUÍ: Aceptar zonaId en lugar de index ***
+  const aumentarCantidad = (zonaId) => {
+    setCantidades((prev) => ({ ...prev, [zonaId]: prev[zonaId] + 1 }));
   };
 
-  const disminuirCantidad = (index) => {
-    if (cantidades[index] > 1) {
-      setCantidades((prev) => ({ ...prev, [index]: prev[index] - 1 }));
+  // *** CAMBIO CLAVE AQUÍ: Aceptar zonaId en lugar de index ***
+  const disminuirCantidad = (zonaId) => {
+    if (cantidades[zonaId] > 1) {
+      setCantidades((prev) => ({ ...prev, [zonaId]: prev[zonaId] - 1 }));
     }
   };
 
-  const calcularTotalZona = (index, precioUnitario) => precioUnitario * cantidades[index];
+  // *** CAMBIO CLAVE AQUÍ: Aceptar zonaId en lugar de index ***
+  const calcularTotalZona = (zonaId, precioUnitario) => precioUnitario * cantidades[zonaId];
 
-  const totalGeneral = carrito.reduce((acc, zona, i) => {
+  const totalGeneral = carrito.reduce((acc, zona) => {
     const precioUnitario = parsearPrecio(zona.precio);
-    return acc + calcularTotalZona(i, precioUnitario);
+    // *** CAMBIO CLAVE AQUÍ: Usar zona.id para calcularTotalZona ***
+    return acc + calcularTotalZona(zona.id, precioUnitario);
   }, 0);
 
   const finalizarCompra = async () => {
@@ -56,11 +61,11 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
     
     // Detalles para Mercado Pago (items)
     const items = carrito.map((zona, index) => ({
-      id: zona.id,
+      id: zona.id, // Asegúrate de que zona.id sea una cadena o número único y estable
       title: zona.nombre,
       description: `Entrada para el sector ${zona.nombre} (${zona.tipo})`,
       picture_url: zona.imagen || "",
-      quantity: cantidades[index],
+      quantity: cantidades[zona.id], // Usar zona.id para la cantidad
       unit_price: parsearPrecio(zona.precio),
       currency_id: "COP",
     }));
@@ -69,9 +74,9 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
     const reservationDetails = {
       eventId: parseInt(eventId), // Aseguramos que sea un número
       userId: parsedUserId,       // Usamos el userId ya parseado o null
-      tickets: carrito.map((zona, index) => ({
+      tickets: carrito.map((zona) => ({ // Eliminar index de aquí
         zonaId: zona.id,
-        quantity: cantidades[index],
+        quantity: cantidades[zona.id], // Usar zona.id para la cantidad
         unitPrice: parsearPrecio(zona.precio),
       })),
       totalAmount: totalGeneral,
@@ -117,7 +122,6 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
   };
 
   return (
-    // ... (tu JSX del carrito)
     <div style={{
       border: '1px solid #ccc',
       padding: '20px',
@@ -129,12 +133,14 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
     }}>
       <h3>Carrito ({carrito.length})</h3>
 
-      {carrito.map((zona, index) => {
+      {/* *** CAMBIO CLAVE AQUÍ: Usar zona.id como key *** */}
+      {carrito.map((zona) => { // Eliminar index de aquí
         const precioUnitario = parsearPrecio(zona.precio);
-        const totalZona = calcularTotalZona(index, precioUnitario);
+        // *** CAMBIO CLAVE AQUÍ: Usar zona.id para calcularTotalZona ***
+        const totalZona = calcularTotalZona(zona.id, precioUnitario);
 
         return (
-          <div key={index} style={{ borderLeft: '4px solid orange', paddingLeft: '10px', marginBottom: '16px' }}>
+          <div key={zona.id} style={{ borderLeft: '4px solid orange', paddingLeft: '10px', marginBottom: '16px' }}>
             <div style={{ fontSize: '12px', color: '#555' }}>Sector</div>
             <div style={{ fontWeight: 'bold' }}>{zona.nombre}</div>
             <div style={{ marginTop: '5px', fontSize: '12px', color: '#777' }}>{zona.tipo}</div>
@@ -143,19 +149,21 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
             </div>
 
             <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              <button onClick={() => disminuirCantidad(index)} style={boton}>-</button>
+              {/* *** CAMBIO CLAVE AQUÍ: Pasa zona.id a las funciones *** */}
+              <button onClick={() => disminuirCantidad(zona.id)} style={boton}>-</button>
               <input
                 type="number"
-                value={cantidades[index]}
+                value={cantidades[zona.id]} // Usar zona.id para la cantidad
                 readOnly
                 style={{ width: '60px', textAlign: 'center' }}
               />
-              <button onClick={() => aumentarCantidad(index)} style={boton}>+</button>
+              {/* *** CAMBIO CLAVE AQUÍ: Pasa zona.id a las funciones *** */}
+              <button onClick={() => aumentarCantidad(zona.id)} style={boton}>+</button>
             </div>
 
             <div
               style={{ marginTop: '10px', color: "#18122B", cursor: 'pointer' }}
-              onClick={() => onEliminarZona(index)}
+              onClick={() => onEliminarZona(zona.id)} // Pasa el ID de la zona para eliminar
             >
               🗑️ Eliminar del carrito
             </div>
