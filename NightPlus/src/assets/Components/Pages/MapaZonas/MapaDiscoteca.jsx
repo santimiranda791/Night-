@@ -1,38 +1,32 @@
+// src/components/MapaDiscoteca.jsx
+
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PlanoDiscoteca from './PlanoDiscoteca'; // Asegúrate de que la ruta sea correcta
-// Importa CarritoCompra (si aún no lo haces, aunque no lo veo en este archivo, es el que usa CarritoCompra)
-// import { CarritoCompra } from './CarritoCompra'; 
 
-// --- ¡IMPORTANTE! REEMPLAZA ESTO CON EL ID REAL DEL USUARIO LOGUEADO ---
-// Esto debe venir de tu sistema de autenticación (contexto, Redux, local storage, etc.)
 const CURRENT_USER_ID = 1; // <--- VALOR DE PRUEBA. ¡CÁMBIALO POR EL ID DEL USUARIO LOGUEADO!
 
 export const MapaDiscoteca = () => {
   const { idEvento: idEventoParam } = useParams();
   const [mostrarPrecios, setMostrarPrecios] = useState(true);
-  const [zonaSeleccionada, setZonaSeleccionada] = useState(null); // Esto es para una sola zona seleccionada, no para el carrito múltiple
+  const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
   const [evento, setEvento] = useState(null);
   const [error, setError] = useState(null);
 
-  // Define la URL base de tu backend desplegado en Railway
-  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+  const BASE_URL = 'https://backendnight-production.up.railway.app';
 
-  // Helper function to parse price strings to numbers
   const parsearPrecio = (precioStr) => {
     if (typeof precioStr === 'number') {
-      return precioStr; // Ya es un número, devolverlo directamente
+      return precioStr;
     }
-    // Si es un string, intentar parsearlo
     return parseFloat(
-      String(precioStr) // Asegúrate de que sea un string para .replace
+      String(precioStr)
         .replace(/[^0-9,.-]+/g, '')
         .replace(/\./g, '')
         .replace(',', '.')
     );
   };
 
-  // Helper function to format price for display
   const formatearPrecio = (valor) =>
     new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
 
@@ -42,7 +36,7 @@ export const MapaDiscoteca = () => {
     const numericId = parseInt(idEventoParam);
 
     if (idEventoParam && !Number.isNaN(numericId) && numericId > 0) {
-      const apiUrl = `${BASE_URL}/servicio/evento/${numericId}`; // <--- URL ACTUALIZADA
+      const apiUrl = `${BASE_URL}/servicio/evento/${numericId}`;
       console.log(`MapaDiscoteca.jsx: Realizando fetch a: ${apiUrl}`);
 
       fetch(apiUrl)
@@ -73,19 +67,20 @@ export const MapaDiscoteca = () => {
   }, [idEventoParam]);
 
   const handleSeleccionarZona = (zona) => {
-    // Es CRUCIAL que 'zona' que viene de PlanoDiscoteca tenga un 'id' numérico válido.
-    console.log("Zona seleccionada recibida de PlanoDiscoteca:", zona);
-    if (!zona || typeof zona.id === 'undefined' || zona.id === null) {
+    // *** CAMBIO CLAVE 1: Validación más estricta del ID de la zona ***
+    if (!zona || (typeof zona.id === 'undefined' || zona.id === null)) {
       console.error("Error: La zona seleccionada no tiene un ID válido.", zona);
-      alert("No se pudo seleccionar la zona. Por favor, asegúrate de que tiene un ID.");
-      return;
+      alert("No se pudo seleccionar la zona. Por favor, asegúrate de que tiene un ID único.");
+      return; // Detiene la ejecución si el ID no es válido
     }
+
+    console.log("Zona seleccionada recibida de PlanoDiscoteca:", zona);
     setZonaSeleccionada({
       ...zona,
-      id: zona.id, // <--- Asegúrate que 'zona.id' NO ES UNDEFINED/NULL AQUÍ
-      nombre: zona.nombre || 'ZONA DESCONOCIDA', // Fallback por si acaso
-      precio: parsearPrecio(zona.precio), // Convertir a número
-      cantidad: 1 // Default quantity to 1 when selected
+      id: zona.id, // Asegúrate que 'zona.id' NO ES UNDEFINED/NULL AQUÍ
+      nombre: zona.nombre || 'ZONA DESCONOCIDA',
+      precio: parsearPrecio(zona.precio),
+      cantidad: 1
     });
     console.log("Zona seleccionada establecida en estado:", { ...zona, id: zona.id, precio: parsearPrecio(zona.precio), cantidad: 1 });
   };
@@ -110,50 +105,41 @@ export const MapaDiscoteca = () => {
       return;
     }
 
-    // --- CAMBIOS CRÍTICOS INICIO ---
-
-    // 1. Define los tickets para la reserva, incluyendo zonaId
     const ticketsParaReserva = [{
-        zonaId: zonaSeleccionada.id, // <-- ¡AHORA INCLUYE EL ID DE LA ZONA!
+        zonaId: zonaSeleccionada.id,
         quantity: zonaSeleccionada.cantidad,
         unitPrice: zonaSeleccionada.precio,
     }];
 
-    // 2. Construye el objeto reservationDetails con todos los campos esperados por el backend
     const reservationDetails = {
-        eventId: parseInt(evento.idEvento), // Convertir a Integer si es necesario para el backend
-        userId: CURRENT_USER_ID, // Usar el ID del usuario logueado (CÁMBIALO!)
+        eventId: parseInt(evento.idEvento),
+        userId: CURRENT_USER_ID,
         tickets: ticketsParaReserva,
         totalAmount: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
     };
 
-    // 3. Construye el objeto items para Mercado Pago, asegurando un ID válido
-    // Si zonaSeleccionada.id es numérico, lo usa. Si no, usa un fallback basado en el nombre.
     const itemId = String(zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(/ /g, '-')}-fallback`);
 
     const itemsParaMercadoPago = [{
-        id: itemId, // <-- ¡AHORA SIEMPRE TENDRÁ UN VALOR DE STRING VÁLIDO!
+        id: itemId,
         title: zonaSeleccionada.nombre,
         description: `Entrada para el sector ${zonaSeleccionada.nombre} (${zonaSeleccionada.tipo || 'N/A'})`,
-        picture_url: "", // Usar snake_case
+        picture_url: "",
         quantity: zonaSeleccionada.cantidad,
-        unit_price: zonaSeleccionada.precio, // Usar snake_case
-        currency_id: "COP", // Usar snake_case
+        unit_price: zonaSeleccionada.precio,
+        currency_id: "COP",
     }];
 
-    // 4. Construye el objeto orderData que se envía al backend
     const orderData = {
       items: itemsParaMercadoPago,
       total: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
-      reservationDetails: reservationDetails, // <-- ESTE ES EL CAMPO QUE NECESITA TU BACKEND
+      reservationDetails: reservationDetails,
     };
-
-    // --- CAMBIOS CRÍTICOS FIN ---
 
     console.log("MapaDiscoteca.jsx: Datos a enviar a Mercado Pago:", JSON.stringify(orderData, null, 2));
 
     try {
-      const response = await fetch(`${BASE_URL}/servicio/create-mercadopago-preference`, { // <--- URL ACTUALIZADA
+      const response = await fetch(`${BASE_URL}/servicio/create-mercadopago-preference`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -194,7 +180,6 @@ export const MapaDiscoteca = () => {
         overflow: 'hidden'
       }}
     >
-      {/* Columna de información del evento / carrito */}
       <div
         style={{
           width: '380px',
@@ -228,8 +213,6 @@ export const MapaDiscoteca = () => {
             <p>Cargando evento...</p>
           )}
 
-          {/* Si usaras CarritoCompra aquí, lo pasarías el 'carrito' state y un onEliminarZona adecuado */}
-          {/* Por ahora, mantengo tu lógica de zonaSeleccionada */}
           {zonaSeleccionada ? (
             <>
               <h3 style={{ fontSize: '14px', fontWeight: 'bold', marginTop: '20px' }}>Carrito (1)</h3>
@@ -281,7 +264,6 @@ export const MapaDiscoteca = () => {
                 fontWeight: 'bold',
                 marginTop: '10px'
               }}
-              // Deshabilitar si no hay evento o if la zona seleccionada no tiene un ID válido
               disabled={!evento || !evento.idEvento || !zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null}
             >
               Finalizar compra
@@ -290,12 +272,10 @@ export const MapaDiscoteca = () => {
         )}
       </div>
 
-      {/* Plano y precios */}
       <div style={{ flex: 1, position: 'relative', paddingTop: '20px' }}>
         <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Mapa de la Discoteca</h2>
 
         <div style={{ display: 'flex', justifyContent: 'center' }}>
-          {/* Aquí PlanoDiscoteca DEBE pasar un objeto 'zona' con un 'id' numérico */}
           <PlanoDiscoteca onSeleccionarZona={handleSeleccionarZona} />
         </div>
 
@@ -328,10 +308,6 @@ export const MapaDiscoteca = () => {
               <span>⌄</span>
             </div>
 
-            {/* Estos son los datos de las zonas estáticas para mostrar precios.
-                Asegúrate de que tus zonas en la base de datos (y las que carga PlanoDiscoteca)
-                coincidan con estos colores y nombres/precios para una experiencia consistente.
-            */}
             <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
               <span style={{ width: '10px', height: '10px', backgroundColor: '#0ea5e9', borderRadius: '50%', marginRight: '8px' }}></span>
               <span style={{ flex: 1 }}>ZONA GENERAL</span>

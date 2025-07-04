@@ -1,11 +1,12 @@
+// src/components/CarritoCompra.jsx
+
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => { // userId debe venir de tu contexto de usuario
+export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
   const navigate = useNavigate();
 
-  // Define la URL base de tu backend desplegado en Railway
-  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+  const BASE_URL = 'https://backendnight-production.up.railway.app';
 
   const formatearPrecio = (valor) =>
     new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
@@ -18,65 +19,60 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
         .replace(',', '.')
     );
 
-  // *** CAMBIO CLAVE AQUÍ: Usar zona.id como clave para cantidades ***
+  // *** CAMBIO CLAVE 1: Inicializa 'cantidades' usando zona.id como clave ***
   const [cantidades, setCantidades] = useState(
     carrito.reduce((acc, zona) => ({ ...acc, [zona.id]: 1 }), {})
   );
 
-  // *** CAMBIO CLAVE AQUÍ: Aceptar zonaId en lugar de index ***
+  // *** CAMBIO CLAVE 2: Las funciones de cantidad ahora usan zonaId ***
   const aumentarCantidad = (zonaId) => {
     setCantidades((prev) => ({ ...prev, [zonaId]: prev[zonaId] + 1 }));
   };
 
-  // *** CAMBIO CLAVE AQUÍ: Aceptar zonaId en lugar de index ***
+  // *** CAMBIO CLAVE 3: Las funciones de cantidad ahora usan zonaId ***
   const disminuirCantidad = (zonaId) => {
     if (cantidades[zonaId] > 1) {
       setCantidades((prev) => ({ ...prev, [zonaId]: prev[zonaId] - 1 }));
     }
   };
 
-  // *** CAMBIO CLAVE AQUÍ: Aceptar zonaId en lugar de index ***
+  // *** CAMBIO CLAVE 4: Calcular total de zona usando zonaId ***
   const calcularTotalZona = (zonaId, precioUnitario) => precioUnitario * cantidades[zonaId];
 
+  // *** CAMBIO CLAVE 5: Total general usa zona.id para calcular ***
   const totalGeneral = carrito.reduce((acc, zona) => {
     const precioUnitario = parsearPrecio(zona.precio);
-    // *** CAMBIO CLAVE AQUÍ: Usar zona.id para calcularTotalZona ***
     return acc + calcularTotalZona(zona.id, precioUnitario);
   }, 0);
 
   const finalizarCompra = async () => {
-    // Validar que el eventId y userId no sean undefined/null antes de usarlos
     if (!eventId) {
       alert("Error: ID del evento no disponible para la compra.");
       return;
     }
 
-    // Convertir userId a Integer o null si no existe.
-    // Esto es crucial para evitar parseInt(undefined) -> NaN
     const parsedUserId = userId ? parseInt(userId) : null;
-    if (userId && isNaN(parsedUserId)) { // Solo si userId no es null/undefined pero parseo falló
+    if (userId && isNaN(parsedUserId)) {
         alert("Error: ID de usuario inválido.");
         return;
     }
     
-    // Detalles para Mercado Pago (items)
-    const items = carrito.map((zona, index) => ({
-      id: zona.id, // Asegúrate de que zona.id sea una cadena o número único y estable
+    const items = carrito.map((zona) => ({ // Eliminado 'index' de aquí
+      id: String(zona.id), // Asegúrate de que id sea string para Mercado Pago
       title: zona.nombre,
       description: `Entrada para el sector ${zona.nombre} (${zona.tipo})`,
       picture_url: zona.imagen || "",
-      quantity: cantidades[zona.id], // Usar zona.id para la cantidad
+      quantity: cantidades[zona.id], // *** CAMBIO CLAVE 6: Usar zona.id para la cantidad ***
       unit_price: parsearPrecio(zona.precio),
       currency_id: "COP",
     }));
 
-    // Detalles para tu sistema de reservas (reservationDetails)
     const reservationDetails = {
-      eventId: parseInt(eventId), // Aseguramos que sea un número
-      userId: parsedUserId,       // Usamos el userId ya parseado o null
-      tickets: carrito.map((zona) => ({ // Eliminar index de aquí
+      eventId: parseInt(eventId),
+      userId: parsedUserId,
+      tickets: carrito.map((zona) => ({ // Eliminado 'index' de aquí
         zonaId: zona.id,
-        quantity: cantidades[zona.id], // Usar zona.id para la cantidad
+        quantity: cantidades[zona.id], // *** CAMBIO CLAVE 7: Usar zona.id para la cantidad ***
         unitPrice: parsearPrecio(zona.precio),
       })),
       totalAmount: totalGeneral,
@@ -88,11 +84,10 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
       reservationDetails: reservationDetails,
     };
 
-    console.log("Datos enviados al backend:", JSON.stringify(orderData, null, 2)); // Log más legible
+    console.log("Datos enviados al backend:", JSON.stringify(orderData, null, 2));
 
     try {
-      // Usa la URL base para construir la URL completa del endpoint
-      const response = await fetch(`${BASE_URL}/servicio/create-mercadopago-preference`, { // <--- URL ACTUALIZADA
+      const response = await fetch(`${BASE_URL}/servicio/create-mercadopago-preference`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -133,11 +128,10 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
     }}>
       <h3>Carrito ({carrito.length})</h3>
 
-      {/* *** CAMBIO CLAVE AQUÍ: Usar zona.id como key *** */}
-      {carrito.map((zona) => { // Eliminar index de aquí
+      {/* *** CAMBIO CLAVE 8: Usar zona.id como key en el map *** */}
+      {carrito.map((zona) => { // Eliminar 'index' de aquí
         const precioUnitario = parsearPrecio(zona.precio);
-        // *** CAMBIO CLAVE AQUÍ: Usar zona.id para calcularTotalZona ***
-        const totalZona = calcularTotalZona(zona.id, precioUnitario);
+        const totalZona = calcularTotalZona(zona.id, precioUnitario); // Usar zona.id aquí también
 
         return (
           <div key={zona.id} style={{ borderLeft: '4px solid orange', paddingLeft: '10px', marginBottom: '16px' }}>
@@ -149,21 +143,21 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
             </div>
 
             <div style={{ marginTop: '10px', display: 'flex', alignItems: 'center', gap: '10px' }}>
-              {/* *** CAMBIO CLAVE AQUÍ: Pasa zona.id a las funciones *** */}
+              {/* *** CAMBIO CLAVE 9: Pasar zona.id a las funciones de cantidad *** */}
               <button onClick={() => disminuirCantidad(zona.id)} style={boton}>-</button>
               <input
                 type="number"
-                value={cantidades[zona.id]} // Usar zona.id para la cantidad
+                value={cantidades[zona.id]} // *** CAMBIO CLAVE 10: Leer cantidad usando zona.id ***
                 readOnly
                 style={{ width: '60px', textAlign: 'center' }}
               />
-              {/* *** CAMBIO CLAVE AQUÍ: Pasa zona.id a las funciones *** */}
+              {/* *** CAMBIO CLAVE 11: Pasar zona.id a las funciones de cantidad *** */}
               <button onClick={() => aumentarCantidad(zona.id)} style={boton}>+</button>
             </div>
 
             <div
               style={{ marginTop: '10px', color: "#18122B", cursor: 'pointer' }}
-              onClick={() => onEliminarZona(zona.id)} // Pasa el ID de la zona para eliminar
+              onClick={() => onEliminarZona(zona.id)} // *** CAMBIO CLAVE 12: Pasar zona.id para eliminar ***
             >
               🗑️ Eliminar del carrito
             </div>
@@ -208,6 +202,7 @@ const boton = {
   fontSize: '18px',
   fontWeight: 'bold',
   backgroundColor: 'black',
+  color: 'white', /* Agregado para que se vea bien en los botones */
   border: '1px solid #ccc',
   borderRadius: '4px',
   cursor: 'pointer'
