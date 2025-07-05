@@ -1298,7 +1298,13 @@ export const SectbodyAdmin = () => {
                     eventos.map((e) => (
                       <tr key={e.idEvento || e.id}>
                         <td>{e.idEvento || e.id}</td>
-                        <td>{e.discoteca?.nit || "N/A"}</td>
+                        <td>
+                          {typeof e.discoteca === "object" && e.discoteca !== null
+    ? e.discoteca.nit
+    : typeof e.discoteca === "number"
+    ? e.discoteca
+    : "N/A"}
+                        </td>
                         <td>{e.nombreEvento}</td>
                         <td>{e.fecha}</td>
                         <td>{e.hora}</td>
