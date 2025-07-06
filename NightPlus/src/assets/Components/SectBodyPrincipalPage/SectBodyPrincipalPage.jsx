@@ -17,7 +17,8 @@ export const SectBodyPrincipalPage = () => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        const response = await fetch(`${BASE_URL}/servicio/eventos`); // Endpoint para obtener todos los eventos
+        // En SectBodyPrincipalPage.js, dentro de fetchEvents
+const response = await fetch(`${BASE_URL}/servicio/eventos-list`); // CAMBIO: Usar el endpoint correcto
         if (!response.ok) {
           throw new Error(`Error al cargar eventos: ${response.status} ${response.statusText}`);
         }
