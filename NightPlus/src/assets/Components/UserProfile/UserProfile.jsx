@@ -8,21 +8,80 @@ export const UserProfile = () => {
     edad: '',
     telefono: '',
     correo: '',
-    contrasenaCliente: '', // CAMBIO aquí para coincidir con el backend
+    contrasenaCliente: '',
   });
 
   const [activeTab, setActiveTab] = useState('cuenta');
   const [showModal, setShowModal] = useState(false);
 
+  // Nuevo estado para las reservas del cliente
+  const [misReservas, setMisReservas] = useState([]);
+  const [loadingMisReservas, setLoadingMisReservas] = useState(false);
+  const [errorMisReservas, setErrorMisReservas] = useState(null);
+
+  // URL base de tu backend en Railway.app
+  const BASE_URL = 'https://backendnight-production.up.railway.app'; 
+
+  // Función para obtener el token de autenticación (asumiendo que lo guardas en localStorage)
+  const getAuthHeaders = () => {
+    const token = localStorage.getItem('token'); // Asume que el token se guarda aquí
+    return token ? { 'Authorization': `Bearer ${token}` } : {};
+  };
+
+  // Carga inicial de los datos del cliente desde localStorage
   useEffect(() => {
     setCliente({
       nombre: localStorage.getItem('nombre') || '',
       edad: localStorage.getItem('edad') || '',
       telefono: localStorage.getItem('telefono') || '',
       correo: localStorage.getItem('correo') || '',
-      contrasenaCliente: '',
+      contrasenaCliente: '', // La contraseña nunca debe cargarse aquí por seguridad
     });
   }, []);
+
+  // Efecto para cargar las reservas cuando la pestaña "Mis Reservas" está activa
+  useEffect(() => {
+    const fetchMisReservas = async () => {
+      if (activeTab === 'mis reservas') { // Solo carga si esta pestaña está activa
+        setLoadingMisReservas(true);
+        setErrorMisReservas(null);
+        try {
+          // CAMBIO: Endpoint para obtener las reservas del cliente autenticado
+          const response = await fetch(`${BASE_URL}/servicio/cliente/mis-reservas`, {
+            headers: getAuthHeaders(), // Envía el token JWT
+          });
+
+          if (response.status === 401 || response.status === 403) {
+            Swal.fire({
+              imageUrl: '/logitotriste.png',
+              imageWidth: 130,
+              imageHeight: 130,
+              background: '#000',
+              color: '#fff',
+              title: "Error de Autenticación",
+              text: "Tu sesión ha expirado o no tienes permisos. Por favor, inicia sesión de nuevo.",
+            });
+            // Aquí podrías redirigir al login si tienes una función handleLogout global
+            // window.location.href = '/login'; 
+            return;
+          }
+          if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error al obtener tus reservas: ${response.status} ${response.statusText} - ${errorText}`);
+          }
+          const data = await response.json();
+          setMisReservas(data);
+        } catch (err) {
+          console.error("Error fetching mis reservas:", err);
+          setErrorMisReservas(err.message);
+        } finally {
+          setLoadingMisReservas(false);
+        }
+      }
+    };
+
+    fetchMisReservas();
+  }, [activeTab]); // Este useEffect se ejecuta cada vez que activeTab cambia
 
   const handleChange = (e) => {
     setCliente({ ...cliente, [e.target.name]: e.target.value });
@@ -33,14 +92,53 @@ export const UserProfile = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    const clienteId = localStorage.getItem('id_cliente'); 
+    if (!clienteId) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'ID de cliente no encontrado. Por favor, inicia sesión de nuevo.',
+        background: '#000',
+        color: '#fff'
+      });
+      return;
+    }
+
     try {
-      const response = await fetch('http://localhost:8080/servicio/update', {
+      const response = await fetch(`${BASE_URL}/servicio/updateCliente`, {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(cliente),
+        headers: { 
+          'Content-Type': 'application/json',
+          ...getAuthHeaders(), // Agrega los headers de autenticación
+        },
+        body: JSON.stringify({
+          idCliente: Number(clienteId), 
+          nombre: cliente.nombre,
+          edad: Number(cliente.edad),
+          telefono: cliente.telefono,
+          correo: cliente.correo,
+          contrasenaCliente: cliente.contrasenaCliente || undefined,
+          usuarioCliente: localStorage.getItem('usuarioCliente') || '',
+        }),
       });
 
-      if (!response.ok) throw new Error(await response.text());
+      if (!response.ok) {
+        if (response.status === 401 || response.status === 403) {
+            Swal.fire({
+                imageUrl: '/logitotriste.png',
+                imageWidth: 130,
+                imageHeight: 130,
+                background: '#000',
+                color: '#fff',
+                title: "Error de Autenticación",
+                text: "Tu sesión ha expirado o no tienes permisos. Por favor, inicia sesión de nuevo.",
+            });
+            return;
+        }
+        const errorText = await response.text();
+        throw new Error(`Error al actualizar: ${response.status} ${response.statusText} - ${errorText}`);
+      }
 
       const actualizado = await response.json();
 
@@ -48,6 +146,15 @@ export const UserProfile = () => {
       localStorage.setItem("edad", actualizado.edad);
       localStorage.setItem("telefono", actualizado.telefono);
       localStorage.setItem("correo", actualizado.correo);
+      
+      setCliente(prevCliente => ({
+          ...prevCliente,
+          nombre: actualizado.nombre,
+          edad: actualizado.edad,
+          telefono: actualizado.telefono,
+          correo: actualizado.correo,
+          contrasenaCliente: '',
+      }));
 
       Swal.fire({
         icon: 'success',
@@ -78,7 +185,8 @@ export const UserProfile = () => {
       </div>
 
       <div className="profile-tabs">
-        {['cuenta', 'eventos', 'wallet', 'órdenes'].map(tab => (
+        {/* CAMBIO: pestañas actualizadas */}
+        {['cuenta', 'mis reservas'].map(tab => (
           <div
             key={tab}
             className={`profile-tab ${activeTab === tab ? 'active' : ''}`}
@@ -100,8 +208,45 @@ export const UserProfile = () => {
             <input type="text" value={cliente.correo} disabled />
             <button onClick={openModal} className="updatee-button">Actualizar</button>
           </div>
+        ) : activeTab === 'mis reservas' ? ( // CAMBIO: Contenido para "Mis Reservas"
+          <div className="reservas-section">
+            <h2>Mis Reservas</h2>
+            {loadingMisReservas ? (
+              <p>Cargando tus reservas...</p>
+            ) : errorMisReservas ? (
+              <p>Error al cargar reservas: {errorMisReservas}</p>
+            ) : misReservas.length === 0 ? (
+              <p>Aún no tienes reservas.</p>
+            ) : (
+              <table className="admin-table"> {/* Puedes reutilizar la clase de tabla o crear una nueva */}
+                <thead>
+                  <tr>
+                    <th>ID Reserva</th>
+                    <th>Evento</th>
+                    <th>Tickets</th>
+                    <th>Fecha Reserva</th>
+                    <th>Estado Pago</th>
+                    {/* Puedes añadir más columnas si tu DTO de reserva tiene más datos relevantes para el usuario */}
+                  </tr>
+                </thead>
+                <tbody>
+                  {misReservas.map((reserva) => (
+                    <tr key={reserva.idReserva}>
+                      <td data-label="ID Reserva">{reserva.idReserva}</td>
+                      {/* Asume que el DTO de Reserva tiene nombreEvento o accedes a reserva.evento.nombreEvento */}
+                      <td data-label="Evento">{reserva.nombreEvento || reserva.evento?.nombreEvento || 'N/A'}</td>
+                      <td data-label="Tickets">{reserva.cantidadTickets}</td>
+                      <td data-label="Fecha Reserva">{reserva.fechaReserva}</td>
+                      <td data-label="Estado Pago">{reserva.estadoPago}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
         ) : (
           <div className="profile-placeholder">
+            {/* Si alguna otra pestaña se agrega, podría caer aquí, pero ahora solo serán Cuenta y Mis Reservas */}
             <h3>Contenido de {activeTab} próximamente...</h3>
           </div>
         )}
