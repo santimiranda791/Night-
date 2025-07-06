@@ -10,8 +10,10 @@ const CURRENT_USER_ID = 1; // <--- VALOR DE PRUEBA. ¡CÁMBIALO POR EL ID DEL US
 // Es crucial que estos números coincidan con los IDs de tus zonas en la base de datos o sean consistentes.
 const ZONA_ID_FRONTEND_MAPPING = {
     "general": 1, // Ejemplo: "general" se mapea al ID numérico 1
+    "preferencial": 2, // ¡Añadido! Asegúrate que "2" sea el ID correcto en tu DB para esta zona.
+    "vip": 3,          // Ejemplo: si tienes una zona VIP con ID 3 en tu DB.
     // Agrega más mapeos aquí si tienes otras zonas con IDs de texto en tu frontend.
-    // Por ejemplo: "vip": 2, "palco": 3, etc.
+    // Por ejemplo: "palco": 4, etc.
 };
 
 export const MapaDiscoteca = () => {
@@ -113,8 +115,6 @@ export const MapaDiscoteca = () => {
             return;
         }
 
-        // *** INICIO DE LAS MODIFICACIONES ***
-        // Obtén el ID de la zona y conviértelo a su equivalente numérico si es una cadena (ej. "general" -> 1)
         let numericZonaId;
         if (typeof zonaSeleccionada.id === 'string' && ZONA_ID_FRONTEND_MAPPING[zonaSeleccionada.id.toLowerCase()]) {
             numericZonaId = ZONA_ID_FRONTEND_MAPPING[zonaSeleccionada.id.toLowerCase()];
@@ -122,13 +122,12 @@ export const MapaDiscoteca = () => {
         } else {
             numericZonaId = parseInt(zonaSeleccionada.id);
             if (isNaN(numericZonaId)) {
+                // Este es el error que estás viendo actualmente, y esta alerta se disparará.
                 console.error("MapaDiscoteca.jsx: ID de zona no válido para conversión numérica. Se esperaba un número o una cadena mapeable.", zonaSeleccionada.id);
-                alert("Error interno: El ID de la zona seleccionada no es un número válido.");
+                alert("Error interno: El ID de la zona seleccionada no es un número válido o no está mapeado correctamente. Revisa la consola para más detalles.");
                 return;
             }
         }
-        // *** FIN DE LAS MODIFICACIONES ***
-
 
         const ticketsParaReserva = [{
             zonaId: numericZonaId, // Usa el ID numérico aquí, requerido por el backend (Integer)
@@ -143,9 +142,6 @@ export const MapaDiscoteca = () => {
             totalAmount: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
         };
 
-        // El ID para Mercado Pago (en la sección 'items') puede seguir siendo la cadena original
-        // si tu backend ya tiene el mapeo con ZONA_ID_MAPPING para el SDK de MP.
-        // Si quieres que también sea numérico, podrías usar String(numericZonaId) aquí.
         const itemIdForMercadoPago = String(zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(/ /g, '-')}-fallback`);
 
         const itemsParaMercadoPago = [{
