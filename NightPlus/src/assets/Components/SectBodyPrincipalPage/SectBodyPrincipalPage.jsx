@@ -10,15 +10,15 @@ export const SectBodyPrincipalPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // ¡IMPORTANTE! URL base de tu backend en Railway.app
+  // URL base de tu backend en Railway.app
   const BASE_URL = 'https://backendnight-production.up.railway.app'; 
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        // En SectBodyPrincipalPage.js, dentro de fetchEvents
-const response = await fetch(`${BASE_URL}/servicio/eventos-list`); // CAMBIO: Usar el endpoint correcto
+        // CAMBIO: Asegúrate de que el endpoint para obtener eventos sea '/servicio/eventos-list'
+        const response = await fetch(`${BASE_URL}/servicio/eventos-list`);
         if (!response.ok) {
           throw new Error(`Error al cargar eventos: ${response.status} ${response.statusText}`);
         }
@@ -35,8 +35,9 @@ const response = await fetch(`${BASE_URL}/servicio/eventos-list`); // CAMBIO: Us
     fetchEvents();
   }, []);
 
+  // CAMBIO: La función handleVerEvento ahora navega a /mapa/{id}
   const handleVerEvento = (id) => {
-    navigate(`/view-event/${id}`);
+    navigate(`/mapa/${id}`); // Navega a la ruta interna de tu aplicación
   };
 
   return (
@@ -73,25 +74,22 @@ const response = await fetch(`${BASE_URL}/servicio/eventos-list`); // CAMBIO: Us
                         <img src={event.imagen || "/card.png"} alt={`Imagen del ${event.nombreEvento}`} className="event-card-img" />
                         <button className="event-btn" onClick={() => handleVerEvento(event.idEvento)}>Ver Evento</button>
                       </div>
-                      <h3>{event.nombreEvento}</h3>
-                      <p>{event.fecha} - {event.hora}</p>
-                      <p>{event.descripcion}</p>
+                      {/* CAMBIO: Eliminado el título, fecha/hora y descripción */}
                     </div>
                   ))}
                 </div>
-                {events[2] && (
+                {events[2] && ( // Mostrar el tercer evento si existe
                   <div className="row center">
                     <div className="event-card-custom">
                       <div className="event-card-img-wrap">
                         <img src={events[2].imagen || "/card.png"} alt={`Imagen del ${events[2].nombreEvento}`} className="event-card-img" />
                         <button className="event-btn" onClick={() => handleVerEvento(events[2].idEvento)}>Ver Evento</button>
                       </div>
-                      <h3>{events[2].nombreEvento}</h3>
-                      <p>{events[2].fecha} - {events[2].hora}</p>
-                      <p>{events[2].descripcion}</p>
+                      {/* CAMBIO: Eliminado el título, fecha/hora y descripción */}
                     </div>
                   </div>
                 )}
+                {/* Puedes añadir un botón o enlace para "Ver más eventos" si hay más de 3 */}
                 {events.length > 3 && (
                   <div className="row center">
                     <button className="event-btn" onClick={() => navigate('/events')}>Ver todos los Eventos</button>
