@@ -39,6 +39,7 @@ export const UserProfile = () => {
     });
   }, []);
 
+  // --- LÓGICA CLAVE PARA LAS RESERVAS ---
   // Efecto para cargar las reservas cuando la pestaña "Mis Reservas" está activa
   useEffect(() => {
     const fetchMisReservas = async () => {
@@ -46,7 +47,7 @@ export const UserProfile = () => {
         setLoadingMisReservas(true);
         setErrorMisReservas(null);
         try {
-          // CAMBIO: Endpoint para obtener las reservas del cliente autenticado
+          // Endpoint para obtener las reservas del cliente autenticado
           const response = await fetch(`${BASE_URL}/servicio/cliente/mis-reservas`, {
             headers: getAuthHeaders(), // Envía el token JWT
           });
@@ -82,6 +83,7 @@ export const UserProfile = () => {
 
     fetchMisReservas();
   }, [activeTab]); // Este useEffect se ejecuta cada vez que activeTab cambia
+  // --- FIN LÓGICA CLAVE ---
 
   const handleChange = (e) => {
     setCliente({ ...cliente, [e.target.name]: e.target.value });
@@ -93,33 +95,31 @@ export const UserProfile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const clienteId = localStorage.getItem('id_cliente'); 
-    if (!clienteId) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'ID de cliente no encontrado. Por favor, inicia sesión de nuevo.',
-        background: '#000',
-        color: '#fff'
-      });
-      return;
+    if (!cliente.correo) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'El correo es necesario para actualizar tu perfil.',
+            background: '#000',
+            color: '#fff'
+        });
+        return;
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/servicio/updateCliente`, {
+      const response = await fetch(`${BASE_URL}/servicio/update`, { 
         method: 'PUT',
         headers: { 
           'Content-Type': 'application/json',
-          ...getAuthHeaders(), // Agrega los headers de autenticación
+          ...getAuthHeaders(),
         },
         body: JSON.stringify({
-          idCliente: Number(clienteId), 
           nombre: cliente.nombre,
           edad: Number(cliente.edad),
           telefono: cliente.telefono,
           correo: cliente.correo,
-          contrasenaCliente: cliente.contrasenaCliente || undefined,
           usuarioCliente: localStorage.getItem('usuarioCliente') || '',
+          contrasenaCliente: cliente.contrasenaCliente || undefined,
         }),
       });
 
@@ -146,7 +146,8 @@ export const UserProfile = () => {
       localStorage.setItem("edad", actualizado.edad);
       localStorage.setItem("telefono", actualizado.telefono);
       localStorage.setItem("correo", actualizado.correo);
-      
+      localStorage.setItem("usuarioCliente", actualizado.usuarioCliente);
+
       setCliente(prevCliente => ({
           ...prevCliente,
           nombre: actualizado.nombre,
@@ -185,7 +186,7 @@ export const UserProfile = () => {
       </div>
 
       <div className="profile-tabs">
-        {/* CAMBIO: pestañas actualizadas */}
+        {/* Pestañas actualizadas */}
         {['cuenta', 'mis reservas'].map(tab => (
           <div
             key={tab}
@@ -208,7 +209,8 @@ export const UserProfile = () => {
             <input type="text" value={cliente.correo} disabled />
             <button onClick={openModal} className="updatee-button">Actualizar</button>
           </div>
-        ) : activeTab === 'mis reservas' ? ( // CAMBIO: Contenido para "Mis Reservas"
+        ) : activeTab === 'mis reservas' ? (
+          // --- RENDERIZADO DE LAS RESERVAS ---
           <div className="reservas-section">
             <h2>Mis Reservas</h2>
             {loadingMisReservas ? (
@@ -218,7 +220,7 @@ export const UserProfile = () => {
             ) : misReservas.length === 0 ? (
               <p>Aún no tienes reservas.</p>
             ) : (
-              <table className="admin-table"> {/* Puedes reutilizar la clase de tabla o crear una nueva */}
+              <table className="admin-table">
                 <thead>
                   <tr>
                     <th>ID Reserva</th>
@@ -244,9 +246,9 @@ export const UserProfile = () => {
               </table>
             )}
           </div>
+          // --- FIN RENDERIZADO DE LAS RESERVAS ---
         ) : (
           <div className="profile-placeholder">
-            {/* Si alguna otra pestaña se agrega, podría caer aquí, pero ahora solo serán Cuenta y Mis Reservas */}
             <h3>Contenido de {activeTab} próximamente...</h3>
           </div>
         )}
