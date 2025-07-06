@@ -1,0 +1,479 @@
+/* Variables para colores y espaciado si quieres centralizarlos */
+:root {
+    --bg-gradient-start: #121212;
+    --bg-gradient-end: #2a0845;
+    --sidebar-bg-start: #1a1a1a;
+    --sidebar-bg-end: #3b1c68;
+    --primary-color: #500073; /* Color de botones y acciones */
+    --text-light: #f3f4f6;
+    --text-dark: #111827;
+    --border-color: #ccc;
+    --radius-md: 8px;
+    --radius-lg: 12px;
+}
+
+/* Base styles for MapaDiscoteca Container (Flexbox for responsive layout) */
+.mapa-discoteca-container {
+    display: flex;
+    min-height: 100vh;
+    background: linear-gradient(to right, var(--bg-gradient-start), var(--bg-gradient-end));
+    font-family: 'Poppins', sans-serif;
+    color: white;
+    overflow-x: hidden;
+    padding: 20px; /* Padding general para el contenedor principal */
+    gap: 20px; /* Espacio entre el panel de info y el mapa */
+    justify-content: center; /* Centrar contenido horizontalmente */
+    align-items: flex-start; /* Alinear arriba en el eje cruzado */
+}
+
+/* Sidebar o panel de información del evento y carrito */
+.info-panel {
+    width: 380px; /* Ancho fijo para escritorio */
+    background: linear-gradient(90deg, var(--sidebar-bg-start) 35%, var(--sidebar-bg-end));
+    color: white;
+    border-radius: var(--radius-lg);
+    padding: 20px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+    height: calc(100vh - 40px); /* Ajuste basado en el padding total del contenedor */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-shrink: 0;
+    position: sticky; /* Sticky para que quede visible al hacer scroll */
+    top: 20px; /* Alineado con el padding superior */
+    box-sizing: border-box; /* Incluir padding en el ancho/alto */
+}
+
+.info-panel h2 {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    line-height: 1.2;
+}
+
+.info-panel p {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+}
+
+.info-panel .cart-summary {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.info-panel .cart-summary h3 {
+    font-size: 1.1rem;
+    font-weight: bold;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.selected-zone-details {
+    margin-bottom: 10px;
+    font-size: 0.9rem;
+}
+
+.selected-zone-details strong {
+    font-size: 1rem;
+}
+
+.info-panel .button-group {
+    margin-top: auto; /* Empuja el grupo de botones al final */
+}
+
+.info-panel button {
+    background-color: var(--primary-color);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: var(--radius-md);
+    cursor: pointer;
+    font-weight: bold;
+    width: 100%;
+    transition: background-color 0.3s ease;
+    margin-top: 10px; /* Espacio entre botones */
+}
+
+.info-panel button:hover:not(:disabled) {
+    background-color: #6a0099;
+}
+
+.info-panel button:disabled {
+    background-color: #333;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.info-panel .btn-remove-from-cart {
+    background-color: #dc2626; /* Color rojo para eliminar */
+    margin-bottom: 5px; /* Pequeño espacio extra */
+}
+
+.info-panel .btn-remove-from-cart:hover:not(:disabled) {
+    background-color: #b91c1c;
+}
+
+.total-display {
+    text-align: right;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 15px;
+    color: var(--text-light);
+}
+
+/* Contenedor del mapa */
+.map-section {
+    flex: 1; /* Permite que el mapa ocupe el espacio restante */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative; /* Necesario para posicionar la leyenda */
+    min-width: 300px;
+    max-width: calc(100vw - 40px - 380px - 20px); /* Ajuste para no desbordar en desktop */
+    box-sizing: border-box;
+}
+
+.map-section h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2rem;
+}
+
+/* Contenedor del PlanoDiscoteca */
+.plano-discoteca-wrapper {
+    position: relative;
+    width: 600px; /* Ancho fijo para escritorio */
+    height: 800px; /* Alto fijo para escritorio */
+    background-color: #1e1e2f;
+    border: 2px solid #444;
+    margin: 40px auto; /* Centrado */
+    border-radius: 20px;
+    font-family: Arial, sans-serif;
+    overflow: hidden; /* Asegura que las zonas no desborden el plano */
+    flex-shrink: 0;
+    max-width: 90vw; /* Asegura que no desborde en móviles */
+    max-height: 80vh; /* Asegura que no desborde en altura en móviles */
+}
+
+/* Estilos para las zonas individuales dentro de PlanoDiscoteca */
+.zona {
+    position: absolute; /* Mantenemos absolute para las zonas internas del mapa */
+    color: white;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 0.85rem;
+    padding: 4px;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    transition: transform 0.2s ease, background-color 0.3s ease;
+    cursor: pointer;
+    box-sizing: border-box; /* Importante para que padding no aumente el tamaño */
+}
+
+.zona:hover {
+    transform: scale(1.02);
+    filter: brightness(1.1);
+}
+
+.zona.no-selectable {
+    cursor: default;
+    pointer-events: none;
+    transform: none !important;
+    filter: none !important;
+}
+
+/* Leyendas adicionales en el mapa */
+.entrance-exit-label {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+.discoteca-name-label {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: white;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
+}
+
+
+/* Contenedor para la leyenda de precios (se vuelve relativo al map-section) */
+.map-legend-controls {
+    position: absolute; /* Posicionamiento relativo al .map-section */
+    bottom: 40px;
+    left: 40px;
+    z-index: 5; /* Asegura que esté por encima del mapa */
+}
+
+.price-legend-panel {
+    background-color: white;
+    color: black;
+    border-radius: var(--radius-lg);
+    padding: 14px 18px;
+    width: 260px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    font-size: 0.9rem;
+    box-sizing: border-box;
+}
+
+.price-legend-panel .toggle-button {
+    font-weight: bold;
+    margin-bottom: 12px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-dark);
+}
+
+.price-legend-panel .toggle-button span:last-child {
+    transform: rotate(90deg);
+}
+
+.price-legend-panel .price-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.price-legend-panel .color-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    margin-right: 8px;
+    display: inline-block;
+}
+
+.price-legend-panel .zone-name {
+    flex: 1;
+}
+
+.price-legend-panel .zone-price {
+    font-weight: bold;
+}
+
+.show-prices-button {
+    background-color: var(--text-light);
+    border: none;
+    border-radius: var(--radius-lg);
+    padding: 10px 16px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.9rem;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-dark);
+}
+
+.show-prices-button span {
+    transform: rotate(180deg);
+}
+
+/* Estilos para ZonaTooltip */
+.zona-tooltip {
+    position: absolute;
+    /* Ajusta top para que aparezca por encima del elemento base del tooltip */
+    /* Calcularemos esto en el JS o lo ajustamos un poco más */
+    left: 50%;
+    transform: translateX(-50%) translateY(-100%) translateY(-10px); /* Ajuste para subirlo y dejar un margen */
+    background-color: white;
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    width: 180px;
+    z-index: 10;
+    font-family: Arial, sans-serif;
+    text-align: left;
+    color: var(--text-dark);
+    pointer-events: none; /* Crucial: no interactúa con el ratón para no bloquear la zona subyacente */
+    opacity: 0; /* Inicialmente oculto */
+    transition: opacity 0.2s ease; /* Suavizar aparición */
+}
+
+.zona.active-hover .zona-tooltip { /* Cuando la zona padre tiene hover, muestra el tooltip */
+    opacity: 1;
+}
+
+
+.zona-tooltip-header {
+    height: 6px;
+    background-color: #1d4ed8;
+    border-top-left-radius: var(--radius-md);
+    border-top-right-radius: var(--radius-md);
+}
+
+.zona-tooltip-content {
+    padding: 10px;
+}
+
+.zona-tooltip-label {
+    font-size: 0.75rem;
+    color: #444;
+}
+
+.zona-tooltip-name {
+    font-size: 0.9375rem;
+    font-weight: bold;
+}
+
+.zona-tooltip-type {
+    font-size: 0.75rem;
+    margin-top: 8px;
+}
+
+.zona-tooltip-price {
+    font-size: 1rem;
+    font-weight: bold;
+    color: #000;
+}
+
+.zona-tooltip-arrow {
+    position: absolute;
+    bottom: -10px; /* Flecha apunta hacia abajo, desde la base del tooltip */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 10px solid white;
+}
+
+/* Media Queries */
+
+/* Para tabletas y móviles grandes (ej. hasta 991px) */
+@media (max-width: 991px) {
+    .mapa-discoteca-container {
+        flex-direction: column; /* Apilar en columnas */
+        align-items: center; /* Centrar los elementos apilados */
+        padding: 15px;
+        gap: 15px; /* Ajustar el gap en móvil */
+        min-height: auto; /* Permitir que la altura se ajuste al contenido */
+    }
+
+    .map-section {
+        width: 100%; /* Ocupa todo el ancho disponible */
+        max-width: 600px; /* Limita el ancho máximo para el mapa */
+        order: 1; /* El mapa aparece primero */
+        margin: 0; /* Limpiar márgenes */
+    }
+
+    .info-panel {
+        width: 100%; /* Ocupa todo el ancho */
+        max-width: 600px; /* Limita el ancho máximo del panel */
+        height: auto; /* Altura automática */
+        position: static; /* Ya no es sticky */
+        order: 2; /* Aparece debajo del mapa */
+        margin: 0; /* Limpiar márgenes */
+    }
+
+    .map-section h2 {
+        font-size: 1.8rem;
+    }
+
+    .plano-discoteca-wrapper {
+        width: 100%; /* Ancho completo del contenedor */
+        height: 600px; /* Altura ajustada */
+        margin: 20px auto;
+        /* Escalar el contenido si es necesario */
+        transform: scale(0.9);
+        transform-origin: center top; /* Escalar desde el centro superior */
+        max-width: 95vw; /* Más margen en los bordes */
+    }
+
+    .zona {
+        font-size: 0.8rem; /* Ajustar el tamaño de la fuente en las zonas */
+        padding: 3px;
+    }
+
+    .map-legend-controls {
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%; /* Ocupa casi todo el ancho */
+        max-width: 300px; /* Pero no muy grande */
+        font-size: 0.85rem;
+    }
+    .price-legend-panel,
+    .show-prices-button {
+        padding: 10px 15px;
+        position: static; /* Asegura que estos elementos no estén absolutos dentro de su padre relativo */
+    }
+}
+
+/* Para móviles pequeños (ej. hasta 480px) */
+@media (max-width: 480px) {
+    .mapa-discoteca-container {
+        padding: 10px;
+        gap: 10px;
+    }
+
+    .info-panel {
+        padding: 15px;
+        border-radius: var(--radius-md);
+    }
+
+    .info-panel h2 {
+        font-size: 1.5rem;
+    }
+
+    .info-panel p {
+        font-size: 0.85rem;
+    }
+
+    .info-panel .cart-summary h3 {
+        font-size: 1rem;
+    }
+
+    .info-panel button {
+        padding: 8px 12px;
+        font-size: 0.9rem;
+    }
+
+    .map-section h2 {
+        font-size: 1.5rem;
+        margin-bottom: 15px;
+    }
+
+    .plano-discoteca-wrapper {
+        height: 500px; /* Más pequeño para móviles */
+        margin: 15px auto;
+        transform: scale(0.75); /* Escalar aún más para que quepa */
+        transform-origin: center top;
+    }
+
+    .zona {
+        font-size: 0.7rem;
+        padding: 2px;
+        border-radius: 6px;
+    }
+
+    .map-legend-controls {
+        bottom: 15px;
+        max-width: 280px;
+        font-size: 0.8rem;
+    }
+    .price-legend-panel,
+    .show-prices-button {
+        padding: 8px 12px;
+        border-radius: var(--radius-md);
+    }
+
+    /* CarritoCompra ya no se usa aquí, pero si lo usas en otro lugar, aplica responsive */
+    /* (Mantuve CarritoCompra.jsx en la respuesta anterior por si lo usas en otro flujo) */
+}

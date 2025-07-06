@@ -8,8 +8,11 @@ export const SectbodyAdmin = () => {
   const [activeTab, setActiveTab] = useState("perfil");
   const [currentAdmin, setCurrentAdmin] = useState(null);
 
+  // ESTADO PARA CONTROLAR LA VISIBILIDAD DE LA SIDEBAR EN MÓVILES
+  const [isSidebarActive, setIsSidebarActive] = useState(false);
+
   // Define la URL base de tu backend desplegado en Railway
-  const BASE_URL = 'https://backendnight-production.up.railway.app'; // <--- ¡URL ACTUALIZADA AQUÍ!
+  const BASE_URL = 'https://backendnight-production.up.railway.app';
 
   // Discotecas
   const [discotecas, setDiscotecas] = useState([]);
@@ -21,7 +24,7 @@ export const SectbodyAdmin = () => {
   const [loadingEventos, setLoadingEventos] = useState(false);
   const [errorEventos, setErrorEventos] = useState(null);
 
-  // Reservas (NUEVO ESTADO Y CAMPOS MERCADO PAGO SIMULADOS)
+  // Reservas
   const [reservas, setReservas] = useState([]);
   const [loadingReservas, setLoadingReservas] = useState(false);
   const [errorReservas, setErrorReservas] = useState(null);
@@ -51,12 +54,57 @@ export const SectbodyAdmin = () => {
     return {};
   };
 
+  // Función para manejar el logout
+  const handleLogout = () => {
+    localStorage.removeItem("currentAdmin");
+    setCurrentAdmin(null);
+    navigate("/login"); // Redirige al login
+  };
+
+  // EFECTO PARA CARGAR DATOS AL CAMBIAR DE PESTAÑA O AL INICIAR
+  useEffect(() => {
+    // Cargar el admin actual desde localStorage
+    const storedAdmin = localStorage.getItem("currentAdmin");
+    if (storedAdmin) {
+      setCurrentAdmin(JSON.parse(storedAdmin));
+    } else {
+      // Si no hay admin logueado, redirigir
+      navigate("/login");
+    }
+
+    // Cargar datos según la pestaña activa
+    if (activeTab === "discotecas") {
+      fetchDiscotecas();
+    } else if (activeTab === "eventos") {
+      fetchEventos();
+    } else if (activeTab === "reservas") {
+      fetchReservas();
+    }
+  }, [activeTab, navigate]); // Dependencias: activeTab y navigate
+
+  // EFECTO PARA CERRAR LA SIDEBAR SI LA VENTANA SE AGRANDA
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth > 768 && isSidebarActive) {
+        setIsSidebarActive(false); // Cierra la sidebar si es de escritorio
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [isSidebarActive]);
+
+  // Función para alternar la visibilidad de la sidebar
+  const toggleSidebar = () => {
+    setIsSidebarActive(!isSidebarActive);
+  };
+
   // --- DISCOTECAS CRUD ---
   const fetchDiscotecas = async () => {
     setLoadingDisco(true);
     setErrorDisco(null);
     try {
-      const response = await fetch(`${BASE_URL}/servicio/admin/discotecas`, { // <--- URL ACTUALIZADA
+      const response = await fetch(`${BASE_URL}/servicio/admin/discotecas`, {
         headers: getAuthHeaders(),
       });
 
@@ -148,7 +196,7 @@ export const SectbodyAdmin = () => {
 
     if (formValues) {
       try {
-        const response = await fetch(`${BASE_URL}/servicio/guardar`, { // <--- URL ACTUALIZADA
+        const response = await fetch(`${BASE_URL}/servicio/guardar`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -203,7 +251,6 @@ export const SectbodyAdmin = () => {
     const result = await Swal.fire({
       title: "Confirmar eliminación",
       text: "¿Estás seguro de eliminar esta discoteca?",
-
       imageUrl: '/logitopensativo.webp',
       imageWidth: 130,
       imageHeight: 130,
@@ -216,7 +263,7 @@ export const SectbodyAdmin = () => {
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `${BASE_URL}/servicio/eliminar/${nit}`, // <--- URL ACTUALIZADA
+          `${BASE_URL}/servicio/eliminar/${nit}`,
           {
             method: "DELETE",
             headers: getAuthHeaders(),
@@ -235,6 +282,7 @@ export const SectbodyAdmin = () => {
           handleLogout();
           return;
         }
+
         if (!response.ok) {
           const errorText = await response.text();
           throw new Error(`No se pudo eliminar la discoteca: ${response.status} ${response.statusText} - ${errorText}`);
@@ -309,7 +357,7 @@ export const SectbodyAdmin = () => {
     if (formValues) {
       try {
         const response = await fetch(
-          `${BASE_URL}/servicio/actualizar/${discotecaData.nit}`, // <--- URL ACTUALIZADA
+          `${BASE_URL}/servicio/actualizar/${discotecaData.nit}`,
           {
             method: "PUT",
             headers: {
@@ -414,7 +462,7 @@ export const SectbodyAdmin = () => {
 
     if (formValues) {
       try {
-        const response = await fetch(`${BASE_URL}/servicio/guardar-evento`, { // <--- URL ACTUALIZADA
+        const response = await fetch(`${BASE_URL}/servicio/guardar-evento`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -523,7 +571,7 @@ export const SectbodyAdmin = () => {
     if (formValues) {
       try {
         const response = await fetch(
-          `${BASE_URL}/servicio/actualizar-evento`, // <--- URL ACTUALIZADA
+          `${BASE_URL}/servicio/actualizar-evento`,
           {
             method: "PUT",
             headers: {
@@ -596,7 +644,7 @@ export const SectbodyAdmin = () => {
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `${BASE_URL}/servicio/eliminar-evento/${idEvento}`, // <--- URL ACTUALIZADA
+          `${BASE_URL}/servicio/eliminar-evento/${idEvento}`,
           {
             method: "DELETE",
             headers: getAuthHeaders(),
@@ -648,7 +696,7 @@ export const SectbodyAdmin = () => {
     setLoadingEventos(true);
     setErrorEventos(null);
     try {
-      const response = await fetch(`${BASE_URL}/servicio/admin/eventos`, { // <--- URL ACTUALIZADA
+      const response = await fetch(`${BASE_URL}/servicio/admin/eventos`, {
         headers: getAuthHeaders(),
       });
       if (response.status === 401 || response.status === 403) {
@@ -692,7 +740,7 @@ export const SectbodyAdmin = () => {
     setLoadingReservas(true);
     setErrorReservas(null);
     try {
-      const response = await fetch(`${BASE_URL}/servicio/admin/reservas`, { // <--- URL ACTUALIZADA
+      const response = await fetch(`${BASE_URL}/servicio/admin/reservas`, {
         headers: getAuthHeaders(),
       });
       if (response.status === 401 || response.status === 403) {
@@ -767,9 +815,9 @@ export const SectbodyAdmin = () => {
         // Simular un ID de transacción si el estado es "Pagado" y no se ingresó uno
         let finalIdTransaccion = idTransaccion;
         if (estadoPago === "Pagado" && !idTransaccion) {
-            finalIdTransaccion = `MP_FAKE_${Date.now()}`;
+          finalIdTransaccion = `MP_FAKE_${Date.now()}`;
         } else if (estadoPago !== "Pagado") {
-            finalIdTransaccion = ""; // Limpiar el ID de transacción si no está pagado
+          finalIdTransaccion = ""; // Limpiar el ID de transacción si no está pagado
         }
 
 
@@ -778,7 +826,7 @@ export const SectbodyAdmin = () => {
           nombreUsuario,
           cantidadTickets: Number(cantidadTickets),
           fechaReserva,
-          estadoPago,       // Añadir estado de pago
+          estadoPago,      // Añadir estado de pago
           idTransaccion: finalIdTransaccion, // Añadir ID de transacción
         };
       },
@@ -786,7 +834,7 @@ export const SectbodyAdmin = () => {
 
     if (formValues) {
       try {
-        const response = await fetch(`${BASE_URL}/servicio/guardar-reserva`, { // <--- URL ACTUALIZADA
+        const response = await fetch(`${BASE_URL}/servicio/guardar-reserva`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -871,13 +919,13 @@ export const SectbodyAdmin = () => {
 
         let finalIdTransaccion = idTransaccion;
         if (estadoPago === "Pagado" && !idTransaccion) {
-            finalIdTransaccion = `MP_FAKE_${Date.now()}`;
+          finalIdTransaccion = `MP_FAKE_${Date.now()}`;
         } else if (estadoPago !== "Pagado") {
-            finalIdTransaccion = "";
+          finalIdTransaccion = "";
         }
 
         return {
-          idReserva: reservaData.idReserva, // Asegúrate de enviar el ID de la reserva para la actualización
+          idReserva: reservaData.idReserva, // Asegúrate de que el ID de la reserva se pase para la actualización
           evento: { idEvento: Number(idEvento) },
           nombreUsuario,
           cantidadTickets: Number(cantidadTickets),
@@ -891,7 +939,7 @@ export const SectbodyAdmin = () => {
     if (formValues) {
       try {
         const response = await fetch(
-          `${BASE_URL}/servicio/actualizar-reserva`, // <--- URL ACTUALIZADA
+          `${BASE_URL}/servicio/actualizar-reserva`, // Asume que hay un endpoint para actualizar reservas
           {
             method: "PUT",
             headers: {
@@ -920,9 +968,7 @@ export const SectbodyAdmin = () => {
         }
         const updated = await response.json();
         setReservas(
-          reservas.map((r) =>
-            (r.idReserva || r.id) === (formValues.idReserva || formValues.id) ? updated : r
-          )
+          reservas.map((r) => (r.idReserva === reservaData.idReserva ? updated : r))
         );
         Swal.fire({
           imageUrl: '/logitonegro.png',
@@ -964,7 +1010,7 @@ export const SectbodyAdmin = () => {
     if (result.isConfirmed) {
       try {
         const response = await fetch(
-          `${BASE_URL}/servicio/eliminar-reserva/${idReserva}`, // <--- URL ACTUALIZADA
+          `${BASE_URL}/servicio/eliminar-reserva/${idReserva}`, // Asume un endpoint para eliminar reservas
           {
             method: "DELETE",
             headers: getAuthHeaders(),
@@ -987,7 +1033,7 @@ export const SectbodyAdmin = () => {
           const errorText = await response.text();
           throw new Error(`No se pudo eliminar la reserva: ${response.status} ${response.statusText} - ${errorText}`);
         }
-        setReservas(reservas.filter((r) => (r.idReserva || r.id) !== idReserva));
+        setReservas(reservas.filter((r) => r.idReserva !== idReserva));
         Swal.fire({
           imageUrl: '/logitonegro.png',
           imageWidth: 130,
@@ -1012,197 +1058,42 @@ export const SectbodyAdmin = () => {
     }
   };
 
-  // --- PERFIL ---
-  const updateProfile = async () => {
-    const { value: formValues } = await Swal.fire({
-      title: "Actualizar Información",
-      html: `
-        <input id="swal-input1" class="swal2-input" placeholder="Nombre" value="${currentAdmin?.nombre || ''}">
-        <input id="swal-input2" class="swal2-input" placeholder="Apellido" value="${currentAdmin?.apellido || ''}">
-        <input id="swal-input3" class="swal2-input" placeholder="Correo" value="${currentAdmin?.correo || ''}">
-      `,
-      focusConfirm: false,
-      showCancelButton: true,
-      confirmButtonText: "Actualizar",
-      preConfirm: () => {
-        const nombre = document.getElementById("swal-input1").value.trim();
-        const apellido = document.getElementById("swal-input2").value.trim();
-        const correo = document.getElementById("swal-input3").value.trim();
-        if (!nombre || !correo) {
-          Swal.showValidationMessage("Nombre y Correo son requeridos");
-          return;
-        }
-        return { nombre, apellido, correo };
-      },
-    });
-    if (formValues) {
-      const updatedAdmin = {
-        ...currentAdmin,
-        ...formValues,
-        actualizado: new Date().toLocaleString(),
-      };
-      setCurrentAdmin(updatedAdmin);
-      localStorage.setItem("currentAdmin", JSON.stringify(updatedAdmin));
-      Swal.fire({
-        imageUrl: '/logitonegro.png',
-        imageWidth: 130,
-        imageHeight: 130,
-        background: '#000',
-        color: '#fff',
-        title: "Actualizado",
-        text: "Información actualizada correctamente",
-      });
-    }
-  };
 
-  useEffect(() => {
-    const storedUser = localStorage.getItem("currentAdmin");
-    if (storedUser) {
-      const parsedUser = JSON.parse(storedUser);
-      if (parsedUser.usuario && !parsedUser.usuario_admin) {
-        parsedUser.usuario_admin = parsedUser.usuario;
-      }
-      setCurrentAdmin(parsedUser);
-      console.log("useEffect: currentAdmin loaded:", parsedUser);
-    } else {
-      console.log("useEffect: No currentAdmin found in localStorage.");
-    }
-  }, []);
-
-  useEffect(() => {
-    if (currentAdmin && currentAdmin.token) {
-      if (activeTab === "discotecas") {
-        fetchDiscotecas();
-      }
-      if (activeTab === "eventos") {
-        fetchEventos();
-      }
-      if (activeTab === "reservas") { // Cargar reservas
-        fetchReservas();
-      }
-    } else if (activeTab === "discotecas" || activeTab === "eventos" || activeTab === "reservas") {
-      console.warn("No token available to fetch data for:", activeTab);
-      Swal.fire({
-        imageUrl: '/logitotriste.png',
-        imageWidth: 130,
-        imageHeight: 130,
-        background: '#000',
-        color: '#fff',
-        title: "Error",
-        text: "No hay sesión de administrador activa para cargar datos.",
-      });
-      setErrorDisco("No hay sesión de administrador activa para cargar discotecas.");
-      setErrorEventos("No hay sesión de administrador activa para cargar eventos.");
-      setErrorReservas("No hay sesión de administrador activa para cargar reservas.");
-    }
-  }, [activeTab, currentAdmin]);
-
-  const handleLogout = () => {
-    Swal.fire({
-      title: "¿Estás seguro?",
-      text: "¿Deseas cerrar sesión?",
-      imageUrl: "/logitopensativo.webp",
-      imageWidth: 130,
-      imageHeight: 130,
-      showCancelButton: true,
-      confirmButtonColor: "#8b08a5",
-      background: "#18122B",
-      color: "#fff",
-      cancelButtonColor: "#6a4ca5",
-      confirmButtonText: "Sí, cerrar sesión",
-      cancelButtonText: "Cancelar",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        localStorage.clear();
-        setCurrentAdmin(null);
-        Swal.fire({
-          background: "#18122B",
-          color: "#fff",
-          title: "Sesión cerrada",
-          text: "Has cerrado sesión correctamente.",
-          imageUrl: "/logitonegro.png",
-          imageWidth: 130,
-          imageHeight: 130,
-          timer: 1200,
-          showConfirmButton: false,
-        });
-        setTimeout(() => {
-          navigate("/loginadmin");
-        }, 1200);
-      }
-    });
-  };
-
-  return (
-    <div className="admin-panel-container">
-      <aside className="sidebar glass">
-        <div className="logo-container">
-          <img src="/logito.svg" alt="Logo Night+" className="logo-img" />
-        </div>
-        <h2>Panel de Administrador</h2>
-        <ul>
-          <li
-            className={activeTab === "perfil" ? "active" : ""}
-            onClick={() => setActiveTab("perfil")}
-          >
-            Perfil
-          </li>
-          <li
-            className={activeTab === "discotecas" ? "active" : ""}
-            onClick={() => setActiveTab("discotecas")}
-          >
-            Discotecas
-          </li>
-          <li
-            className={activeTab === "eventos" ? "active" : ""}
-            onClick={() => setActiveTab("eventos")}
-          >
-            Eventos
-          </li>
-          <li
-            className={activeTab === "reservas" ? "active" : ""}
-            onClick={() => setActiveTab("reservas")}
-          >
-            Reservas
-          </li>
-        </ul>
-        <button className="logout-btn" onClick={handleLogout} title="Cerrar sesión">
-          <span style={{ fontSize: "1.3em" }}>&#x2388;</span> Cerrar sesión
-        </button>
-      </aside>
-
-      <main className="main-content">
-        {activeTab === "perfil" && (
+  // Función para renderizar el contenido principal según la pestaña activa
+  const renderMainContent = () => {
+    switch (activeTab) {
+      case "perfil":
+        return (
           <div className="profile-container">
-            <h2>Perfil del Administrador</h2>
+            <h2>Mi Perfil</h2>
             {currentAdmin ? (
-              <div className="profile-card">
-                <p><b>Usuario:</b> {currentAdmin.usuario_admin || 'No disponible'}</p>
-                <p><b>ID:</b> {currentAdmin.idAdmin || 'No disponible'}</p>
-                <p><b>Nombre:</b> {currentAdmin.nombre}</p>
-                <p><b>Correo:</b> {currentAdmin.correo}</p>
-                <p><b>Última actualización:</b> {currentAdmin.actualizado || "N/A"}</p>
-                <button className="btn-update" onClick={updateProfile}>
-                  Actualizar información
-                </button>
+              <div>
+                <p><strong>Nombre:</strong> {currentAdmin.nombre}</p>
+                <p><strong>Email:</strong> {currentAdmin.email}</p>
+                {/* Agrega más detalles del perfil si los tienes */}
               </div>
             ) : (
-              <p className="no-info">No se encontró información del usuario logueado.</p>
+              <p>Cargando información del perfil...</p>
             )}
           </div>
-        )}
-
-        {activeTab === "discotecas" && (
+        );
+      case "discotecas":
+        return (
           <div className="events-container">
-            <header className="topbar">
-              <h2>Discotecas</h2>
-              <button className="btn-add" onClick={addDiscoteca}>
-                + Añadir discoteca
-              </button>
-            </header>
-            {loadingDisco && <p>Cargando discotecas...</p>}
-            {errorDisco && <p className="error-text">{errorDisco}</p>}
-            {!loadingDisco && !errorDisco && (
+            <div className="topbar">
+              <h1>Discotecas</h1>
+              <button className="btn-add" onClick={addDiscoteca}>+ Añadir Discoteca</button>
+            </div>
+            <div className="actions-bar">
+              <input type="text" placeholder="Buscar discoteca..." />
+            </div>
+            {loadingDisco ? (
+              <p>Cargando discotecas...</p>
+            ) : errorDisco ? (
+              <p>Error: {errorDisco}</p>
+            ) : discotecas.length === 0 ? (
+              <p>No hay discotecas registradas.</p>
+            ) : (
               <table className="admin-table">
                 <thead>
                   <tr>
@@ -1215,69 +1106,59 @@ export const SectbodyAdmin = () => {
                     <th>Acciones</th>
                   </tr>
                 </thead>
-                <tbody>{discotecas.length === 0 ? (
-                  <tr>
-                    <td colSpan="7" style={{ textAlign: "center" }}>
-                      No hay discotecas disponibles.
-                    </td>
-                  </tr>
-                ) : (
-                  discotecas.map((d) => (
-                    <tr key={d.nit}>
-                      <td>{d.nit}</td>
-                      <td>{d.nombre}</td>
-                      <td>{d.ubicacion}</td>
-                      <td>{d.capacidad}</td>
-                      <td>{d.horario}</td>
-                      <td>
-                        {d.imagen ? (
+                <tbody>
+                  {discotecas.map((discoteca) => (
+                    <tr key={discoteca.nit}>
+                      <td data-label="NIT">{discoteca.nit}</td>
+                      <td data-label="Nombre">{discoteca.nombre}</td>
+                      <td data-label="Ubicación">{discoteca.ubicacion}</td>
+                      <td data-label="Capacidad">{discoteca.capacidad}</td>
+                      <td data-label="Horario">{discoteca.horario}</td>
+                      <td data-label="Imagen">
+                        {discoteca.imagen ? (
                           <img
-                            src={d.imagen}
-                            alt={d.nombre}
-                            style={{
-                              width: "80px",
-                              height: "50px",
-                              objectFit: "cover",
-                              borderRadius: "8px",
-                              border: "2px solid #8b08a5",
-                            }}
+                            src={discoteca.imagen}
+                            alt={discoteca.nombre}
+                            style={{ width: "50px", height: "50px", borderRadius: "8px", objectFit: "cover" }}
                           />
                         ) : (
-                          "Sin imagen"
+                          "N/A"
                         )}
                       </td>
-                      <td>
-                        <button className="btn edit" onClick={() => updateDiscoteca(d)}>
-                          Actualizar
-                        </button>
-                        <button className="btn delete" onClick={() => deleteDiscoteca(d.nit)}>
-                          Eliminar
-                        </button>
+                      <td data-label="Acciones" className="actions-cell">
+                        <button className="btn view">Ver</button>
+                        <button className="btn edit" onClick={() => updateDiscoteca(discoteca)}>Editar</button>
+                        <button className="btn delete" onClick={() => deleteDiscoteca(discoteca.nit)}>Eliminar</button>
                       </td>
                     </tr>
-                  ))
-                )}</tbody>
+                  ))}
+                </tbody>
               </table>
             )}
           </div>
-        )}
-
-        {activeTab === "eventos" && (
+        );
+      case "eventos":
+        return (
           <div className="events-container">
-            <header className="topbar">
-              <h2>Eventos</h2>
-              <button className="btn-add" onClick={addEvento}>
-                + Añadir evento
-              </button>
-            </header>
-            {loadingEventos && <p>Cargando eventos...</p>}
-            {errorEventos && <p className="error-text">{errorEventos}</p>}
-            {!loadingEventos && !errorEventos && (
+            <div className="topbar">
+              <h1>Eventos</h1>
+              <button className="btn-add" onClick={addEvento}>+ Añadir Evento</button>
+            </div>
+            <div className="actions-bar">
+              <input type="text" placeholder="Buscar evento..." />
+            </div>
+            {loadingEventos ? (
+              <p>Cargando eventos...</p>
+            ) : errorEventos ? (
+              <p>Error: {errorEventos}</p>
+            ) : eventos.length === 0 ? (
+              <p>No hay eventos registrados.</p>
+            ) : (
               <table className="admin-table">
                 <thead>
                   <tr>
                     <th>ID Evento</th>
-                    <th>NIT Discoteca</th>
+                    <th>Discoteca (NIT)</th>
                     <th>Nombre Evento</th>
                     <th>Fecha</th>
                     <th>Hora</th>
@@ -1288,82 +1169,62 @@ export const SectbodyAdmin = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {eventos.length === 0 ? (
-                    <tr>
-                      <td colSpan="9" style={{ textAlign: "center" }}>
-                        No hay eventos disponibles.
+                  {eventos.map((evento) => (
+                    <tr key={evento.idEvento || evento.id}> {/* Usar idEvento o id */}
+                      <td data-label="ID Evento">{evento.idEvento || evento.id}</td>
+                      <td data-label="Discoteca (NIT)">{evento.discoteca?.nit || 'N/A'}</td>
+                      <td data-label="Nombre Evento">{evento.nombreEvento}</td>
+                      <td data-label="Fecha">{evento.fecha}</td>
+                      <td data-label="Hora">{evento.hora}</td>
+                      <td data-label="Descripción">{evento.descripcion}</td>
+                      <td data-label="Precio">${evento.precio?.toFixed(2) || '0.00'}</td>
+                      <td data-label="Imagen">
+                        {evento.imagen ? (
+                          <img
+                            src={evento.imagen}
+                            alt={evento.nombreEvento}
+                            style={{ width: "50px", height: "50px", borderRadius: "8px", objectFit: "cover" }}
+                          />
+                        ) : (
+                          "N/A"
+                        )}
+                      </td>
+                      <td data-label="Acciones" className="actions-cell">
+                        <button className="btn view">Ver</button>
+                        <button className="btn edit" onClick={() => updateEvento(evento)}>Editar</button>
+                        <button className="btn delete" onClick={() => deleteEvento(evento.idEvento || evento.id)}>Eliminar</button>
                       </td>
                     </tr>
-                  ) : (
-                    eventos.map((e) => (
-                      <tr key={e.idEvento || e.id}>
-                        <td>{e.idEvento || e.id}</td>
-                        <td>
-                          {typeof e.discoteca === "object" && e.discoteca !== null
-    ? e.discoteca.nit
-    : typeof e.discoteca === "number"
-    ? e.discoteca
-    : "N/A"}
-                        </td>
-                        <td>{e.nombreEvento}</td>
-                        <td>{e.fecha}</td>
-                        <td>{e.hora}</td>
-                        <td>{e.descripcion}</td>
-                        <td>{e.precio}</td>
-                        <td>
-                          {e.imagen ? (
-                            <img
-                              src={e.imagen}
-                              alt={e.nombreEvento}
-                              style={{
-                                width: "80px",
-                                height: "50px",
-                                objectFit: "cover",
-                                borderRadius: "8px",
-                                border: "2px solid #8b08a5",
-                              }}
-                            />
-                          ) : (
-                            "Sin imagen"
-                          )}
-                        </td>
-                        <td>
-                          <button className="btn edit" onClick={() => updateEvento(e)}>
-                            Actualizar
-                          </button>
-                          <button className="btn delete" onClick={() => deleteEvento(e.idEvento || e.id)}>
-                            Eliminar
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
+                  ))}
                 </tbody>
               </table>
             )}
           </div>
-        )}
-
-
-        {/* SECCIÓN: RESERVAS CON MERCADO PAGO SIMULADO */}
-        {activeTab === "reservas" && (
+        );
+      case "reservas":
+        return (
           <div className="events-container">
-            <header className="topbar">
-              <h2>Reservas</h2>
-              <button className="btn-add" onClick={addReserva}>
-                + Añadir reserva
-              </button>
-            </header>
-            {loadingReservas && <p>Cargando reservas...</p>}
-            {errorReservas && <p className="error-text">{errorReservas}</p>}
-            {!loadingReservas && !errorReservas && (
+            <div className="topbar">
+              <h1>Reservas</h1>
+              <button className="btn-add" onClick={addReserva}>+ Añadir Reserva</button>
+            </div>
+            <div className="actions-bar">
+              <input type="text" placeholder="Buscar reserva..." />
+            </div>
+            {loadingReservas ? (
+              <p>Cargando reservas...</p>
+            ) : errorReservas ? (
+              <p>Error: {errorReservas}</p>
+            ) : reservas.length === 0 ? (
+              <p>No hay reservas registradas.</p>
+            ) : (
               <table className="admin-table">
                 <thead>
                   <tr>
                     <th>ID Reserva</th>
                     <th>ID Evento</th>
-                    <th>Nombre Usuario</th>
-                    <th>Cantidad Tickets</th>
+                    <th>Usuario</th>
+                    <th>Tickets</th>
                     <th>Fecha Reserva</th>
                     <th>Estado Pago</th>
                     <th>ID Transacción</th>
@@ -1371,49 +1232,67 @@ export const SectbodyAdmin = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {reservas.length === 0 ? (
-                    <tr>
-                      <td colSpan="8" style={{ textAlign: "center" }}>
-                        No hay reservas disponibles.
+                  {reservas.map((reserva) => (
+                    <tr key={reserva.idReserva || reserva.id}>
+                      <td data-label="ID Reserva">{reserva.idReserva || reserva.id}</td>
+                      <td data-label="ID Evento">{reserva.evento?.idEvento || 'N/A'}</td>
+                      <td data-label="Usuario">{reserva.nombreUsuario}</td>
+                      <td data-label="Tickets">{reserva.cantidadTickets}</td>
+                      <td data-label="Fecha Reserva">{reserva.fechaReserva}</td>
+                      <td data-label="Estado Pago">{reserva.estadoPago}</td>
+                      <td data-label="ID Transacción">{reserva.idTransaccion || 'N/A'}</td>
+                      <td data-label="Acciones" className="actions-cell">
+                        <button className="btn view">Ver</button>
+                        <button className="btn edit" onClick={() => updateReserva(reserva)}>Editar</button>
+                        <button className="btn delete" onClick={() => deleteReserva(reserva.idReserva || reserva.id)}>Eliminar</button>
                       </td>
                     </tr>
-                  ) : (
-                    reservas.map((r) => (
-                      <tr key={r.idReserva || r.id}>
-                        <td>{r.idReserva || r.id}</td>
-                        <td>{r.evento?.idEvento || "N/A"}</td> {/* CAMBIO: Accede a idEvento dentro de 'evento' */}
-                        <td>{r.nombreUsuario || "N/A"}</td> {/* Asegúrate que tu backend envíe 'nombreUsuario' o 'nombreCliente' */}
-                        <td>{r.cantidadTickets}</td>
-                        <td>{r.fechaReserva}</td>
-                        <td>
-                          <span
-                            className={`status-badge status-${(
-                              r.estadoPago || "N/A"
-                            ).toLowerCase()}`}
-                          >
-                            {r.estadoPago || "N/A"}
-                          </span>
-                        </td>
-                        <td>{r.idTransaccion || "N/A"}</td>
-                        <td>
-                          <button className="btn edit" onClick={() => updateReserva(r)}>
-                            Actualizar
-                          </button>
-                          <button
-                            className="btn delete"
-                            onClick={() => deleteReserva(r.idReserva || r.id)}
-                          >
-                            Eliminar
-                          </button>
-                        </td>
-                      </tr>
-                    ))
-                  )}
+                  ))}
                 </tbody>
               </table>
             )}
           </div>
-        )}
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="admin-panel-container">
+      {/* Botón para abrir/cerrar sidebar en móviles */}
+      <button className="sidebar-toggle" onClick={toggleSidebar}>
+        ☰ {/* O puedes usar un ícono de FontAwesome si lo tienes configurado */}
+      </button>
+
+      <aside className={`sidebar ${isSidebarActive ? 'active' : ''}`} id="sidebar">
+        <div className="sidebar-content">
+          <div className="logo-container">
+            <img src="/logonegro.png" alt="Logo Night" className="logo-img" /> {/* Asegúrate de que la ruta de la imagen sea correcta */}
+          </div>
+          <h2>Panel de Administrador</h2>
+          <ul>
+            <li className={activeTab === "perfil" ? "active" : ""} onClick={() => setActiveTab("perfil")}>Perfil</li>
+            <li className={activeTab === "discotecas" ? "active" : ""} onClick={() => setActiveTab("discotecas")}>Discotecas</li>
+            <li className={activeTab === "eventos" ? "active" : ""} onClick={() => setActiveTab("eventos")}>Eventos</li>
+            <li className={activeTab === "reservas" ? "active" : ""} onClick={() => setActiveTab("reservas")}>Reservas</li>
+          </ul>
+          <button className="logout-btn" onClick={handleLogout}>
+            {/* Si usas FontAwesome, puedes descomentar esto: */}
+            {/* <i className="fas fa-sign-out-alt"></i> */}
+            <span>Cerrar Sesión</span>
+          </button>
+        </div>
+      </aside>
+
+      <main className="main-content" id="mainContent" onClick={(event) => {
+          // Si la sidebar está activa y se hace clic en el main content (y no en el botón de toggle)
+          // esto la cierra.
+          if (isSidebarActive && window.innerWidth <= 768 && !event.target.closest('.sidebar-toggle')) {
+            setIsSidebarActive(false);
+          }
+        }}>
+        {renderMainContent()}
       </main>
     </div>
   );

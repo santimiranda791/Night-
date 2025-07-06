@@ -1,353 +1,279 @@
-// src/components/MapaDiscoteca.jsx
-
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import PlanoDiscoteca from './PlanoDiscoteca'; // Asegúrate de que la ruta sea correcta
+import PlanoDiscoteca from './PlanoDiscoteca';
+// Importa el nuevo archivo CSS
+import '../../../../Styles/MapaDiscotecaResponsive.css';
 
 const CURRENT_USER_ID = 1; // <--- VALOR DE PRUEBA. ¡CÁMBIALO POR EL ID DEL USUARIO LOGUEADO!
 
 export const MapaDiscoteca = () => {
-  const { idEvento: idEventoParam } = useParams();
-  const [mostrarPrecios, setMostrarPrecios] = useState(true);
-  const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
-  const [evento, setEvento] = useState(null);
-  const [error, setError] = useState(null);
+    const { idEvento: idEventoParam } = useParams();
+    const [mostrarPrecios, setMostrarPrecios] = useState(true);
+    const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
+    const [evento, setEvento] = useState(null);
+    const [error, setError] = useState(null);
 
-  const BASE_URL = 'https://backendnight-production.up.railway.app';
+    const BASE_URL = 'https://backendnight-production.up.railway.app';
 
-  const parsearPrecio = (precioStr) => {
-    if (typeof precioStr === 'number') {
-      return precioStr;
-    }
-    return parseFloat(
-      String(precioStr)
-        .replace(/[^0-9,.-]+/g, '')
-        .replace(/\./g, '')
-        .replace(',', '.')
-    );
-  };
+    const parsearPrecio = (precioStr) => {
+        if (typeof precioStr === 'number') {
+            return precioStr;
+        }
+        return parseFloat(
+            String(precioStr)
+                .replace(/[^0-9,.-]+/g, '')
+                .replace(/\./g, '')
+                .replace(',', '.')
+        );
+    };
 
-  const formatearPrecio = (valor) =>
-    new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
+    const formatearPrecio = (valor) =>
+        new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
 
-  useEffect(() => {
-    console.log(`MapaDiscoteca.jsx: idEvento obtenido de la URL: "${idEventoParam}" (Tipo: ${typeof idEventoParam})`);
+    useEffect(() => {
+        console.log(`MapaDiscoteca.jsx: idEvento obtenido de la URL: "${idEventoParam}" (Tipo: ${typeof idEventoParam})`);
 
-    const numericId = parseInt(idEventoParam);
+        const numericId = parseInt(idEventoParam);
 
-    if (idEventoParam && !Number.isNaN(numericId) && numericId > 0) {
-      const apiUrl = `${BASE_URL}/servicio/evento/${numericId}`;
-      console.log(`MapaDiscoteca.jsx: Realizando fetch a: ${apiUrl}`);
+        if (idEventoParam && !Number.isNaN(numericId) && numericId > 0) {
+            const apiUrl = `${BASE_URL}/servicio/evento/${numericId}`;
+            console.log(`MapaDiscoteca.jsx: Realizando fetch a: ${apiUrl}`);
 
-      fetch(apiUrl)
-        .then(response => {
-          console.log(`MapaDiscoteca.jsx: Respuesta de la API - Estado: ${response.status}`);
-          if (!response.ok) {
-            return response.text().then(text => {
-              throw new Error(`No se pudo cargar el evento con ID: ${numericId}. Estado: ${response.status}. Mensaje del backend: ${text}`);
-            });
-          }
-          return response.json();
-        })
-        .then(data => {
-          console.log("MapaDiscoteca.jsx: Datos del evento cargados con éxito:", data);
-          setEvento(data);
-          setError(null);
-        })
-        .catch(err => {
-          console.error('MapaDiscoteca.jsx: Error al cargar el evento:', err);
-          setEvento(null);
-          setError(`Error al cargar el evento: ${err.message}. Por favor, verifica los logs del servidor.`);
+            fetch(apiUrl)
+                .then(response => {
+                    console.log(`MapaDiscoteca.jsx: Respuesta de la API - Estado: ${response.status}`);
+                    if (!response.ok) {
+                        return response.text().then(text => {
+                            throw new Error(`No se pudo cargar el evento con ID: ${numericId}. Estado: ${response.status}. Mensaje del backend: ${text}`);
+                        });
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("MapaDiscoteca.jsx: Datos del evento cargados con éxito:", data);
+                    setEvento(data);
+                    setError(null);
+                })
+                .catch(err => {
+                    console.error('MapaDiscoteca.jsx: Error al cargar el evento:', err);
+                    setEvento(null);
+                    setError(`Error al cargar el evento: ${err.message}. Por favor, verifica los logs del servidor.`);
+                });
+        } else {
+            console.warn("MapaDiscoteca.jsx: ID de evento inválido o no proporcionado. No se realizará la petición API.");
+            setEvento(null);
+            setError("No se ha proporcionado un ID de evento válido para mostrar el mapa.");
+        }
+    }, [idEventoParam]);
+
+    const handleSeleccionarZona = (zona) => {
+        // Asegúrate de que la zona tenga un ID válido antes de seleccionarla
+        if (!zona || (typeof zona.id === 'undefined' || zona.id === null)) {
+            console.error("Error: La zona seleccionada no tiene un ID válido.", zona);
+            alert("No se pudo seleccionar la zona. Por favor, asegúrate de que tiene un ID único.");
+            return;
+        }
+
+        console.log("Zona seleccionada recibida de PlanoDiscoteca:", zona);
+        setZonaSeleccionada({
+            ...zona,
+            id: zona.id, // Asegura que el ID esté correctamente asignado
+            nombre: zona.nombre || 'ZONA DESCONOCIDA',
+            precio: parsearPrecio(zona.precio),
+            cantidad: 1 // Si siempre se añade 1 al principio
         });
-    } else {
-      console.warn("MapaDiscoteca.jsx: ID de evento inválido o no proporcionado. No se realizará la petición API.");
-      setEvento(null);
-      setError("No se ha proporcionado un ID de evento válido para mostrar el mapa.");
-    }
-  }, [idEventoParam]);
-
-  const handleSeleccionarZona = (zona) => {
-    // *** CAMBIO CLAVE 1: Validación más estricta del ID de la zona ***
-    if (!zona || (typeof zona.id === 'undefined' || zona.id === null)) {
-      console.error("Error: La zona seleccionada no tiene un ID válido.", zona);
-      alert("No se pudo seleccionar la zona. Por favor, asegúrate de que tiene un ID único.");
-      return; // Detiene la ejecución si el ID no es válido
-    }
-
-    console.log("Zona seleccionada recibida de PlanoDiscoteca:", zona);
-    setZonaSeleccionada({
-      ...zona,
-      id: zona.id, // Asegúrate que 'zona.id' NO ES UNDEFINED/NULL AQUÍ
-      nombre: zona.nombre || 'ZONA DESCONOCIDA',
-      precio: parsearPrecio(zona.precio),
-      cantidad: 1
-    });
-    console.log("Zona seleccionada establecida en estado:", { ...zona, id: zona.id, precio: parsearPrecio(zona.precio), cantidad: 1 });
-  };
-
-  const handleEliminarCarrito = () => {
-    setZonaSeleccionada(null);
-  };
-
-  const finalizarCompra = async () => {
-    console.log("MapaDiscoteca.jsx: Estado 'evento' al iniciar finalizarCompra:", evento);
-    console.log("MapaDiscoteca.jsx: Valor de 'evento.idEvento' al iniciar finalizarCompra:", evento ? evento.idEvento : 'N/A');
-
-    if (!zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null) {
-      alert("Por favor, selecciona una zona válida para finalizar la compra. El ID de la zona no está definido.");
-      console.error("MapaDiscoteca.jsx: ERROR - Zona seleccionada inválida o sin ID:", zonaSeleccionada);
-      return;
-    }
-
-    if (!evento || !evento.idEvento) {
-      console.error("MapaDiscoteca.jsx: ERROR - 'evento' o 'evento.idEvento' no están disponibles en finalizarCompra.");
-      alert("No se pudo obtener la información del evento para procesar el pago. Por favor, recarga la página e intenta de nuevo.");
-      return;
-    }
-
-    const ticketsParaReserva = [{
-        zonaId: zonaSeleccionada.id,
-        quantity: zonaSeleccionada.cantidad,
-        unitPrice: zonaSeleccionada.precio,
-    }];
-
-    const reservationDetails = {
-        eventId: parseInt(evento.idEvento),
-        userId: CURRENT_USER_ID,
-        tickets: ticketsParaReserva,
-        totalAmount: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
+        console.log("Zona seleccionada establecida en estado:", { ...zona, id: zona.id, precio: parsearPrecio(zona.precio), cantidad: 1 });
     };
 
-    const itemId = String(zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(/ /g, '-')}-fallback`);
-
-    const itemsParaMercadoPago = [{
-        id: itemId,
-        title: zonaSeleccionada.nombre,
-        description: `Entrada para el sector ${zonaSeleccionada.nombre} (${zonaSeleccionada.tipo || 'N/A'})`,
-        picture_url: "",
-        quantity: zonaSeleccionada.cantidad,
-        unit_price: zonaSeleccionada.precio,
-        currency_id: "COP",
-    }];
-
-    const orderData = {
-      items: itemsParaMercadoPago,
-      total: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
-      reservationDetails: reservationDetails,
+    const handleEliminarCarrito = () => {
+        setZonaSeleccionada(null);
     };
 
-    console.log("MapaDiscoteca.jsx: Datos a enviar a Mercado Pago:", JSON.stringify(orderData, null, 2));
+    const finalizarCompra = async () => {
+        console.log("MapaDiscoteca.jsx: Estado 'evento' al iniciar finalizarCompra:", evento);
+        console.log("MapaDiscoteca.jsx: Valor de 'evento.idEvento' al iniciar finalizarCompra:", evento ? evento.idEvento : 'N/A');
 
-    try {
-      const response = await fetch(`${BASE_URL}/servicio/create-mercadopago-preference`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
-      });
+        if (!zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null) {
+            alert("Por favor, selecciona una zona válida para finalizar la compra. El ID de la zona no está definido.");
+            console.error("MapaDiscoteca.jsx: ERROR - Zona seleccionada inválida o sin ID:", zonaSeleccionada);
+            return;
+        }
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.error("MapaDiscoteca.jsx: Error detallado de la API al crear preferencia:", errorText);
-        throw new Error(`Error al crear preferencia de pago: ${response.status} - ${errorText}`);
-      }
+        if (!evento || !evento.idEvento) {
+            console.error("MapaDiscoteca.jsx: ERROR - 'evento' o 'evento.idEvento' no están disponibles en finalizarCompra.");
+            alert("No se pudo obtener la información del evento para procesar el pago. Por favor, recarga la página e intenta de nuevo.");
+            return;
+        }
 
-      const data = await response.json();
-      const checkoutUrl = data.checkoutUrl;
+        const ticketsParaReserva = [{
+            zonaId: zonaSeleccionada.id,
+            quantity: zonaSeleccionada.cantidad,
+            unitPrice: zonaSeleccionada.precio,
+        }];
 
-      if (checkoutUrl) {
-        window.location.href = checkoutUrl;
-      } else {
-        console.error('MapaDiscoteca.jsx: No se recibió una URL de checkout de Mercado Pago.');
-        alert('Hubo un problema al iniciar el proceso de pago. Intenta de nuevo.');
-      }
+        const reservationDetails = {
+            eventId: parseInt(evento.idEvento),
+            userId: CURRENT_USER_ID,
+            tickets: ticketsParaReserva,
+            totalAmount: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
+        };
 
-    } catch (error) {
-      console.error('MapaDiscoteca.jsx: Error en finalizarCompra:', error);
-      alert(`Error al procesar la compra: ${error.message}`);
-    }
-  };
+        const itemId = String(zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(/ /g, '-')}-fallback`);
 
-  return (
-    <div
-      style={{
-        display: 'flex',
-        height: '100vh',
-        background: 'linear-gradient(to right, #121212, #2a0845)',
-        fontFamily: 'Poppins, sans-serif',
-        color: 'white',
-        overflow: 'hidden'
-      }}
-    >
-      <div
-        style={{
-          width: '380px',
-          background: 'linear-gradient(90deg, #1a1a1a 35%, #3b1c68)',
-          color: 'white',
-          borderRadius: '12px',
-          margin: '20px',
-          padding: '20px',
-          boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-          height: 'calc(100vh - 40px)',
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'space-between'
-        }}
-      >
-        <div>
-          {error ? (
-            <p style={{ color: 'red', fontSize: '14px' }}>Error: {error}</p>
-          ) : evento ? (
-            <>
-              <h2 style={{ fontSize: '18px', marginBottom: '10px' }}>
-                {evento.nombreEvento || 'Nombre de Evento no disponible'}
-              </h2>
-              <p style={{ fontSize: '14px', marginBottom: '10px' }}>
-                {evento.fecha || 'Fecha no disponible'} {evento.hora || 'Hora no disponible'}<br />
-              </p>
-              <p>La fiesta es en: {evento.discoteca?.nombre || 'Dirección no disponible'}</p>
-              <br />
-            </>
-          ) : (
-            <p>Cargando evento...</p>
-          )}
+        const itemsParaMercadoPago = [{
+            id: itemId,
+            title: zonaSeleccionada.nombre,
+            description: `Entrada para el sector ${zonaSeleccionada.nombre} (${zonaSeleccionada.tipo || 'N/A'})`,
+            picture_url: "",
+            quantity: zonaSeleccionada.cantidad,
+            unit_price: zonaSeleccionada.precio,
+            currency_id: "COP",
+        }];
 
-          {zonaSeleccionada ? (
-            <>
-              <h3 style={{ fontSize: '14px', fontWeight: 'bold', marginTop: '20px' }}>Carrito (1)</h3>
-              <div style={{ marginBottom: '10px' }}>
-                <div style={{ fontSize: '14px', marginBottom: '4px' }}>
-                  <strong>Sector:</strong> {zonaSeleccionada.nombre}
+        const orderData = {
+            items: itemsParaMercadoPago,
+            total: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
+            reservationDetails: reservationDetails,
+        };
+
+        console.log("MapaDiscoteca.jsx: Datos a enviar a Mercado Pago:", JSON.stringify(orderData, null, 2));
+
+        try {
+            const response = await fetch(`${BASE_URL}/servicio/create-mercadopago-preference`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("MapaDiscoteca.jsx: Error detallado de la API al crear preferencia:", errorText);
+                throw new Error(`Error al crear preferencia de pago: ${response.status} - ${errorText}`);
+            }
+
+            const data = await response.json();
+            const checkoutUrl = data.checkoutUrl;
+
+            if (checkoutUrl) {
+                window.location.href = checkoutUrl;
+            } else {
+                console.error('MapaDiscoteca.jsx: No se recibió una URL de checkout de Mercado Pago.');
+                alert('Hubo un problema al iniciar el proceso de pago. Intenta de nuevo.');
+            }
+
+        } catch (error) {
+            console.error('MapaDiscoteca.jsx: Error en finalizarCompra:', error);
+            alert(`Error al procesar la compra: ${error.message}`);
+        }
+    };
+
+    return (
+        <div className="mapa-discoteca-container">
+            {/* Sección del Mapa (Order 1 en móvil) */}
+            <div className="map-section">
+                <h2>Mapa de la Discoteca</h2>
+
+                <div className="plano-discoteca-wrapper-outer">
+                    <PlanoDiscoteca onSeleccionarZona={handleSeleccionarZona} />
                 </div>
-                <div style={{ fontSize: '14px' }}><strong>Precio:</strong> {formatearPrecio(zonaSeleccionada.precio)}</div>
-              </div>
-            </>
-          ) : (
-            <p style={{ fontSize: '14px' }}>No has seleccionado ninguna zona.</p>
-          )}
+
+                {/* Contenedor para la leyenda de precios/botón de precios */}
+                <div className="map-legend-controls">
+                    {mostrarPrecios ? (
+                        <div className="price-legend-panel">
+                            <div
+                                onClick={() => setMostrarPrecios(false)}
+                                className="toggle-button"
+                            >
+                                <span>Ocultar precios</span>
+                                <span>⌄</span>
+                            </div>
+                            {/* Hardcodeado aquí, idealmente esto vendría de una prop o un estado */}
+                            <div className="price-item">
+                                <span className="color-dot" style={{ backgroundColor: '#0ea5e9' }}></span>
+                                <span className="zone-name">ZONA GENERAL</span>
+                                <span className="zone-price">$ 50.000</span>
+                            </div>
+                            <div className="price-item">
+                                <span className="color-dot" style={{ backgroundColor: '#ef4444' }}></span>
+                                <span className="zone-name">ZONA PREFERENCIAL</span>
+                                <span className="zone-price">$ 80.000</span>
+                            </div>
+                            <div className="price-item">
+                                <span className="color-dot" style={{ backgroundColor: '#1d4ed8' }}></span>
+                                <span className="zone-name">ZONA VIP</span>
+                                <span className="zone-price">$ 120.000</span>
+                            </div>
+                        </div>
+                    ) : (
+                        <button
+                            onClick={() => setMostrarPrecios(true)}
+                            className="show-prices-button"
+                        >
+                            Mostrar precios <span style={{ transform: 'rotate(180deg)' }}>⌄</span>
+                        </button>
+                    )}
+                </div>
+            </div>
+
+            {/* Panel de Información / Carrito (Order 2 en móvil) */}
+            <div className="info-panel">
+                <div> {/* Contenedor para el contenido superior del panel */}
+                    {error ? (
+                        <p className="error-message">Error: {error}</p>
+                    ) : evento ? (
+                        <>
+                            <h2>{evento.nombreEvento || 'Nombre de Evento no disponible'}</h2>
+                            <p>
+                                {evento.fecha || 'Fecha no disponible'} {evento.hora || 'Hora no disponible'}<br />
+                            </p>
+                            <p>La fiesta es en: {evento.discoteca?.nombre || 'Dirección no disponible'}</p>
+                            <br />
+                        </>
+                    ) : (
+                        <p>Cargando evento...</p>
+                    )}
+
+                    <div className="cart-summary">
+                        {zonaSeleccionada ? (
+                            <>
+                                <h3>Carrito (1)</h3>
+                                <div className="selected-zone-details">
+                                    <div>
+                                        <strong>Sector:</strong> {zonaSeleccionada.nombre}
+                                    </div>
+                                    <div><strong>Precio:</strong> {formatearPrecio(zonaSeleccionada.precio)}</div>
+                                </div>
+                            </>
+                        ) : (
+                            <p>No has seleccionado ninguna zona.</p>
+                        )}
+                    </div>
+                </div>
+
+                {zonaSeleccionada && (
+                    <div className="button-group">
+                        <div className="total-display">
+                            TOTAL: {formatearPrecio(zonaSeleccionada.precio)}
+                        </div>
+                        <button
+                            onClick={handleEliminarCarrito}
+                            className="btn-remove-from-cart"
+                        >
+                            🗑️ Eliminar del carrito
+                        </button>
+                        <button
+                            onClick={finalizarCompra}
+                            className="btn-checkout"
+                            disabled={!evento || !evento.idEvento || !zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null}
+                        >
+                            Finalizar compra
+                        </button>
+                    </div>
+                )}
+            </div>
         </div>
-
-        {zonaSeleccionada && (
-          <div style={{ marginTop: 'auto' }}>
-            <button
-              onClick={handleEliminarCarrito}
-              style={{
-                backgroundColor: '#500073',
-                color: 'white',
-                padding: '6px 10px',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                fontSize: '14px',
-                marginBottom: '10px',
-                width: '100%'
-              }}
-            >
-              🗑️ Eliminar del carrito
-            </button>
-
-            <div style={{ marginTop: '10px', fontSize: '14px', fontWeight: 'bold', textAlign: 'center' }}>
-              TOTAL: {formatearPrecio(zonaSeleccionada.precio)}
-            </div>
-
-            <button
-              onClick={finalizarCompra}
-              style={{
-                backgroundColor: '#500073',
-                color: 'white',
-                padding: '10px',
-                border: 'none',
-                borderRadius: '6px',
-                cursor: 'pointer',
-                width: '100%',
-                fontWeight: 'bold',
-                marginTop: '10px'
-              }}
-              disabled={!evento || !evento.idEvento || !zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null}
-            >
-              Finalizar compra
-            </button>
-          </div>
-        )}
-      </div>
-
-      <div style={{ flex: 1, position: 'relative', paddingTop: '20px' }}>
-        <h2 style={{ textAlign: 'center', marginBottom: '20px' }}>Mapa de la Discoteca</h2>
-
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <PlanoDiscoteca onSeleccionarZona={handleSeleccionarZona} />
-        </div>
-
-        {mostrarPrecios ? (
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '40px',
-              left: '40px',
-              backgroundColor: 'white',
-              color: 'black',
-              borderRadius: '12px',
-              padding: '14px 18px',
-              width: '260px',
-              boxShadow: '0 4px 20px rgba(0,0,0,0.3)',
-              fontSize: '14px'
-            }}
-          >
-            <div
-              onClick={() => setMostrarPrecios(false)}
-              style={{
-                fontWeight: 'bold',
-                marginBottom: '12px',
-                cursor: 'pointer',
-                display: 'flex',
-                justifyContent: 'space-between'
-              }}
-            >
-              <span>Ocultar precios</span>
-              <span>⌄</span>
-            </div>
-
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-              <span style={{ width: '10px', height: '10px', backgroundColor: '#0ea5e9', borderRadius: '50%', marginRight: '8px' }}></span>
-              <span style={{ flex: 1 }}>ZONA GENERAL</span>
-              <span style={{ fontWeight: 'bold' }}>$ 50.000</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '10px' }}>
-              <span style={{ width: '10px', height: '10px', backgroundColor: '#ef4444', borderRadius: '50%', marginRight: '8px' }}></span>
-              <span style={{ flex: 1 }}>ZONA PREFERENCIAL</span>
-              <span style={{ fontWeight: 'bold' }}>$ 80.000</span>
-            </div>
-            <div style={{ display: 'flex', alignItems: 'center' }}>
-              <span style={{ width: '10px', height: '10px', backgroundColor: '#1d4ed8', borderRadius: '50%', marginRight: '8px' }}></span>
-              <span style={{ flex: 1 }}>ZONA VIP</span>
-              <span style={{ fontWeight: 'bold' }}>$ 120.000</span>
-            </div>
-          </div>
-        ) : (
-          <button
-            onClick={() => setMostrarPrecios(true)}
-            style={{
-              position: 'absolute',
-              bottom: '40px',
-              left: '40px',
-              backgroundColor: '#f3f4f6',
-              border: 'none',
-              borderRadius: '12px',
-              padding: '10px 16px',
-              fontWeight: 'bold',
-              cursor: 'pointer',
-              fontSize: '14px',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.1)',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '6px'
-            }}
-          >
-            Mostrar precios <span style={{ transform: 'rotate(180deg)' }}>⌄</span>
-          </button>
-        )}
-      </div>
-    </div>
-  );
+    );
 };

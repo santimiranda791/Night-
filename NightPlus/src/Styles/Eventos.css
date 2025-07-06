@@ -1,62 +1,133 @@
-.eventos14-container {
-  display: flex;
-  flex-wrap: wrap;
-  padding: 2rem;
-  background-color: #0b0b14;
-  color: white;
-  gap: 2rem;
-  justify-content: center;
+/* src/Styles/Eventos.css */
+
+.eventos-container { /* Renamed from .eventos14-container for consistency with the JS component */
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1rem; /* Adjusted padding for smaller screens */
+    background-color: #0b0b14;
+    color: white;
+    gap: 1.5rem; /* Adjusted gap */
+    justify-content: center;
+    align-items: flex-start; /* Align items to the start for better stacking */
 }
 
 .evento-principal {
-  flex: 2;
-  min-width: 300px;
-  max-width: 600px;
+    flex: 2;
+    min-width: 280px; /* Smaller min-width for mobile */
+    max-width: 600px;
+    padding: 1rem; /* Added padding to the principal event card */
+    box-sizing: border-box; /* Include padding in the element's total width and height */
 }
 
 .evento-principal h2 {
-  font-size: 2.2rem;
-  font-weight: bold;
-  color: white;
+    font-size: 1.8rem; /* Adjusted font size for smaller screens */
+    font-weight: bold;
+    color: white;
+    word-break: break-word; /* Ensure long titles wrap */
 }
 
 .evento-principal .hashtag {
-  font-size: 1.1rem;
-  color: #f50082;
-  margin-top: 0.3rem;
-  font-weight: bold;
+    font-size: 1rem; /* Adjusted font size */
+    color: #f50082;
+    margin-top: 0.3rem;
+    font-weight: bold;
 }
 
 .boton-fucsia {
-  margin: 1rem 0;
-  padding: 0.7rem 1.5rem;
-  background: #ff006a;
-  color: white;
-  border: none;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: not-allowed;
+    margin: 1rem 0;
+    padding: 0.7rem 1.5rem;
+    background: #ff006a;
+    color: white;
+    border: none;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: not-allowed;
+    width: 100%; /* Make button full width on smaller screens */
+    max-width: 250px; /* Limit button width on larger screens */
 }
 
 .ver-otros-eventos {
-  display: inline-block;
-  margin-top: 0.5rem;
-  color: #fff;
-  text-decoration: underline;
-  font-size: 0.9rem;
+    display: inline-block;
+    margin-top: 0.5rem;
+    color: #fff;
+    text-decoration: underline;
+    font-size: 0.9rem;
 }
 
 .ubicacion {
-  margin-top: 2rem;
+    margin-top: 1.5rem; /* Adjusted margin */
 }
 
 .ubicacion h3 {
-  color: #ffcc00;
+    color: #ffcc00;
 }
 
 .eventos-lateral {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    min-width: 280px; /* Ensure lateral events are also readable on small screens */
+    padding: 1rem; /* Added padding */
+    box-sizing: border-box;
+}
+
+/* Media Queries for responsiveness */
+@media (max-width: 768px) {
+    .eventos-container {
+        flex-direction: column; /* Stack items vertically on smaller screens */
+        align-items: center; /* Center items when stacked */
+        padding: 1rem;
+    }
+
+    .evento-principal,
+    .eventos-lateral {
+        width: 100%; /* Take full width */
+        max-width: 500px; /* Limit max-width even when full width to prevent stretching on small tablets */
+        margin-bottom: 1rem; /* Add some space between stacked elements */
+    }
+
+    .evento-principal h2 {
+        font-size: 1.6rem;
+    }
+
+    .evento-principal .hashtag {
+        font-size: 0.9rem;
+    }
+
+    .boton-fucsia {
+        max-width: 100%; /* Ensure button takes full width within its container */
+    }
+}
+
+@media (max-width: 480px) {
+    .eventos-container {
+        padding: 0.5rem; /* Even less padding on very small screens */
+        gap: 1rem;
+    }
+
+    .evento-principal {
+        padding: 0.8rem;
+    }
+
+    .evento-principal h2 {
+        font-size: 1.4rem;
+    }
+
+    .evento-principal .hashtag {
+        font-size: 0.85rem;
+    }
+
+    .boton-fucsia {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .ver-otros-eventos {
+        font-size: 0.8rem;
+    }
+
+    .eventos-lateral {
+        padding: 0.8rem;
+    }
 }

@@ -1,419 +1,730 @@
 /* Layout General */
 .admin-panel-container {
-  display: flex;
-  height: 100vh;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
-  background: linear-gradient(120deg, #18122B 60%, #3f0172 100%);
+    display: flex;
+    height: 100vh;
+    font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
+    background: linear-gradient(120deg, #18122B 60%, #3f0172 100%);
+    overflow: hidden; /* Para evitar scroll indeseado en el contenedor principal */
+    width: 100vw; /* Asegura que ocupe todo el ancho de la ventana */
+    box-sizing: border-box; /* Incluye padding y borde en el ancho/alto */
 }
 
 /* SIDEBAR */
 .sidebar {
-  width: 280px;
-  min-width: 200px;
-  background: linear-gradient(135deg, #18122B 60%, #3f0172 100%);
-  color: #fff;
-  padding: 2.2rem 1.2rem 1.2rem 1.2rem;
-  box-shadow: 2px 0 24px #3f017255;
-  border-radius: 24px 0 24px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: background 0.3s;
-  position: relative;
-  backdrop-filter: blur(8px);
-  border-right: 3px solid #3f0172;
+    width: 280px;
+    min-width: 200px;
+    background: linear-gradient(135deg, #18122B 60%, #3f0172 100%);
+    color: #fff;
+    padding: 2.2rem 1.2rem 1.2rem 1.2rem;
+    box-shadow: 2px 0 24px #3f017255;
+    border-radius: 24px 0 24px 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    transition: width 0.3s ease, padding 0.3s ease, transform 0.3s ease;
+    position: relative; /* Para el botón de toggle */
+    backdrop-filter: blur(8px);
+    border-right: 3px solid #3f0172;
+    z-index: 1000;
+    box-sizing: border-box;
+    flex-shrink: 0; /* Evita que la sidebar se encoja más allá de su width */
 }
 .sidebar.glass {
-  background: linear-gradient(135deg, rgba(24, 18, 43, 0.92) 60%, rgba(63, 1, 114, 0.92) 100%);
-  box-shadow: 0 8px 32px 0 #3f017255;
-  backdrop-filter: blur(10px);
+    background: linear-gradient(135deg, rgba(24, 18, 43, 0.92) 60%, rgba(63, 1, 114, 0.92) 100%);
+    box-shadow: 0 8px 32px 0 #3f017255;
+    backdrop-filter: blur(10px);
 }
 
 /* LOGO */
 .logo-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-bottom: 1.2rem;
-  width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 1.2rem;
+    width: 100%;
 }
 .logo-img {
-  width: 105px;
-  height: 105px;
-  object-fit: contain;
-  border-radius: 50%;
-  background: transparent;
-  box-shadow: 0 2px 18px #3f017255;
-  border: 3px solid #3f0172;
-  padding: 7px;
-  animation: spin 7s linear infinite;
-  transition: box-shadow 0.3s;
+    width: 105px;
+    height: 105px;
+    object-fit: contain;
+    border-radius: 50%;
+    background: transparent;
+    box-shadow: 0 2px 18px #3f017255;
+    border: 3px solid #3f0172;
+    padding: 7px;
+    animation: spin 7s linear infinite;
+    transition: box-shadow 0.3s;
 }
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .sidebar h2 {
-  font-size: 1.6rem;
-  margin-bottom: 2.2rem;
-  font-weight: 900;
-  letter-spacing: 2px;
-  text-align: center;
-  color: #3f0172;
-  text-shadow: 0 2px 12px #3f009188;
+    font-size: 1.6rem;
+    margin-bottom: 2.2rem;
+    font-weight: 900;
+    letter-spacing: 2px;
+    text-align: center;
+    color: #3f0172;
+    text-shadow: 0 2px 12px #3f009188;
 }
 
 .sidebar ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  width: 100%;
-  flex-grow: 1;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    flex-grow: 1;
 }
 .sidebar li {
-  padding: 0.95rem 1.2rem;
-  cursor: pointer;
-  border-radius: 12px;
-  margin-bottom: 0.7rem;
-  font-weight: 700;
-  font-size: 1.12rem;
-  color: #fff;
-  transition: background 0.3s, color 0.3s, box-shadow 0.3s, border 0.3s;
-  user-select: none;
-  letter-spacing: 0.5px;
-  border: 2px solid transparent;
+    padding: 0.95rem 1.2rem;
+    cursor: pointer;
+    border-radius: 12px;
+    margin-bottom: 0.7rem;
+    font-weight: 700;
+    font-size: 1.12rem;
+    color: #fff;
+    transition: background 0.3s, color 0.3s, box-shadow 0.3s, border 0.3s;
+    user-select: none;
+    letter-spacing: 0.5px;
+    border: 2px solid transparent;
 }
 .sidebar li.active,
 .sidebar li:hover {
-  background: linear-gradient(90deg, #3f0172 70%, #18122B 100%);
-  color: #fff;
-  box-shadow: 0 0 16px #3f017255;
-  border: 2px solid #3f0172;
+    background: linear-gradient(90deg, #3f0172 70%, #18122B 100%);
+    color: #fff;
+    box-shadow: 0 0 16px #3f017255;
+    border: 2px solid #3f0172;
 }
 
 /* Logout Button */
 .logout-btn {
-  margin-top: auto;
-  width: 100%;
-  background: linear-gradient(90deg, #18122B 60%, #3f0172 100%);
-  color: #fff;
-  border: none;
-  border-radius: 14px;
-  padding: 1rem 0;
-  font-size: 1.12rem;
-  font-weight: 900;
-  cursor: pointer;
-  box-shadow: 0 2px 14px #3f009144;
-  transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.7rem;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.5px;
-  border: 2px solid #3f0172;
+    margin-top: auto;
+    width: 100%;
+    background: linear-gradient(90deg, #18122B 60%, #3f0172 100%);
+    color: #fff;
+    border: none;
+    border-radius: 14px;
+    padding: 1rem 0;
+    font-size: 1.12rem;
+    font-weight: 900;
+    cursor: pointer;
+    box-shadow: 0 2px 14px #3f009144;
+    transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7rem;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.5px;
+    border: 2px solid #3f0172;
 }
 .logout-btn:hover {
-  background: linear-gradient(90deg, #3f0172 60%, #18122B 100%);
-  box-shadow: 0 4px 24px #3f0172aa;
-  border: 2px solid #fff;
+    background: linear-gradient(90deg, #3f0172 60%, #18122B 100%);
+    box-shadow: 0 4px 24px #3f0172aa;
+    border: 2px solid #fff;
 }
 
 /* MAIN CONTENT */
 .main-content {
-  flex: 1;
-  padding: 2.5rem 2rem;
-  background: #18122B;
-  box-shadow: 0 0 32px #3f009144 inset;
-  border-radius: 24px;
-  margin: 1.5rem;
-  overflow-y: auto;
-  color: #fff;
+    flex: 1;
+    padding: 2.5rem 2rem;
+    background: #18122B;
+    box-shadow: 0 0 32px #3f009144 inset;
+    border-radius: 24px;
+    margin: 1.5rem;
+    overflow-y: auto;
+    color: #fff;
+    transition: margin 0.3s ease, padding 0.3s ease;
+    box-sizing: border-box; /* Asegura que el padding no cause desbordamiento */
+    min-width: 0; /* Permite que el contenido se encoja */
 }
 
 /* Topbar */
 .topbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 .topbar h1 {
-  font-size: 2.1rem;
-  font-weight: 900;
-  color: #3f0172;
-  letter-spacing: 1px;
-  text-shadow: 0 2px 12px #18122Baa;
+    font-size: 2.1rem;
+    font-weight: 900;
+    color: #3f0172;
+    letter-spacing: 1px;
+    text-shadow: 0 2px 12px #18122Baa;
+    flex-shrink: 0; /* Evita que el título se encoja */
 }
 .btn-add {
-  background: linear-gradient(90deg, #3f0172 70%, #18122B 100%);
-  color: #fff;
-  padding: 0.7rem 1.6rem;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: 900;
-  font-size: 1.12rem;
-  box-shadow: 0 4px 12px #3f009144;
-  transition: background 0.3s, box-shadow 0.3s;
-  border: 2px solid #3f0172;
+    background: linear-gradient(90deg, #3f0172 70%, #18122B 100%);
+    color: #fff;
+    padding: 0.7rem 1.6rem;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    font-weight: 900;
+    font-size: 1.12rem;
+    box-shadow: 0 4px 12px #3f009144;
+    transition: background 0.3s, box-shadow 0.3s;
+    border: 2px solid #3f0172;
+    flex-shrink: 0; /* Evita que el botón se encoja */
 }
 .btn-add:hover {
-  background: linear-gradient(90deg, #18122B 70%, #3f0172 100%);
-  box-shadow: 0 6px 18px #3f0172aa;
+    background: linear-gradient(90deg, #18122B 70%, #3f0172 100%);
+    box-shadow: 0 6px 18px #3f0172aa;
 }
 
 /* Buscador */
 .actions-bar {
-  margin: 1rem 0 2rem 0;
+    margin: 1rem 0 2rem 0;
 }
 .actions-bar input {
-  width: 100%;
-  padding: 0.85rem 1.1rem;
-  border-radius: 12px;
-  border: 2px solid #3f0172;
-  font-size: 1.05rem;
-  background: #232046;
-  color: #fff;
-  transition: border-color 0.3s, box-shadow 0.3s;
+    width: 100%;
+    padding: 0.85rem 1.1rem;
+    border-radius: 12px;
+    border: 2px solid #3f0172;
+    font-size: 1.05rem;
+    background: #232046;
+    color: #fff;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box;
 }
 .actions-bar input:focus {
-  outline: none;
-  border-color: #3f0091;
-  box-shadow: 0 0 10px #3f009188;
+    outline: none;
+    border-color: #3f0091;
+    box-shadow: 0 0 10px #3f009188;
 }
 
 /* Tabla */
 .admin-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 10px;
-  background-color: transparent;
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+    background-color: transparent;
+    box-sizing: border-box;
 }
 .admin-table th,
 .admin-table td {
-  padding: 0.85rem 1.1rem;
-  font-size: 1.05rem;
-  color: #fff;
+    padding: 0.85rem 1.1rem;
+    font-size: 1.05rem;
+    color: #fff;
+    text-align: left;
+    box-sizing: border-box;
 }
 .admin-table th {
-  background: linear-gradient(90deg, #3f0172 70%, #18122B 100%);
-  font-weight: 900;
-  border-radius: 10px 10px 0 0;
-  padding-top: 1.1rem;
-  padding-bottom: 1.1rem;
-  letter-spacing: 0.07em;
-  border-bottom: 3px solid #3f0172;
+    background: linear-gradient(90deg, #3f0172 70%, #18122B 100%);
+    font-weight: 900;
+    border-radius: 10px 10px 0 0;
+    padding-top: 1.1rem;
+    padding-bottom: 1.1rem;
+    letter-spacing: 0.07em;
+    border-bottom: 3px solid #3f0172;
+    position: sticky;
+    left: 0;
+    z-index: 1;
 }
+.admin-table th:first-child {
+    border-top-left-radius: 10px;
+}
+.admin-table th:last-child {
+    border-top-right-radius: 10px;
+}
+
+
 .admin-table tbody tr {
-  background: rgba(255,255,255,0.04);
-  border-radius: 12px;
-  box-shadow: 0 2px 8px #3f009122;
-  transition: background-color 0.3s;
+    background: rgba(255,255,255,0.04);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px #3f009122;
+    transition: background-color 0.3s;
 }
 .admin-table tbody tr:hover {
-  background: #232046;
+    background: #232046;
 }
 .admin-table tbody td {
-  vertical-align: middle;
+    vertical-align: middle;
 }
 
 /* Botones de acción */
 .btn {
-  padding: 0.5rem 1rem;
-  margin-right: 0.4rem;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  font-weight: 800;
-  font-size: 1.05rem;
-  box-shadow: 0 2px 8px #3f009122;
-  transition: background 0.3s, box-shadow 0.3s;
+    padding: 0.5rem 1rem;
+    margin-right: 0.4rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 1.05rem;
+    box-shadow: 0 2px 8px #3f009122;
+    transition: background 0.3s, box-shadow 0.3s;
+    color: #fff; /* Asegurar color de texto */
 }
 .btn.view {
-  background: linear-gradient(90deg, #3b1c68 70%, #3f0172 100%);
-  border: 2px solid #3f0172;
+    background: linear-gradient(90deg, #3b1c68 70%, #3f0172 100%);
+    border: 2px solid #3f0172;
 }
 .btn.view:hover {
-  background: linear-gradient(90deg, #3f0172 70%, #3b1c68 100%);
-  box-shadow: 0 4px 14px #3f0172aa;
+    background: linear-gradient(90deg, #3f0172 70%, #3b1c68 100%);
+    box-shadow: 0 4px 14px #3f0172aa;
 }
 .btn.edit {
-  background: linear-gradient(90deg, #3f0172 70%, #3f0091 100%);
-  border: 2px solid #3f0172;
+    background: linear-gradient(90deg, #3f0172 70%, #3f0091 100%);
+    border: 2px solid #3f0172;
 }
 .btn.edit:hover {
-  background: linear-gradient(90deg, #3f0091 70%, #3f0172 100%);
-  box-shadow: 0 4px 14px #3f0091aa;
+    background: linear-gradient(90deg, #3f0091 70%, #3f0172 100%);
+    box-shadow: 0 4px 14px #3f0091aa;
 }
 .btn.delete {
-  background: linear-gradient(90deg, #e74c3c 70%, #3f0172 100%);
-  border: 2px solid #e74c3c;
+    background: linear-gradient(90deg, #e74c3c 70%, #3f0172 100%);
+    border: 2px solid #e74c3c;
 }
 .btn.delete:hover {
-  background: linear-gradient(90deg, #3f0172 70%, #e74c3c 100%);
-  box-shadow: 0 4px 14px #e74c3caa;
+    background: linear-gradient(90deg, #3f0172 70%, #e74c3c 100%);
+    box-shadow: 0 4px 14px #e74c3caa;
 }
 
 /* Scrollbar for main content */
 .main-content::-webkit-scrollbar {
-  width: 8px;
+    width: 8px;
+    height: 8px;
 }
 .main-content::-webkit-scrollbar-track {
-  background: #232046;
-  border-radius: 10px;
+    background: #232046;
+    border-radius: 10px;
 }
 .main-content::-webkit-scrollbar-thumb {
-  background: #3f0172;
-  border-radius: 10px;
+    background: #3f0172;
+    border-radius: 10px;
 }
 
 /* SweetAlert2 Custom Styles */
 .swal2-popup {
-  background: linear-gradient(120deg, #18122B 60%, #3f0172 100%) !important;
-  color: #fff !important;
-  border-radius: 18px !important;
-  font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
-  box-shadow: 0 4px 32px #3f017288 !important;
+    background: linear-gradient(120deg, #18122B 60%, #3f0172 100%) !important;
+    color: #fff !important;
+    border-radius: 18px !important;
+    font-family: 'Syncopate', 'Segoe UI', Arial, sans-serif;
+    box-shadow: 0 4px 32px #3f017288 !important;
 }
 .swal2-input {
-  background: #232046 !important;
-  color: #fff !important;
-  border: 2px solid #3f0172 !important;
-  border-radius: 12px !important;
-  font-size: 1.05rem !important;
-  margin-bottom: 10px !important;
-  box-shadow: 0 2px 8px #3f009122 !important;
-  transition: border-color 0.3s, box-shadow 0.3s;
+    background: #232046 !important;
+    color: #fff !important;
+    border: 2px solid #3f0172 !important;
+    border-radius: 12px !important;
+    font-size: 1.05rem !important;
+    margin-bottom: 10px !important;
+    box-shadow: 0 2px 8px #3f009122 !important;
+    transition: border-color 0.3s, box-shadow 0.3s;
 }
 .swal2-input:focus {
-  border-color: #3f0091 !important;
-  box-shadow: 0 0 10px #3f009188 !important;
-  outline: none !important;
+    outline: none !important;
+    border-color: #3f0091 !important;
+    box-shadow: 0 0 10px #3f009188 !important;
 }
 .swal2-confirm {
-  background: linear-gradient(90deg, #3f0172 70%, #18122B 100%) !important;
-  color: #fff !important;
-  border-radius: 12px !important;
-  font-weight: 900 !important;
-  border: 2px solid #3f0172 !important;
-  box-shadow: 0 4px 12px #3f009144 !important;
-  transition: background 0.3s, box-shadow 0.3s;
+    background: linear-gradient(90deg, #3f0172 70%, #18122B 100%) !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    font-weight: 900 !important;
+    border: 2px solid #3f0172 !important;
+    box-shadow: 0 4px 12px #3f009144 !important;
+    transition: background 0.3s, box-shadow 0.3s;
 }
 .swal2-confirm:hover {
-  background: linear-gradient(90deg, #18122B 70%, #3f0172 100%) !important;
-  border: 2px solid #fff !important;
+    background: linear-gradient(90deg, #18122B 70%, #3f0172 100%) !important;
+    border: 2px solid #fff !important;
 }
 .swal2-cancel {
-  background: linear-gradient(90deg, #232046 70%, #3f0172 100%) !important;
-  color: #fff !important;
-  border-radius: 12px !important;
-  font-weight: 900 !important;
-  border: 2px solid #3f0172 !important;
-  box-shadow: 0 4px 12px #3f009144 !important;
-  transition: background 0.3s, box-shadow 0.3s;
+    background: linear-gradient(90deg, #232046 70%, #3f0172 100%) !important;
+    color: #fff !important;
+    border-radius: 12px !important;
+    font-weight: 900 !important;
+    border: 2px solid #3f0172 !important;
+    box-shadow: 0 4px 12px #3f009144 !important;
+    transition: background 0.3s, box-shadow 0.3s;
 }
 .swal2-cancel:hover {
-  background: linear-gradient(90deg, #3f0172 70%, #232046 100%) !important;
-  border: 2px solid #fff !important;
+    background: linear-gradient(90deg, #3f0172 70%, #232046 100%) !important;
+    border: 2px solid #fff !important;
 }
 /* Fondo oscuro detrás del modal SweetAlert2 */
-.swal2-container.swal2-backdrop-show, 
+.swal2-container.swal2-backdrop-show,
 .swal2-container.swal2-noanimation {
-  background: rgba(24, 18, 43, 0.85) !important;
-  backdrop-filter: blur(2px);
+    background: rgba(24, 18, 43, 0.85) !important;
+    backdrop-filter: blur(2px);
+}
+
+/* ========================================================= */
+/* Responsive Design - Mejoras y adiciones */
+/* ========================================================= */
+
+/* Botón para abrir/cerrar la sidebar en móviles (necesita JavaScript) */
+.sidebar-toggle {
+    display: none; /* Oculto por defecto en desktop */
+    background: linear-gradient(90deg, #3f0172 70%, #18122B 100%);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 45px;
+    height: 45px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    position: fixed; /* Fijo en la pantalla */
+    top: 1rem;
+    left: 1rem; /* Posicionamos a la izquierda */
+    z-index: 1001; /* Asegura que esté sobre la sidebar */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s, box-shadow 0.3s;
+}
+
+.sidebar-toggle:hover {
+    background: linear-gradient(90deg, #18122B 70%, #3f0172 100%);
+    box-shadow: 0 4px 16px #3f0172aa;
+}
+
+/* Ocultar elementos de la sidebar cuando está colapsada (para móviles) */
+.sidebar.collapsed .sidebar-content {
+    display: none;
+}
+/* La clase 'active' controla la visibilidad real en móviles */
+.sidebar:not(.active) .sidebar-content {
+    /* Esto se usará cuando la sidebar NO esté activa en móvil */
+    display: none;
 }
 
 
+/* Tablets y Escritorios pequeños (max-width: 1024px) */
+@media (max-width: 1024px) {
+    .admin-panel-container {
+        flex-direction: column;
+        height: auto;
+        min-height: 100vh;
+    }
 
+    .sidebar {
+        width: 100%;
+        min-width: unset;
+        height: auto;
+        border-radius: 0 0 24px 24px;
+        border-right: none;
+        border-bottom: 3px solid #3f0172;
+        box-shadow: 0 2px 24px #3f017255;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 1rem 1rem;
+        position: relative;
+        transform: translateX(0); /* Asegura que esté visible */
+    }
 
+    .sidebar .logo-container {
+        margin-bottom: 0;
+        margin-right: 1rem;
+    }
 
+    .sidebar h2 {
+        font-size: 1.3rem;
+        margin-bottom: 0;
+        margin-right: 1rem;
+        text-align: left;
+        display: none; /* Ocultamos el título del panel en la sidebar de tablet */
+    }
 
+    .sidebar ul {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 0.8rem;
+        margin-bottom: 0;
+        width: auto;
+        flex-grow: unset;
+    }
 
+    .sidebar li {
+        margin-bottom: 0;
+        margin-right: 0;
+        font-size: 1.05rem;
+        padding: 0.8rem 1rem;
+    }
 
+    .logout-btn {
+        margin-top: 0;
+        margin-left: auto;
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+        border-radius: 10px;
+        margin-bottom: 0;
+    }
 
+    .main-content {
+        margin: 1rem;
+        padding: 1.5rem;
+        border-radius: 18px;
+    }
 
+    .topbar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.8rem;
+    }
+    .topbar h1 {
+        font-size: 1.8rem;
+    }
+    .btn-add {
+        width: 100%;
+        font-size: 1rem;
+        padding: 0.8rem 1.2rem;
+    }
 
+    .actions-bar input {
+        font-size: 1rem;
+        padding: 0.7rem 0.9rem;
+    }
 
-.logout-btn {
-    background: linear-gradient(90deg, #232046 70%, #3f0172 100%) !important;
-  border: none;
-  padding: 10px;
-  border-radius: 4px;
-  color: #fff;
-  cursor: pointer;
-  font-weight: bold;
-  margin-top: auto;
+    /* Tabla responsiva: Scroll horizontal por defecto en tablets */
+    .admin-table {
+        display: block; /* Necesario para overflow-x */
+        overflow-x: auto;
+        white-space: nowrap; /* Evita que el contenido de las celdas se envuelva */
+        border-spacing: 0;
+    }
+    .admin-table thead, .admin-table tbody, .admin-table tr {
+        display: table;
+        width: 100%;
+        table-layout: fixed;
+    }
+    .admin-table th, .admin-table td {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        min-width: 120px;
+        font-size: 0.95rem;
+        padding: 0.7rem 0.8rem;
+    }
 }
 
+/* Móviles (max-width: 768px) - Colapsar Sidebar, Tabla como tarjetas */
+@media (max-width: 768px) {
+    .sidebar-toggle {
+        display: flex; /* Mostrar el botón de toggle */
+        top: 1rem;
+        left: 1rem; /* Posicionamos a la izquierda */
+    }
 
+    .sidebar {
+        width: 250px;
+        min-width: unset;
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        transform: translateX(-100%); /* Oculta la sidebar por defecto en móvil */
+        border-radius: 0 24px 24px 0;
+        border-right: 3px solid #3f0172;
+        border-bottom: none;
+        padding: 1.5rem 1rem;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 4px 0 24px #3f017288;
+    }
 
-.profile-container,
-.events-container {
-  background: #000000;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    .sidebar.active {
+        transform: translateX(0); /* Muestra la sidebar */
+    }
+
+    .sidebar .logo-container {
+        margin-bottom: 1.5rem;
+        margin-right: 0;
+    }
+
+    .sidebar h2 {
+        display: block; /* Vuelve a mostrar el título en la sidebar activa */
+        font-size: 1.4rem;
+        margin-bottom: 2rem;
+        margin-right: 0;
+        text-align: center;
+    }
+
+    .sidebar ul {
+        flex-direction: column;
+        gap: 0.5rem;
+        width: 100%;
+    }
+    .sidebar li {
+        font-size: 1rem;
+        padding: 0.8rem 1rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .logout-btn {
+        margin-top: auto;
+        margin-left: 0;
+        font-size: 1rem;
+        padding: 0.8rem 1.2rem;
+        border-radius: 12px;
+    }
+
+    .main-content {
+        margin: 0.5rem;
+        padding: 1rem;
+        border-radius: 12px;
+        min-height: calc(100vh - 1rem);
+        width: calc(100% - 1rem); /* Ajusta el ancho para dejar margen */
+        box-sizing: border-box;
+    }
+
+    .topbar h1 {
+        font-size: 1.6rem;
+    }
+    .btn-add {
+        font-size: 0.95rem;
+        padding: 0.6rem 1rem;
+    }
+
+    .actions-bar input {
+        font-size: 0.95rem;
+        padding: 0.6rem 0.8rem;
+    }
+
+    /* Tabla responsiva en móvil (tarjetas o lista) */
+    .admin-table {
+        border-spacing: 0;
+        overflow-x: hidden; /* Oculta el scroll horizontal */
+        display: block; /* Asegura que se comporte como un bloque para las filas */
+        width: 100%; /* Asegura que la tabla ocupe el 100% del contenedor */
+    }
+    .admin-table thead {
+        display: none; /* Oculta el encabezado de la tabla en móvil */
+    }
+    .admin-table tbody {
+        display: block; /* Asegura que el cuerpo de la tabla se comporte como un bloque */
+        width: 100%;
+    }
+    .admin-table tbody tr {
+        margin-bottom: 15px;
+        display: block;
+        border-radius: 12px;
+        border: 1px solid #3f0172;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        width: 100%; /* Asegura que cada fila ocupe el 100% */
+        box-sizing: border-box;
+    }
+    .admin-table tbody td {
+        display: block;
+        text-align: right;
+        padding: 8px 15px;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        position: relative;
+        word-wrap: break-word;
+        white-space: normal;
+        width: auto; /* Permite que la celda se ajuste a su contenido */
+        box-sizing: border-box;
+    }
+    .admin-table tbody td:last-child {
+        border-bottom: none;
+    }
+    .admin-table tbody td:before {
+        content: attr(data-label);
+        font-weight: bold;
+        text-transform: uppercase;
+        color: #8b08a5;
+        float: left;
+        margin-right: 10px;
+        font-size: 0.9rem;
+    }
+
+    .btn {
+        padding: 0.4rem 0.8rem;
+        font-size: 0.9rem;
+        margin-right: 0.3rem;
+    }
+    .admin-table tbody td.actions-cell {
+        text-align: center;
+        padding-top: 15px;
+        padding-bottom: 15px;
+    }
 }
 
-.profile-container h2,
-.events-container h2 {
-  margin-bottom: 20px;
-  color: #ffffff;
-}
+/* Móviles pequeños (max-width: 480px) */
+@media (max-width: 480px) {
+    .sidebar-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 1.3rem;
+        top: 0.8rem;
+        left: 0.8rem;
+    }
+    .sidebar {
+        width: 220px;
+        padding: 1rem 0.8rem;
+    }
+    .sidebar h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+    .logo-img {
+        width: 70px;
+        height: 70px;
+        padding: 5px;
+    }
+    .sidebar ul {
+        flex-direction: column;
+        gap: 0;
+        width: 100%;
+    }
+    .sidebar li {
+        font-size: 0.9rem;
+        padding: 0.6rem 0.8rem;
+    }
+    .logout-btn {
+        font-size: 0.9rem;
+        padding: 0.6rem 1rem;
+    }
 
-.profile-card {
-  border: 1px solid #000000;
-  padding: 20px;
-  border-radius: 8px;
-  background: #000000;
-}
+    .main-content {
+        margin: 0.3rem;
+        padding: 0.8rem;
+        border-radius: 10px;
+    }
+    .topbar h1 {
+        font-size: 1.4rem;
+    }
+    .btn-add {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.8rem;
+    }
 
-.profile-card p {
-  margin: 10px 0;
-  font-size: 1em;
-  color: #ffffff;
-}
+    .actions-bar input {
+        font-size: 0.9rem;
+        padding: 0.5rem 0.7rem;
+    }
 
-.btn-update,
-.btn-add {
-  background: #8b08a5;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 4px;
-  cursor: pointer;
-  margin-top: 20px;
-  font-weight: bold;
-  transition: background 0.3s;
-}
+    .admin-table tbody td {
+        padding: 6px 10px;
+        font-size: 0.9rem;
+    }
+    .admin-table tbody td:before {
+        font-size: 0.8rem;
+    }
+    .btn {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.85rem;
+        margin-right: 0.2rem;
+    }
 
-.btn-update:hover,
-.btn-add:hover {
-  background: #70067f;
-}
-
-.admin-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 20px;
-}
-
-.admin-table th,
-.admin-table td {
-  padding: 12px 8px;
-  border: 1px solid #000000;
-  text-align: center;
-}
-
-.admin-table th {
-  background: #8b08a5;
-  color: #fff;
-}
-
-.error-text {
-  color: red;
-  font-weight: bold;
-  text-align: center;
+    .swal2-popup {
+        width: 90vw !important;
+        padding: 0.8rem !important;
+    }
+    .swal2-input {
+        font-size: 0.9rem !important;
+        padding: 0.4rem !important;
+    }
+    .swal2-confirm, .swal2-cancel {
+        font-size: 0.9rem !important;
+        padding: 0.5rem 1rem !important;
+    }
 }
