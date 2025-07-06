@@ -733,8 +733,7 @@ export const SectbodyAdmin = () => {
     } finally {
       setLoadingEventos(false);
     }
-  };
-// --- RESERVAS CRUD (NUEVAS FUNCIONES CON MERCADO PAGO SIMULADO) ---
+  };// --- RESERVAS CRUD (NUEVAS FUNCIONES CON MERCADO PAGO SIMULADO) ---
 const fetchReservas = async () => {
   setLoadingReservas(true);
   setErrorReservas(null);
@@ -783,52 +782,46 @@ const addReserva = async () => {
     title: "Añadir Reserva",
     html:
       '<input id="swal-input1" class="swal2-input" placeholder="ID Evento">' +
-      // CAMBIO: Ahora pedimos el ID del cliente, no el nombre de usuario
-      '<input id="swal-input2" class="swal2-input" type="number" placeholder="ID Usuario">' + // CAMBIO: tipo number
+      '<input id="swal-input2" class="swal2-input" type="number" placeholder="ID Usuario">' +
       '<input id="swal-input3" class="swal2-input" type="number" placeholder="Cantidad Tickets">' +
       '<input id="swal-input4" class="swal2-input" type="date" placeholder="Fecha Reserva (YYYY-MM-DD)">' +
       '<select id="swal-select5" class="swal2-input">' +
       '<option value="">Selecciona Estado de Pago</option>' +
-      '<option value="PENDIENTE">PENDIENTE</option>' + // CAMBIO: Valores en MAYÚSCULAS para coincidir con el backend si es el caso
+      '<option value="PENDIENTE">PENDIENTE</option>' +
       '<option value="APROBADO">APROBADO</option>' +
       '<option value="RECHAZADO">RECHAZADO</option>' +
-      '</select>' +
-      '<input id="swal-input6" class="swal2-input" placeholder="ID Transacción (Opcional)">', // Ya no es solo "simulado"
+      '</select>', // CAMBIO: Campo 'ID Transacción' eliminado de aquí
     focusConfirm: false,
     showCancelButton: true,
     confirmButtonText: "Guardar",
     cancelButtonText: "Cancelar",
     preConfirm: () => {
       const idEvento = document.getElementById("swal-input1").value.trim();
-      // CAMBIO: Obtenemos el ID de usuario
       const idUsuario = document.getElementById("swal-input2").value.trim();
       const cantidadTickets = document.getElementById("swal-input3").value.trim();
       const fechaReserva = document.getElementById("swal-input4").value.trim();
       const estadoPago = document.getElementById("swal-select5").value.trim();
-      const idTransaccion = document.getElementById("swal-input6").value.trim();
+      // CAMBIO: Variable idTransaccion eliminada de la lectura del DOM
 
-      // CAMBIO: Validación para idUsuario
       if (!idEvento || !idUsuario || !cantidadTickets || !fechaReserva || !estadoPago) {
         Swal.showValidationMessage("Completa todos los campos obligatorios (ID Evento, ID Usuario, Tickets, Fecha, Estado Pago)");
         return;
       }
 
-      // Simular un ID de transacción si el estado es "APROBADO" y no se ingresó uno
-      let finalIdTransaccion = idTransaccion;
-      if (estadoPago === "APROBADO" && !idTransaccion) { // CAMBIO: Usar APROBADO
-        finalIdTransaccion = `MP_ADM_${Date.now()}`; // CAMBIO: Prefijo diferente para admin
-      } else if (estadoPago !== "APROBADO") { // CAMBIO: Usar APROBADO
-        finalIdTransaccion = ""; // Limpiar el ID de transacción si no está pagado
+      // CAMBIO: Lógica de simulación de ID de transacción si ya no se pide
+      // Si aún quieres un ID de transacción para el backend aunque no se pida al usuario:
+      let finalIdTransaccion = "";
+      if (estadoPago === "APROBADO") {
+        finalIdTransaccion = `MP_ADM_${Date.now()}`;
       }
 
       return {
-        evento: { idEvento: Number(idEvento) }, // Asume que el backend espera un objeto evento con idEvento
-        // CAMBIO CRÍTICO: Envía el objeto 'cliente' con 'idCliente'
+        evento: { idEvento: Number(idEvento) },
         cliente: { idCliente: Number(idUsuario) },
         cantidadTickets: Number(cantidadTickets),
         fechaReserva,
         estadoPago,
-        idTransaccion: finalIdTransaccion,
+        idTransaccion: finalIdTransaccion, // CAMBIO: Se envía, pero se genera automáticamente si es APROBADO
       };
     },
   });
@@ -860,13 +853,8 @@ const addReserva = async () => {
         const errorText = await response.text();
         throw new Error(`No se pudo añadir la reserva: ${response.status} ${response.statusText} - ${errorText}`);
       }
-      const nuevo = await response.json();
-      // CAMBIO: Podrías necesitar un fetchReservas() aquí para actualizar la lista completamente
-      // o mapear los campos faltantes si la respuesta no es un DTO completo de nuevo.
-      // Por simplicidad, por ahora solo añadimos el nuevo elemento si es un DTO completo.
-      // Si el backend no devuelve un ReservaDTO completo, podrías necesitar recargar la lista:
-      fetchReservas(); // <-- RECOMENDADO: Recargar todas las reservas
-      // O: setReservas([...reservas, nuevo]); si 'nuevo' es un ReservaDTO completo y mapeado
+      // CAMBIO: Recargar todas las reservas para asegurar la actualización de la lista
+      fetchReservas();
       Swal.fire({
         imageUrl: '/logitonegro.png',
         imageWidth: 130,
@@ -904,43 +892,42 @@ const updateReserva = async (reservaData) => {
         <option value="APROBADO" ${reservaData.estadoPago === 'APROBADO' ? 'selected' : ''}>APROBADO</option>
         <option value="RECHAZADO" ${reservaData.estadoPago === 'RECHAZADO' ? 'selected' : ''}>RECHAZADO</option>
       </select>
-      <input id="swal-input6" class="swal2-input" placeholder="ID Transacción (Opcional)" value="${reservaData.idTransaccion || ''}">
-    `,
+    `, // CAMBIO: Campo 'ID Transacción' eliminado de aquí
     focusConfirm: false,
     showCancelButton: true,
     confirmButtonText: "Actualizar",
     cancelButtonText: "Cancelar",
     preConfirm: () => {
       const idEvento = document.getElementById("swal-input1").value.trim();
-      // CAMBIO: Obtenemos el ID de usuario
       const idUsuario = document.getElementById("swal-input2").value.trim();
       const cantidadTickets = document.getElementById("swal-input3").value.trim();
       const fechaReserva = document.getElementById("swal-input4").value.trim();
       const estadoPago = document.getElementById("swal-select5").value.trim();
-      const idTransaccion = document.getElementById("swal-input6").value.trim();
+      // CAMBIO: Variable idTransaccion eliminada de la lectura del DOM
 
-      // CAMBIO: Validación para idUsuario
       if (!idEvento || !idUsuario || !cantidadTickets || !fechaReserva || !estadoPago) {
         Swal.showValidationMessage("Completa todos los campos obligatorios (ID Evento, ID Usuario, Tickets, Fecha, Estado Pago)");
         return;
       }
 
-      let finalIdTransaccion = idTransaccion;
-      if (estadoPago === "APROBADO" && !idTransaccion) { // CAMBIO: Usar APROBADO
-        finalIdTransaccion = `MP_ADM_UPD_${Date.now()}`; // CAMBIO: Prefijo diferente para admin
-      } else if (estadoPago !== "APROBADO") { // CAMBIO: Usar APROBADO
+      // CAMBIO: Lógica de simulación de ID de transacción si ya no se pide
+      let finalIdTransaccion = "";
+      if (estadoPago === "APROBADO") {
+        finalIdTransaccion = `MP_ADM_UPD_${Date.now()}`;
+      } else {
+        // Si el estado no es APROBADO, limpia el ID de transacción existente
         finalIdTransaccion = "";
       }
 
+
       return {
-        idReserva: reservaData.idReserva, // Asegúrate de que el ID de la reserva se pase para la actualización
+        idReserva: reservaData.idReserva,
         evento: { idEvento: Number(idEvento) },
-        // CAMBIO CRÍTICO: Envía el objeto 'cliente' con 'idCliente'
         cliente: { idCliente: Number(idUsuario) },
         cantidadTickets: Number(cantidadTickets),
         fechaReserva,
         estadoPago,
-        idTransaccion: finalIdTransaccion,
+        idTransaccion: finalIdTransaccion, // CAMBIO: Se envía, pero se genera automáticamente si es APROBADO
       };
     },
   });
@@ -975,10 +962,8 @@ const updateReserva = async (reservaData) => {
         const errorText = await response.text();
         throw new Error(`No se pudo actualizar la reserva: ${response.status} ${response.statusText} - ${errorText}`);
       }
-      const updated = await response.json();
-      // CAMBIO: Recargar todas las reservas para asegurar que los datos del evento/usuario se actualicen correctamente
-      fetchReservas(); // <-- RECOMENDADO
-      // O: setReservas(reservas.map((r) => (r.idReserva === reservaData.idReserva ? updated : r))); si 'updated' es un DTO completo y mapeado
+      // CAMBIO: Recargar todas las reservas para asegurar la actualización de la lista
+      fetchReservas();
       Swal.fire({
         imageUrl: '/logitonegro.png',
         imageWidth: 130,
@@ -1179,7 +1164,7 @@ const renderMainContent = () => {
               </thead>
               <tbody>
                 {eventos.map((evento) => (
-                  <tr key={evento.idEvento || evento.id}> {/* Usar idEvento o id */}
+                  <tr key={evento.idEvento || evento.id}>
                     <td data-label="ID Evento">{evento.idEvento || evento.id}</td>
                     <td data-label="Discoteca (NIT)">{evento.discoteca?.nit || 'N/A'}</td>
                     <td data-label="Nombre Evento">{evento.nombreEvento}</td>
@@ -1236,7 +1221,7 @@ const renderMainContent = () => {
                   <th>Tickets</th>
                   <th>Fecha Reserva</th>
                   <th>Estado Pago</th>
-                  <th>ID Transacción</th>
+                  {/* CAMBIO: Columna 'ID Transacción' eliminada del thead */}
                   <th>Acciones</th>
                 </tr>
               </thead>
@@ -1249,7 +1234,7 @@ const renderMainContent = () => {
                     <td data-label="Tickets">{reserva.cantidadTickets}</td>
                     <td data-label="Fecha Reserva">{reserva.fechaReserva}</td>
                     <td data-label="Estado Pago">{reserva.estadoPago}</td>
-                    <td data-label="ID Transacción">{reserva.idTransaccion || 'N/A'}</td>
+                    {/* CAMBIO: Columna 'ID Transacción' eliminada del tbody */}
                     <td data-label="Acciones" className="actions-cell">
                       <button className="btn view">Ver</button>
                       <button className="btn edit" onClick={() => updateReserva(reserva)}>Editar</button>
@@ -1277,7 +1262,7 @@ return (
     <aside className={`sidebar ${isSidebarActive ? 'active' : ''}`} id="sidebar">
       <div className="sidebar-content">
         <div className="logo-container">
-          <img src="/logonegro.png" alt="Logo Night" className="logo-img" /> {/* Asegúrate de que la ruta de la imagen sea correcta */}
+          <img src="/logonegro.png" alt="Logo Night" className="logo-img" />
         </div>
         <h2>Panel de Administrador</h2>
         <ul>
@@ -1287,16 +1272,12 @@ return (
           <li className={activeTab === "reservas" ? "active" : ""} onClick={() => setActiveTab("reservas")}>Reservas</li>
         </ul>
         <button className="logout-btn" onClick={handleLogout}>
-          {/* Si usas FontAwesome, puedes descomentar esto: */}
-          {/* <i className="fas fa-sign-out-alt"></i> */}
           <span>Cerrar Sesión</span>
         </button>
       </div>
     </aside>
 
     <main className="main-content" id="mainContent" onClick={(event) => {
-        // Si la sidebar está activa y se hace clic en el main content (y no en el botón de toggle)
-        // esto la cierra.
         if (isSidebarActive && window.innerWidth <= 768 && !event.target.closest('.sidebar-toggle')) {
           setIsSidebarActive(false);
         }
