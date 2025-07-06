@@ -412,20 +412,20 @@ body {
     }
 
     .plano-discoteca-wrapper-outer {
-        /* Este contenedor ahora solo centra el plano escalado */
         width: 100%;
         display: flex;
         justify-content: center;
         align-items: center;
         margin: 20px auto;
         height: auto;
-        overflow: hidden; /* Asegura que el mapa escalado no desborde el wrapper */
+        overflow: hidden;
     }
 
     .plano-discoteca-wrapper {
         position: relative;
-        width: 600px; /* Mantener ancho de diseño original */
-        height: 800px; /* Mantener alto de diseño original */
+        /* Mantenemos las dimensiones base para que el escalado se aplique sobre ellas */
+        width: 600px;
+        height: 800px;
         background-color: #1e1e2f;
         border: 2px solid #444;
         border-radius: 20px;
@@ -435,19 +435,13 @@ body {
         box-sizing: border-box;
 
         /* *** LA CLAVE PARA EL ESCALADO EN MÓVILES Y TABLETAS *** */
-        /* Calcula la escala basándose en el ancho del viewport */
-        /* (Ancho deseado en viewport - padding) / Ancho original del mapa */
-        /* 100vw es el ancho total del viewport. Restamos padding y gap del contenedor principal */
-        /* Asumiendo 15px de padding a cada lado del mapa-discoteca-container en móvil */
-        transform: scale(calc((100vw - 30px) / 600));
+        /* Ajusta este valor (0.8, 0.7, 0.6, etc.) hasta que el mapa se vea bien */
+        transform: scale(0.7); /* Valor de prueba: 70% del tamaño original */
         transform-origin: center top; /* Escala desde el centro superior */
 
-        /* Para evitar que el mapa escalado sea demasiado grande o pequeño */
-        max-width: 100%; /* Asegura que no sea más ancho que su contenedor */
-        max-height: 100%; /* Asegura que no sea más alto que su contenedor (relativo al ancho escalado) */
-        /* Opcional: si el mapa se ve muy pequeño en algunas tabletas, puedes poner un min-scale */
-        /* Por ejemplo: min(0.7, calc((100vw - 30px) / 600)) -- No es posible en CSS directamente */
-        /* Por lo tanto, estableceremos un valor que funcione para la mayoría de los casos */
+        /* Para asegurar que el mapa escalado no desborde su contenedor */
+        max-width: 100%;
+        max-height: 100%;
     }
 
     /* Para las etiquetas dentro del plano que también deben escalar */
@@ -458,19 +452,19 @@ body {
     }
 
     .map-legend-controls {
-        position: static; /* Ya no es absoluto en móvil, fluye con el contenido del mapa */
-        margin-top: 20px; /* Espacio entre el plano y la leyenda */
+        position: static;
+        margin-top: 20px;
         bottom: auto;
         left: auto;
-        transform: none; /* Elimina la transformación de posicionamiento absoluto */
-        width: 90%; /* Ocupa casi todo el ancho disponible */
-        max-width: 300px; /* Pero no muy grande */
+        transform: none;
+        width: 90%;
+        max-width: 300px;
         font-size: 0.85rem;
     }
     .price-legend-panel,
     .show-prices-button {
         padding: 10px 15px;
-        position: static; /* Asegura que estos elementos no estén absolutos dentro de su padre relativo */
+        position: static;
     }
 }
 
@@ -509,9 +503,8 @@ body {
     }
 
     .plano-discoteca-wrapper {
-        /* Ajustar la escala para móviles aún más pequeños */
-        /* Asumiendo 10px de padding a cada lado del mapa-discoteca-container en móvil */
-        transform: scale(calc((100vw - 20px) / 600));
+        /* Ajusta este valor (0.6, 0.5, 0.4, etc.) para móviles muy pequeños */
+        transform: scale(0.5); /* Valor de prueba: 50% del tamaño original */
         transform-origin: center top;
         /* Los width y height base siguen siendo 600px/800px */
     }
@@ -529,6 +522,6 @@ body {
     .map-legend-controls {
         max-width: 260px;
         font-size: 0.75rem;
-        margin-top: 15px; /* Reducir un poco el margen superior en pantallas más pequeñas */
+        margin-top: 15px;
     }
 }
