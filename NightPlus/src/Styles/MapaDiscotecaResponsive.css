@@ -24,7 +24,7 @@ body {
 .mapa-discoteca-container {
     display: flex;
     flex-direction: row; /* Por defecto, en escritorio, uno al lado del otro */
-    min-height: 100vh;
+    min-height: 100vh; /* Mantener 100vh para escritorio */
     color: white;
     padding: 20px; /* Padding general para el contenedor principal */
     gap: 20px; /* Espacio entre el panel de info y el mapa */
@@ -42,12 +42,12 @@ body {
     border-radius: var(--radius-lg);
     padding: 20px;
     box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    height: calc(100vh - 40px); /* Ajuste basado en el padding total del contenedor */
+    height: calc(100vh - 40px); /* Ajuste basado en el padding total del contenedor en escritorio */
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     flex-shrink: 0; /* No permite que se encoja */
-    position: sticky; /* Sticky para que quede visible al hacer scroll */
+    position: sticky; /* Sticky para que quede visible al hacer scroll en escritorio */
     top: 20px; /* Alineado con el padding superior del body */
     box-sizing: border-box; /* Incluir padding en el ancho/alto */
     order: 2; /* Por defecto en escritorio, aparece al lado del mapa */
@@ -88,7 +88,7 @@ body {
 }
 
 .info-panel .button-group {
-    margin-top: auto; /* Empuja el grupo de botones al final */
+    margin-top: auto; /* Empuja el grupo de botones al final del panel */
 }
 
 .info-panel button {
@@ -383,7 +383,7 @@ body {
         align-items: center; /* Centrar los elementos apilados */
         padding: 15px;
         gap: 15px; /* Ajustar el gap en móvil */
-        min-height: auto; /* Permitir que la altura se ajuste al contenido */
+        min-height: auto; /* Permitir que la altura se ajuste al contenido, NO forzar 100vh */
     }
 
     .map-section {
@@ -405,10 +405,14 @@ body {
     .info-panel {
         width: 100%; /* Ocupa todo el ancho */
         max-width: 600px; /* Limita el ancho máximo del panel */
-        height: auto; /* Altura automática */
+        height: auto; /* Altura automática, crucial */
         position: static; /* Ya no es sticky, crucial para el flujo normal en móvil */
         order: 2; /* Aparece debajo del mapa */
         margin: 0;
+        /* Opcional: Si el contenido del carrito es muy largo, puedes añadir un scroll */
+        /* max-height: 70vh; */ /* Ajusta este valor si necesitas limitar la altura del panel */
+        /* overflow-y: auto; */ /* Activa el scroll vertical si el contenido excede max-height */
+        /* Considera también ajustar el padding si 20px en móvil es mucho */
     }
 
     .plano-discoteca-wrapper-outer {
@@ -423,9 +427,8 @@ body {
 
     .plano-discoteca-wrapper {
         position: relative;
-        /* Mantenemos las dimensiones base para que el escalado se aplique sobre ellas */
-        width: 600px;
-        height: 800px;
+        width: 600px; /* Mantener ancho de diseño original */
+        height: 800px; /* Mantener alto de diseño original */
         background-color: #1e1e2f;
         border: 2px solid #444;
         border-radius: 20px;
@@ -434,12 +437,10 @@ body {
         flex-shrink: 0;
         box-sizing: border-box;
 
-        /* *** LA CLAVE PARA EL ESCALADO EN MÓVILES Y TABLETAS *** */
-        /* Ajusta este valor (0.8, 0.7, 0.6, etc.) hasta que el mapa se vea bien */
-        transform: scale(0.7); /* Valor de prueba: 70% del tamaño original */
+        /* *** ESCALADO PARA MÓVILES Y TABLETAS *** */
+        transform: scale(0.7); /* Puedes ajustar este valor (ej. 0.75, 0.8) */
         transform-origin: center top; /* Escala desde el centro superior */
 
-        /* Para asegurar que el mapa escalado no desborde su contenedor */
         max-width: 100%;
         max-height: 100%;
     }
@@ -447,8 +448,8 @@ body {
     /* Para las etiquetas dentro del plano que también deben escalar */
     .entrance-exit-label,
     .discoteca-name-label {
-        font-size: 0.7rem; /* Ajusta el tamaño de la fuente para que no se vea enorme */
-        white-space: normal; /* Permite que el texto se ajuste */
+        font-size: 0.7rem;
+        white-space: normal;
     }
 
     .map-legend-controls {
@@ -473,10 +474,11 @@ body {
     .mapa-discoteca-container {
         padding: 10px;
         gap: 10px;
+        min-height: auto; /* Permitir que la altura se ajuste al contenido, NO forzar 100vh */
     }
 
     .info-panel {
-        padding: 15px;
+        padding: 15px; /* Quizás reducir si es muy grande en móviles pequeños */
         border-radius: var(--radius-md);
     }
 
@@ -503,7 +505,7 @@ body {
     }
 
     .plano-discoteca-wrapper {
-        /* Ajusta este valor (0.6, 0.5, 0.4, etc.) para móviles muy pequeños */
+        /* Ajusta este valor (ej. 0.55, 0.6) para móviles muy pequeños */
         transform: scale(0.5); /* Valor de prueba: 50% del tamaño original */
         transform-origin: center top;
         /* Los width y height base siguen siendo 600px/800px */
@@ -516,7 +518,7 @@ body {
     }
 
     .zona {
-        font-size: 0.65rem; /* Ajustar el tamaño de la fuente en las zonas para que no se salgan */
+        font-size: 0.65rem;
     }
 
     .map-legend-controls {
