@@ -15,6 +15,7 @@ export const UserProfile = () => {
   const [activeTab, setActiveTab] = useState('cuenta');
   const [showModal, setShowModal] = useState(false);
   const [showQrModal, setShowQrModal] = useState(false); // Nuevo estado para el modal QR
+  const [currentQrData, setCurrentQrData] = useState(null); // Estado para almacenar los datos del QR de la reserva
 
   const [misReservas, setMisReservas] = useState([]);
   const [loadingMisReservas, setLoadingMisReservas] = useState(false);
@@ -84,8 +85,15 @@ export const UserProfile = () => {
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
-  const openQrModal = () => setShowQrModal(true); // Función para abrir el modal QR
-  const closeQrModal = () => setShowQrModal(false); // Función para cerrar el modal QR
+  // Función para abrir el modal QR con datos específicos de la reserva
+  const openQrModal = (reservaData) => {
+    setCurrentQrData(reservaData); // Almacena los datos de la reserva para el QR
+    setShowQrModal(true);
+  };
+  const closeQrModal = () => {
+    setShowQrModal(false);
+    setCurrentQrData(null); // Limpia los datos del QR al cerrar el modal
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -204,8 +212,7 @@ export const UserProfile = () => {
             <label>Correo</label>
             <input type="text" value={cliente.correo} disabled />
             <button onClick={openModal} className="updatee-button">Actualizar</button>
-            {/* Nuevo botón para ver QR */}
-            <button onClick={openQrModal} className="qr-button">Ver QR</button>
+            {/* Se elimina el botón "Ver QR" de aquí */}
           </div>
         ) : activeTab === 'mis reservas' ? (
           <div className="reservas-section">
@@ -226,6 +233,7 @@ export const UserProfile = () => {
                     <th>Tickets</th>
                     <th>Fecha Reserva</th>
                     <th>Estado Pago</th>
+                    <th>QR</th> {/* Nueva columna para el QR */}
                   </tr>
                 </thead>
                 <tbody>
@@ -237,9 +245,9 @@ export const UserProfile = () => {
                       <td data-label="Tickets">{reserva.cantidadTickets}</td>
                       <td data-label="Fecha Reserva">{reserva.fechaReserva}</td>
                       <td data-label="Estado Pago">{reserva.estadoPago}</td>
-                      <td>
-                        {/* Aquí irían tus botones de acción si los tienes, por ejemplo: */}
-                        {/* <button onClick={() => handleVerReserva(reserva.idReserva)}>Ver</button> */}
+                      <td data-label="QR">
+                        {/* Botón "Ver QR" para cada reserva */}
+                        <button onClick={() => openQrModal(reserva)} className="qr-button">Ver QR</button>
                       </td>
                     </tr>
                   ))}
@@ -284,14 +292,27 @@ export const UserProfile = () => {
         <>
           <div className="modal-overlay" onClick={closeQrModal} />
           <div className="modal-content qr-modal">
-            <h2>Tu Código QR</h2>
-            {cliente.correo ? (
+            <h2>Código QR de la Reserva</h2>
+            {currentQrData ? (
               <div className="qr-code-wrapper">
-                <QRCode value={cliente.correo} size={256} level="H" includeMargin={true} />
-                <p className="qr-info">Este QR contiene tu correo electrónico para una identificación rápida.</p>
+                {/* El valor del QR ahora es un JSON string con datos de la reserva */}
+                <QRCode
+                  value={JSON.stringify({
+                    idReserva: currentQrData.idReserva,
+                    evento: currentQrData.nombreEvento,
+                    usuario: currentQrData.usuarioCliente || currentQrData.nombreCliente,
+                    tickets: currentQrData.cantidadTickets
+                  })}
+                  size={256}
+                  level="H"
+                  includeMargin={true}
+                />
+                <p className="qr-info">
+                  Este QR contiene los detalles de la reserva: ID {currentQrData.idReserva}, Evento {currentQrData.nombreEvento}.
+                </p>
               </div>
             ) : (
-              <p>No se puede generar el QR. Correo electrónico no disponible.</p>
+              <p>No se pueden generar los datos del QR para esta reserva.</p>
             )}
             <button type="button" className="logout-button" onClick={closeQrModal}>Cerrar</button>
           </div>
