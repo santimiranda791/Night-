@@ -265,7 +265,8 @@ export const SignInCliente = () => {
               <input
                 type={type}
                 id={id}
-                className={`form__field ${errors[id] ? 'input-error' : ''}`} {/* Asegúrate de que aquí sea 'errors' */}
+                // CAMBIO: Usando concatenación de cadenas en lugar de template literal para el className condicional
+                className={"form__field" + (errors[id] ? " input-error" : "")}
                 placeholder={label}
                 value={formData[id]}
                 onChange={handleChange}
