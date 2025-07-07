@@ -2,11 +2,15 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import '../../../Styles/EventCard.css';
 
-export const EventCard = ({ date, title, image, eventId }) => {
+export const EventCard = ({ date, title, image, eventId, onClick }) => {
   const navigate = useNavigate();
 
   const handleClick = () => {
-    navigate(`/mapa/${eventId}`);
+    if (onClick) {
+      onClick(eventId);
+    } else {
+      navigate(`/mapa/${eventId}`);
+    }
   };
 
   return (
