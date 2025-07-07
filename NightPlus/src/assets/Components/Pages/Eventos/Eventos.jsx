@@ -56,9 +56,8 @@ export const Eventos = () => {
   }, []);
 
   const handleEventClick = (eventId) => {
-    const currentUser = localStorage.getItem('currentUser');
-    const currentAdmin = localStorage.getItem('currentAdmin');
-    if (!currentUser && !currentAdmin) {
+    const token = localStorage.getItem('token');
+    if (!token) {
       Swal.fire({
         imageUrl: '/logitotriste.png',
         imageWidth: 130,
