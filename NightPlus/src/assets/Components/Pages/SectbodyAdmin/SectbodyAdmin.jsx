@@ -1212,12 +1212,12 @@ const renderMainContent = () => {
           ) : reservas.length === 0 ? (
             <p>No hay reservas registradas.</p>
           ) : (
-            <table className="admin-table">
+                       <table className="admin-table">
               <thead>
                 <tr>
                   <th>ID Reserva</th>
                   <th>ID Evento</th>
-                  <th>Usuario</th>
+                  <th>USUARIO</th> {/* El encabezado de la columna está bien */}
                   <th>Tickets</th>
                   <th>Fecha Reserva</th>
                   <th>Estado Pago</th>
@@ -1230,7 +1230,8 @@ const renderMainContent = () => {
                   <tr key={reserva.idReserva || reserva.id}>
                     <td data-label="ID Reserva">{reserva.idReserva || reserva.id}</td>
                     <td data-label="ID Evento">{reserva.idEvento || reserva.evento?.idEvento || 'N/A'}</td>
-                    <td data-label="Usuario">{reserva.nombreUsuario}</td>
+                    {/* ¡CORRECCIÓN AQUÍ! Acceder a usuarioCliente o nombreCliente */}
+                    <td data-label="Usuario">{reserva.usuarioCliente || reserva.nombreCliente || 'N/A'}</td>
                     <td data-label="Tickets">{reserva.cantidadTickets}</td>
                     <td data-label="Fecha Reserva">{reserva.fechaReserva}</td>
                     <td data-label="Estado Pago">{reserva.estadoPago}</td>
