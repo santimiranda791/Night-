@@ -6,7 +6,7 @@ import { LoadingContext } from '../../../../Context/LoadingContext';
 import { LoadingAlert } from '../../LoadingAlert/LoadingAlert';
 
 export const SignInCliente = () => {
-  // State para los datos del formulario
+  // Estado para los datos del formulario
   const [formData, setFormData] = useState({
     documento: '',
     nombre: '',
@@ -16,7 +16,7 @@ export const SignInCliente = () => {
     password: '',
   });
 
-  // State para los errores de validación de cada campo
+  // Estado para los errores de validación de cada campo (usando 'errors' consistentemente)
   const [errors, setErrors] = useState({});
 
   // Contexto de carga para mostrar el LoadingAlert
@@ -35,7 +35,7 @@ export const SignInCliente = () => {
       [id]: value
     }));
     // Limpia el error específico del campo cuando el usuario empieza a escribir
-    if (errors[id]) {
+    if (errors[id]) { // Asegúrate de que aquí sea 'errors'
       setErrors(prev => ({
         ...prev,
         [id]: ''
@@ -214,6 +214,9 @@ export const SignInCliente = () => {
       // AÑADIDO: Guardar el token de autenticación en localStorage
       if (data.token) { // Asegúrate de que el backend devuelva un campo 'token'
         localStorage.setItem('token', data.token);
+        console.log("Token guardado en localStorage:", data.token); // Para depuración
+      } else {
+        console.warn("El backend no devolvió un token en la respuesta de registro.");
       }
       navigate('/VerifyCode', { state: { email: cliente.correo } });
 
@@ -262,14 +265,14 @@ export const SignInCliente = () => {
               <input
                 type={type}
                 id={id}
-                className={`form__field ${errors[id] ? 'input-error' : ''}`} {/* Añade clase para estilos de error */}
+                className={`form__field ${errors[id] ? 'input-error' : ''}`} {/* Asegúrate de que aquí sea 'errors' */}
                 placeholder={label}
                 value={formData[id]}
                 onChange={handleChange}
                 required // Mantener required para validación HTML5 básica, pero la JS es más robusta
               />
               <label htmlFor={id} className="form__label">{label}</label>
-              {errors[id] && <p className="error-message">{errors[id]}</p>} {/* Muestra el mensaje de error */}
+              {errors[id] && <p className="error-message">{errors[id]}</p>} {/* Asegúrate de que aquí sea 'errors' */}
             </div>
           ))}
 
