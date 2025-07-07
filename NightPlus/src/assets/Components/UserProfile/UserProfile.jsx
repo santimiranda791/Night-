@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../../../Styles/UserProfile.css';
-// Eliminamos la importación de qrcode.react ya que usaremos la API de Google Charts
+// No se necesita importar qrcode.react si usamos la API de Google Charts
 
 export const UserProfile = () => {
   const [cliente, setCliente] = useState({
