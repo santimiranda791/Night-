@@ -2,58 +2,71 @@
 
 /* Contenedor principal de los eventos */
 .eventos-container {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 2.5rem; /* Aumentado el padding general para más espacio alrededor de las cards */
-    background-color: #0b0b14; /* Color de fondo general de la sección de eventos */
+    display: grid; /* Usa CSS Grid para un control de diseño avanzado */
+    /* Define columnas responsivas: mínimo 320px, máximo 1fr (ocupa el espacio disponible) */
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2.5rem; /* Espacio entre las tarjetas de evento */
+    padding: 2.5rem; /* Padding general para más espacio alrededor de las cards */
+    background-color: transparent; /* ¡IMPORTANTE! Elimina el fondo negro detrás de los eventos */
     color: white; /* Color de texto por defecto para esta sección */
-    gap: 2rem; /* Aumentado el espacio entre las cards */
-    justify-content: center; /* Centra las cards horizontalmente */
-    align-items: flex-start; /* Alinea las cards al inicio de su contenedor (parte superior) */
+    justify-items: center; /* Centra las tarjetas dentro de sus celdas de cuadrícula */
+    align-items: start; /* Alinea las tarjetas a la parte superior de sus celdas */
+    min-height: calc(100vh - 80px); /* Ajusta la altura mínima para que el fondo se extienda */
+    box-sizing: border-box; /* Incluye padding en el cálculo del ancho/alto */
 }
 
 /* Estilos base para TODAS las cards de evento (clase general aplicada a EventCard.jsx) */
-.eventos-container .evento-card {
+.evento-card { /* Se ha simplificado el selector de '.eventos-container .evento-card' a solo '.evento-card' */
     background-color: #1a0f28; /* Un morado oscuro/gris que contrasta sutilmente con el fondo */
     border-radius: 18px; /* Bordes más redondeados y suaves para un look moderno */
     padding: 1.5rem; /* Padding interno de la card para espacio alrededor del contenido */
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); /* Sombra pronunciada para dar profundidad y "levantar" la card */
     border: 1px solid rgba(61, 34, 92, 0.6); /* Borde sutil en un tono púrpura más claro para definir la card */
     transition: transform 0.3s ease, box-shadow 0.3s ease; /* Transición suave para los efectos de hover */
-    display: flex; /* Utiliza flexbox para alinear la imagen y el texto horizontalmente */
-    align-items: center; /* Centra verticalmente el contenido (imagen y detalles) */
-    gap: 1.2rem; /* Espacio entre la imagen y el bloque de texto dentro de la card */
-    min-width: 320px; /* Ancho mínimo para que las cards no se hagan demasiado pequeñas en pantallas medianas */
-    flex: 1; /* Permite que las cards crezcan y se encojan dentro del contenedor */
-    max-width: 450px; /* Limita el ancho máximo de cada card para evitar que se extiendan demasiado */
+    display: flex;
+    flex-direction: column; /* Apila la imagen y los detalles verticalmente */
+    align-items: center; /* Centra el contenido horizontalmente */
+    width: 100%; /* Ocupa el 100% del ancho de la celda de la cuadrícula */
+    max-width: 400px; /* Ancho máximo para cada tarjeta */
+    text-align: center; /* Centra el texto dentro de la tarjeta */
+    cursor: pointer; /* Indica que la tarjeta es clickeable */
 }
 
-.eventos-container .evento-card:hover {
+.evento-card:hover {
     transform: translateY(-8px); /* Efecto de "levantar" la card sutilmente al pasar el ratón */
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7); /* Sombra más intensa al pasar el ratón */
 }
 
+/* Contenedor de la imagen dentro de la card */
+.evento-card .event-img-wrap {
+    width: 100%; /* El contenedor de la imagen ocupa todo el ancho */
+    max-width: 350px; /* Ancho máximo para la imagen */
+    margin-bottom: 1rem; /* Espacio debajo de la imagen */
+    position: relative;
+}
+
 /* Estilos para la imagen dentro de la card */
-.eventos-container .evento-card img {
-    width: 120px; /* Ancho fijo de la imagen */
-    height: 120px; /* Alto fijo para asegurar que la imagen sea cuadrada */
+.evento-card img {
+    width: 100%; /* La imagen ocupa todo el ancho de su contenedor */
+    height: auto;
+    max-height: 250px; /* Hace la imagen más grande */
     object-fit: cover; /* Recorta la imagen para que cubra el área sin distorsionarse */
     border-radius: 12px; /* Bordes redondeados para la imagen */
     flex-shrink: 0; /* Evita que la imagen se encoja si el texto es muy largo */
 }
 
-/* Contenedor para los detalles del texto (título, fecha, hashtag) */
-.eventos-container .evento-card .event-details {
+/* Contenedor para los detalles del texto (título, fecha, club) */
+.evento-card .event-details {
     display: flex;
     flex-direction: column; /* Apila los elementos de texto verticalmente */
     justify-content: center; /* Centra el texto verticalmente si hay espacio extra */
     flex-grow: 1; /* Permite que los detalles ocupen el espacio restante horizontalmente */
+    width: 100%; /* Ocupa todo el ancho disponible */
 }
 
-/* Estilos para el título del evento dentro de la card (h3 o h2 según tu HTML) */
-.eventos-container .evento-card h3,
-.eventos-container .evento-card h2 { /* Incluye h2 si tu EventCard principal usa h2 */
-    font-size: 1.6rem; /* Tamaño de fuente para el título del evento */
+/* Estilos para el título del evento dentro de la card */
+.evento-card .event-title {
+    font-size: 1.8rem; /* Tamaño de fuente para el título del evento */
     font-weight: bold;
     color: white;
     margin-bottom: 0.4rem; /* Espacio debajo del título */
@@ -62,163 +75,83 @@
 }
 
 /* Estilos para la fecha y hora del evento */
-.eventos-container .evento-card .event-date {
-    font-size: 1rem; /* Tamaño de fuente para la fecha/hora */
+.evento-card .event-date {
+    font-size: 1.1rem; /* Tamaño de fuente para la fecha/hora */
     color: rgba(255, 255, 255, 0.8); /* Color más suave para la fecha para mejor contraste */
-    margin-bottom: 0; /* Sin margen inferior */
+    margin-bottom: 0.5rem;
 }
 
-/* Estilos para el hashtag (ej. nombre del club) */
-.eventos-container .evento-card .hashtag {
-    font-size: 0.95rem;
-    color: #ff52a2; /* Color fucsia vibrante para el hashtag */
-    margin-top: 0.5rem;
+/* Estilos para el nombre del club */
+.evento-card .event-club {
+    font-size: 1rem;
+    color: #ff52a2; /* Color fucsia vibrante para el club */
     font-weight: bold;
+    margin-top: 0.5rem;
 }
 
-/* Puedes dejar los siguientes estilos si aún tienes un concepto de "evento-principal"
-   que requiere un estilo ligeramente diferente o si el Eventos.jsx aún lo genera de forma distinta */
-/*
-.evento-principal {
-    flex: 2; // Permite que la card principal sea más ancha
-    max-width: 650px; // Ancho máximo para la card principal
-    min-width: 380px; // Ajuste para el min-width del principal
-    padding: 2rem; // Más padding para la card principal
-}
-
-.evento-principal img {
-    width: 150px; // Imagen más grande en la card principal
-    height: 150px;
-}
-
-.evento-principal h2 {
-    font-size: 2.2rem; // Título aún más grande para el evento principal
-    margin-bottom: 0.6rem;
-}
-*/
-
-/* Estilos para el botón fucsia */
-.boton-fucsia {
-    margin-top: 1.5rem; /* Margen superior para separarlo del texto */
-    padding: 0.8rem 2rem; /* Padding interno del botón */
-    background: #ff006a; /* Color de fondo fucsia */
+/* Estilos para el botón "Ver Evento" (si se usara un botón dentro de la card) */
+/* Si el EventCard es el propio NavLink, este botón no se usará directamente aquí */
+.evento-card .event-btn {
+    margin-top: 1.5rem;
+    padding: 0.8rem 2.5rem; /* Padding más grande para el botón */
+    background: linear-gradient(45deg, #ff006a, #ff52a2); /* Degradado fucsia */
     color: white;
     border: none;
     font-weight: bold;
-    border-radius: 10px; /* Bordes redondeados para el botón */
-    cursor: pointer; /* Indica que es clickeable */
-    width: fit-content; /* El ancho se ajusta al contenido del texto */
-    font-size: 1rem;
-    transition: background 0.3s ease; /* Transición suave para el color de fondo */
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1.1rem;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(255, 0, 106, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
-.boton-fucsia:hover {
-    background: #e0005a; /* Color más oscuro al pasar el ratón */
+.evento-card .event-btn:hover {
+    background: linear-gradient(45deg, #e0005a, #e04a8f); /* Degradado más oscuro al pasar el ratón */
+    box-shadow: 0 6px 20px rgba(255, 0, 106, 0.6);
+    transform: translateY(-2px);
 }
 
-/* Estilos para el enlace "Ver otros eventos" */
-.ver-otros-eventos {
-    display: inline-block;
-    margin-top: 1rem;
-    color: #fff;
-    text-decoration: underline;
-    font-size: 0.95rem;
-}
-
-/* Estilos para la sección de ubicación (si aplica en otras partes de la página) */
-.ubicacion {
-    margin-top: 2rem;
-}
-
-.ubicacion h3 {
-    color: #ffcc00; /* Color amarillo para el título de ubicación */
-    font-size: 1.3rem;
-}
 
 /* Media Queries para Responsividad */
 
-/* Pantallas medianas y tablets (992px y abajo) */
-@media (max-width: 992px) {
+/* Pantallas medianas y tablets (hasta 768px) */
+@media (max-width: 768px) {
     .eventos-container {
+        grid-template-columns: 1fr; /* Una sola columna en pantallas pequeñas */
         padding: 1.5rem;
-        gap: 1.2rem;
+        gap: 1.5rem;
     }
 
     .evento-card {
-        flex-direction: column; /* Apila la imagen y el texto verticalmente */
-        align-items: center; /* Centra el contenido en modo columna */
-        min-width: unset; /* Permite que la card se encoja más en pantallas pequeñas */
-        max-width: 380px; /* Limita el ancho máximo para evitar que se vean muy anchas apiladas */
-        width: 100%; /* Ocupa el 100% del espacio disponible en su contenedor */
+        max-width: 90%; /* Ajusta el ancho máximo para móviles */
         padding: 1.2rem;
-        gap: 0.8rem;
     }
 
-    .evento-card img {
-        width: 100%; /* Imagen al 100% del ancho de la card */
-        height: auto; /* Altura automática para mantener proporciones */
-        max-height: 180px; /* Limita la altura máxima de la imagen para evitar que sea muy grande */
-    }
-
-    .evento-card .event-details {
-        width: 100%;
-        text-align: center; /* Centra el texto cuando está apilado */
-    }
-
-    .evento-card h3,
-    .evento-card h2 {
-        font-size: 1.4rem;
+    .evento-card .event-title {
+        font-size: 1.6rem;
     }
 
     .evento-card .event-date,
-    .evento-card .hashtag {
-        font-size: 0.85rem;
-    }
-
-    .boton-fucsia {
-        width: 80%; /* Botón de ancho casi completo en pantallas más pequeñas */
-        max-width: 200px;
-        align-self: center; /* Centra el botón si el padre es flex-direction column */
-        font-size: 0.9rem;
-        padding: 0.6rem 1.2rem;
+    .evento-card .event-club {
+        font-size: 1rem;
     }
 }
 
-/* Móviles y pantallas más pequeñas (768px y abajo) */
-@media (max-width: 768px) {
+/* Móviles y pantallas muy pequeñas (hasta 480px) */
+@media (max-width: 480px) {
     .eventos-container {
-        flex-direction: column; /* Apila todas las cards verticalmente */
-        align-items: center; /* Centra las cards al apilarse */
         padding: 1rem;
         gap: 1rem;
     }
 
     .evento-card {
-        max-width: 320px; /* Limita el ancho para móviles */
+        max-width: 95%; /* Permite que ocupe casi todo el ancho disponible */
         padding: 1rem;
     }
 
-    .evento-card h3,
-    .evento-card h2 {
-        font-size: 1.2rem;
-    }
-
-    .evento-card .event-date,
-    .evento-card .hashtag {
-        font-size: 0.8rem;
-    }
-}
-
-/* Móviles muy pequeños (480px y abajo) */
-@media (max-width: 480px) {
-    .eventos-container {
-        padding: 0.8rem;
-        gap: 0.8rem;
-    }
-
-    .evento-card {
-        max-width: 95%; /* Permite que ocupe casi todo el ancho disponible */
-        min-width: unset; /* Desactiva el min-width para permitir que se encoja */
-        padding: 0.8rem;
+    .evento-card .event-title {
+        font-size: 1.4rem;
     }
 }

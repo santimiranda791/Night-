@@ -316,7 +316,7 @@ export const MapaDiscoteca = () => {
                 <div className="cart-summary">
                     {zonaSeleccionada ? (
                         <>
-                            <h3>Cart ({zonaSeleccionada.cantidad})</h3>
+                            <h3>Carrito ({zonaSeleccionada.cantidad})</h3>
                             <div className="selected-zone-details">
                                 <div>
                                     <strong>Sector:</strong> {zonaSeleccionada.nombre}
