@@ -209,8 +209,12 @@ export const SignInCliente = () => {
       });
       setErrors({}); // Limpia los errores también
 
-      // Guarda el correo en localStorage y navega a la página de verificación
+      // Guarda el correo y el token en localStorage y navega a la página de verificación
       localStorage.setItem('correo', cliente.correo);
+      // AÑADIDO: Guardar el token de autenticación en localStorage
+      if (data.token) { // Asegúrate de que el backend devuelva un campo 'token'
+        localStorage.setItem('token', data.token);
+      }
       navigate('/VerifyCode', { state: { email: cliente.correo } });
 
     } catch (error) {
@@ -258,7 +262,7 @@ export const SignInCliente = () => {
               <input
                 type={type}
                 id={id}
-                className={`form__field ${errors[id] ? 'input-error' : ''}`} 
+                className={`form__field ${errors[id] ? 'input-error' : ''}`} {/* Añade clase para estilos de error */}
                 placeholder={label}
                 value={formData[id]}
                 onChange={handleChange}
