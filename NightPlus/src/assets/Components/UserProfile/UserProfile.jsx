@@ -5,7 +5,7 @@ import '../../../Styles/UserProfile.css';
 export const UserProfile = () => {
   const [cliente, setCliente] = useState({
     nombre: '',
-    edad: '',
+    edad: '', // Mantener como string inicialmente para el input
     telefono: '',
     correo: '',
     contrasenaCliente: '',
@@ -14,42 +14,35 @@ export const UserProfile = () => {
   const [activeTab, setActiveTab] = useState('cuenta');
   const [showModal, setShowModal] = useState(false);
 
-  // Nuevo estado para las reservas del cliente
   const [misReservas, setMisReservas] = useState([]);
   const [loadingMisReservas, setLoadingMisReservas] = useState(false);
   const [errorMisReservas, setErrorMisReservas] = useState(null);
 
-  // URL base de tu backend en Railway.app
   const BASE_URL = 'https://backendnight-production.up.railway.app'; 
 
-  // Función para obtener el token de autenticación (asumiendo que lo guardas en localStorage)
   const getAuthHeaders = () => {
-    const token = localStorage.getItem('token'); // Asume que el token se guarda aquí
+    const token = localStorage.getItem('token');
     return token ? { 'Authorization': `Bearer ${token}` } : {};
   };
 
-  // Carga inicial de los datos del cliente desde localStorage
   useEffect(() => {
     setCliente({
       nombre: localStorage.getItem('nombre') || '',
-      edad: localStorage.getItem('edad') || '',
+      edad: localStorage.getItem('edad') || '', // Cargar como string
       telefono: localStorage.getItem('telefono') || '',
       correo: localStorage.getItem('correo') || '',
-      contrasenaCliente: '', // La contraseña nunca debe cargarse aquí por seguridad
+      contrasenaCliente: '',
     });
   }, []);
 
-  // --- LÓGICA CLAVE PARA LAS RESERVAS ---
-  // Efecto para cargar las reservas cuando la pestaña "Mis Reservas" está activa
   useEffect(() => {
     const fetchMisReservas = async () => {
-      if (activeTab === 'mis reservas') { // Solo carga si esta pestaña está activa
+      if (activeTab === 'mis reservas') {
         setLoadingMisReservas(true);
         setErrorMisReservas(null);
         try {
-          // Endpoint para obtener las reservas del cliente autenticado
           const response = await fetch(`${BASE_URL}/servicio/cliente/mis-reservas`, {
-            headers: getAuthHeaders(), // Envía el token JWT
+            headers: getAuthHeaders(),
           });
 
           if (response.status === 401 || response.status === 403) {
@@ -62,8 +55,6 @@ export const UserProfile = () => {
               title: "Error de Autenticación",
               text: "Tu sesión ha expirado o no tienes permisos. Por favor, inicia sesión de nuevo.",
             });
-            // Aquí podrías redirigir al login si tienes una función handleLogout global
-            // window.location.href = '/login'; 
             return;
           }
           if (!response.ok) {
@@ -82,8 +73,7 @@ export const UserProfile = () => {
     };
 
     fetchMisReservas();
-  }, [activeTab]); // Este useEffect se ejecuta cada vez que activeTab cambia
-  // --- FIN LÓGICA CLAVE ---
+  }, [activeTab]);
 
   const handleChange = (e) => {
     setCliente({ ...cliente, [e.target.name]: e.target.value });
@@ -107,65 +97,72 @@ export const UserProfile = () => {
     }
 
     try {
-      const response = await fetch(`${BASE_URL}/servicio/update`, { 
-        method: 'PUT',
-        headers: { 
-          'Content-Type': 'application/json',
-          ...getAuthHeaders(),
-        },
-        body: JSON.stringify({
-          nombre: cliente.nombre,
-          edad: Number(cliente.edad),
-          telefono: cliente.telefono,
-          correo: cliente.correo,
-          usuarioCliente: localStorage.getItem('usuarioCliente') || '',
-          contrasenaCliente: cliente.contrasenaCliente || undefined,
-        }),
-      });
+        // --- CAMBIO CLAVE AQUÍ PARA EVITAR EL 400 BAD REQUEST ---
+        const requestBody = {
+            nombre: cliente.nombre,
+            // Si edad es una cadena vacía, envía null. De lo contrario, convierte a número.
+            edad: cliente.edad === '' ? null : Number(cliente.edad), 
+            telefono: cliente.telefono === '' ? null : cliente.telefono, // Si es cadena vacía, envía null
+            correo: cliente.correo,
+            // Si usuarioCliente de localStorage es nulo o vacío, envía null.
+            usuarioCliente: localStorage.getItem('usuarioCliente') || null, 
+            // Si contrasenaCliente es una cadena vacía, envía null.
+            // Si no se modifica, el backend mantendrá la contraseña existente.
+            contrasenaCliente: cliente.contrasenaCliente === '' ? null : cliente.contrasenaCliente, 
+        };
 
-      if (!response.ok) {
-        if (response.status === 401 || response.status === 403) {
-            Swal.fire({
-                imageUrl: '/logitotriste.png',
-                imageWidth: 130,
-                imageHeight: 130,
-                background: '#000',
-                color: '#fff',
-                title: "Error de Autenticación",
-                text: "Tu sesión ha expirado o no tienes permisos. Por favor, inicia sesión de nuevo.",
-            });
-            return;
+        const response = await fetch(`${BASE_URL}/servicio/update`, { 
+          method: 'PUT',
+          headers: { 
+            'Content-Type': 'application/json',
+            ...getAuthHeaders(),
+          },
+          body: JSON.stringify(requestBody), // Envía el cuerpo de solicitud ajustado
+        });
+
+        if (!response.ok) {
+          if (response.status === 401 || response.status === 403) {
+              Swal.fire({
+                  imageUrl: '/logitotriste.png',
+                  imageWidth: 130,
+                  imageHeight: 130,
+                  background: '#000',
+                  color: '#fff',
+                  title: "Error de Autenticación",
+                  text: "Tu sesión ha expirado o no tienes permisos. Por favor, inicia sesión de nuevo.",
+              });
+              return;
+          }
+          const errorText = await response.text();
+          throw new Error(`Error al actualizar: ${response.status} ${response.statusText} - ${errorText}`);
         }
-        const errorText = await response.text();
-        throw new Error(`Error al actualizar: ${response.status} ${response.statusText} - ${errorText}`);
-      }
 
-      const actualizado = await response.json();
+        const actualizado = await response.json();
 
-      localStorage.setItem("nombre", actualizado.nombre);
-      localStorage.setItem("edad", actualizado.edad);
-      localStorage.setItem("telefono", actualizado.telefono);
-      localStorage.setItem("correo", actualizado.correo);
-      localStorage.setItem("usuarioCliente", actualizado.usuarioCliente);
+        localStorage.setItem("nombre", actualizado.nombre);
+        localStorage.setItem("edad", actualizado.edad);
+        localStorage.setItem("telefono", actualizado.telefono);
+        localStorage.setItem("correo", actualizado.correo);
+        localStorage.setItem("usuarioCliente", actualizado.usuarioCliente);
 
-      setCliente(prevCliente => ({
-          ...prevCliente,
-          nombre: actualizado.nombre,
-          edad: actualizado.edad,
-          telefono: actualizado.telefono,
-          correo: actualizado.correo,
-          contrasenaCliente: '',
-      }));
+        setCliente(prevCliente => ({
+            ...prevCliente,
+            nombre: actualizado.nombre,
+            edad: actualizado.edad,
+            telefono: actualizado.telefono,
+            correo: actualizado.correo,
+            contrasenaCliente: '',
+        }));
 
-      Swal.fire({
-        icon: 'success',
-        title: '¡Actualizado!',
-        text: 'Tus datos fueron guardados correctamente.',
-        background: '#000',
-        color: '#fff'
-      });
+        Swal.fire({
+          icon: 'success',
+          title: '¡Actualizado!',
+          text: 'Tus datos fueron guardados correctamente.',
+          background: '#000',
+          color: '#fff'
+        });
 
-      closeModal();
+        closeModal();
     } catch (err) {
       Swal.fire({
         icon: 'error',
@@ -186,7 +183,6 @@ export const UserProfile = () => {
       </div>
 
       <div className="profile-tabs">
-        {/* Pestañas actualizadas */}
         {['cuenta', 'mis reservas'].map(tab => (
           <div
             key={tab}
@@ -210,7 +206,6 @@ export const UserProfile = () => {
             <button onClick={openModal} className="updatee-button">Actualizar</button>
           </div>
         ) : activeTab === 'mis reservas' ? (
-          // --- RENDERIZADO DE LAS RESERVAS ---
           <div className="reservas-section">
             <h2>Mis Reservas</h2>
             {loadingMisReservas ? (
@@ -225,18 +220,19 @@ export const UserProfile = () => {
                   <tr>
                     <th>ID Reserva</th>
                     <th>Evento</th>
+                    <th>Usuario</th> {/* Asegúrate de que esta columna exista en tu tabla HTML */}
                     <th>Tickets</th>
                     <th>Fecha Reserva</th>
                     <th>Estado Pago</th>
-                    {/* Puedes añadir más columnas si tu DTO de reserva tiene más datos relevantes para el usuario */}
                   </tr>
                 </thead>
                 <tbody>
                   {misReservas.map((reserva) => (
                     <tr key={reserva.idReserva}>
                       <td data-label="ID Reserva">{reserva.idReserva}</td>
-                      {/* Asume que el DTO de Reserva tiene nombreEvento o accedes a reserva.evento.nombreEvento */}
-                      <td data-label="Evento">{reserva.nombreEvento || reserva.evento?.nombreEvento || 'N/A'}</td>
+                      <td data-label="Evento">{reserva.nombreEvento || 'N/A'}</td>
+                      {/* ACCEDE AL CAMPO CORRECTO DEL DTO: usuarioCliente o nombreCliente */}
+                      <td data-label="Usuario">{reserva.usuarioCliente || reserva.nombreCliente || 'N/A'}</td>
                       <td data-label="Tickets">{reserva.cantidadTickets}</td>
                       <td data-label="Fecha Reserva">{reserva.fechaReserva}</td>
                       <td data-label="Estado Pago">{reserva.estadoPago}</td>
@@ -246,7 +242,6 @@ export const UserProfile = () => {
               </table>
             )}
           </div>
-          // --- FIN RENDERIZADO DE LAS RESERVAS ---
         ) : (
           <div className="profile-placeholder">
             <h3>Contenido de {activeTab} próximamente...</h3>
