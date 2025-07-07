@@ -5,7 +5,7 @@ import '../../../Styles/UserProfile.css';
 export const UserProfile = () => {
   const [cliente, setCliente] = useState({
     nombre: '',
-    edad: '', // Mantener como string inicialmente para el input
+    edad: '',
     telefono: '',
     correo: '',
     contrasenaCliente: '',
@@ -28,7 +28,7 @@ export const UserProfile = () => {
   useEffect(() => {
     setCliente({
       nombre: localStorage.getItem('nombre') || '',
-      edad: localStorage.getItem('edad') || '', // Cargar como string
+      edad: localStorage.getItem('edad') || '',
       telefono: localStorage.getItem('telefono') || '',
       correo: localStorage.getItem('correo') || '',
       contrasenaCliente: '',
@@ -97,17 +97,12 @@ export const UserProfile = () => {
     }
 
     try {
-        // --- CAMBIO CLAVE AQUÍ PARA EVITAR EL 400 BAD REQUEST ---
         const requestBody = {
             nombre: cliente.nombre,
-            // Si edad es una cadena vacía, envía null. De lo contrario, convierte a número.
             edad: cliente.edad === '' ? null : Number(cliente.edad), 
-            telefono: cliente.telefono === '' ? null : cliente.telefono, // Si es cadena vacía, envía null
+            telefono: cliente.telefono === '' ? null : cliente.telefono,
             correo: cliente.correo,
-            // Si usuarioCliente de localStorage es nulo o vacío, envía null.
             usuarioCliente: localStorage.getItem('usuarioCliente') || null, 
-            // Si contrasenaCliente es una cadena vacía, envía null.
-            // Si no se modifica, el backend mantendrá la contraseña existente.
             contrasenaCliente: cliente.contrasenaCliente === '' ? null : cliente.contrasenaCliente, 
         };
 
@@ -117,7 +112,7 @@ export const UserProfile = () => {
             'Content-Type': 'application/json',
             ...getAuthHeaders(),
           },
-          body: JSON.stringify(requestBody), // Envía el cuerpo de solicitud ajustado
+          body: JSON.stringify(requestBody),
         });
 
         if (!response.ok) {
@@ -220,10 +215,12 @@ export const UserProfile = () => {
                   <tr>
                     <th>ID Reserva</th>
                     <th>Evento</th>
-                    <th>Usuario</th> {/* Asegúrate de que esta columna exista en tu tabla HTML */}
+                    <th>USUARIO</th> {/* Asegúrate de que esta columna exista en tu tabla HTML */}
                     <th>Tickets</th>
                     <th>Fecha Reserva</th>
                     <th>Estado Pago</th>
+                    {/* Si tienes una columna de acciones, asegúrate de que el thead y tbody coincidan */}
+                    <th>Acciones</th> 
                   </tr>
                 </thead>
                 <tbody>
@@ -231,11 +228,16 @@ export const UserProfile = () => {
                     <tr key={reserva.idReserva}>
                       <td data-label="ID Reserva">{reserva.idReserva}</td>
                       <td data-label="Evento">{reserva.nombreEvento || 'N/A'}</td>
-                      {/* ACCEDE AL CAMPO CORRECTO DEL DTO: usuarioCliente o nombreCliente */}
+                      {/* ESTO ES LO CRÍTICO: Acceder al campo correcto del DTO */}
                       <td data-label="Usuario">{reserva.usuarioCliente || reserva.nombreCliente || 'N/A'}</td>
                       <td data-label="Tickets">{reserva.cantidadTickets}</td>
                       <td data-label="Fecha Reserva">{reserva.fechaReserva}</td>
                       <td data-label="Estado Pago">{reserva.estadoPago}</td>
+                      {/* Si tienes acciones, asegúrate de que el td correspondiente esté aquí */}
+                      <td>
+                        {/* Aquí irían tus botones de acción si los tienes, por ejemplo: */}
+                        {/* <button onClick={() => handleVerReserva(reserva.idReserva)}>Ver</button> */}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
