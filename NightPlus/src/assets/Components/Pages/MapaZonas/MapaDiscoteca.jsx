@@ -253,7 +253,7 @@ export const MapaDiscoteca = () => {
     return (
         <div className="mapa-discoteca-container">
             <div className="map-section">
-                <h2>Map of the Nightclub</h2>
+                <h2>Mapa de la Discoteca</h2>
 
                 <div className="plano-discoteca-wrapper-outer">
                     <PlanoDiscoteca onSeleccionarZona={handleSeleccionarZona} />
@@ -266,32 +266,32 @@ export const MapaDiscoteca = () => {
                                 onClick={() => setMostrarPrecios(false)}
                                 className="toggle-button"
                             >
-                                <span>Hide prices</span>
+                                <span>Ocultar precios</span>
                                 <span>⌄</span>
                             </div>
                             <div className="price-item">
                                 <span className="color-dot" style={{ backgroundColor: '#0ea5e9' }}></span>
-                                <span className="zone-name">GENERAL ZONE</span>
-                                <span className="zone-price">$ 50.000</span>
+                            <span className="zone-name">ZONA GENERAL</span>
+                            <span className="zone-price">$ 50.000</span>
                             </div>
                             <div className="price-item">
                                 <span className="color-dot" style={{ backgroundColor: '#ef4444' }}></span>
-                                <span className="zone-name">PREFERENTIAL ZONE</span>
-                                <span className="zone-price">$ 80.000</span>
+                            <span className="zone-name">ZONA PREFERENCIAL</span>
+                            <span className="zone-price">$ 80.000</span>
                             </div>
                             <div className="price-item">
                                 <span className="color-dot" style={{ backgroundColor: '#1d4ed8' }}></span>
-                                <span className="zone-name">VIP ZONE</span>
-                                <span className="zone-price">$ 120.000</span>
+                            <span className="zone-name">ZONA VIP</span>
+                            <span className="zone-price">$ 120.000</span>
                             </div>
                         </div>
                     ) : (
-                        <button
-                            onClick={() => setMostrarPrecios(true)}
-                            className="show-prices-button"
-                        >
-                            Show prices <span style={{ transform: 'rotate(180deg)' }}>⌄</span>
-                        </button>
+                            <button
+                                onClick={() => setMostrarPrecios(true)}
+                                className="show-prices-button"
+                            >
+                                Mostrar precios <span style={{ transform: 'rotate(180deg)' }}>⌄</span>
+                            </button>
                     )}
                 </div>
             </div>
@@ -306,11 +306,11 @@ export const MapaDiscoteca = () => {
                             <p>
                                 {evento.fecha || 'Date not available'} {evento.hora || 'Time not available'}<br />
                             </p>
-                            <p>The party is at: {evento.discoteca?.nombre || 'Address not available'}</p>
+                            <p>La fiesta es en: {evento.discoteca?.nombre || 'Dirección no disponible'}</p>
                             <br />
                         </>
                     ) : (
-                        <p>Loading event...</p>
+                        <p>Cargando evento...</p>
                     )}
 
                 <div className="cart-summary">
@@ -337,7 +337,7 @@ export const MapaDiscoteca = () => {
                             </div>
                         </>
                     ) : (
-                        <p>No zone selected.</p>
+                                <p>No hay zona seleccionada.</p>
                     )}
                 </div>
                 </div>
@@ -345,7 +345,7 @@ export const MapaDiscoteca = () => {
                 {zonaSeleccionada && (
                     <div className="button-group">
                         <div className="total-display">
-                            TOTAL: {formatearPrecio(zonaSeleccionada.precio)}
+                            TOTAL: {formatearPrecio(zonaSeleccionada.precio * zonaSeleccionada.cantidad)}
                         </div>
                         <button
                             onClick={handleEliminarCarrito}
