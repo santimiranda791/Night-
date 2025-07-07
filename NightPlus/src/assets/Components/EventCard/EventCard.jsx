@@ -1,26 +1,18 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom'; // Importa NavLink
-import Swal from 'sweetalert2'; // Importa SweetAlert2
-import '../../../Styles/EventCard.css';
+import { NavLink, useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
+import '../../../Styles/EventCard.css'; // Asegúrate de que esta ruta sea correcta
 
-export const EventCard = ({ date, title, image, eventId, onClick }) => {
+export const EventCard = ({ date, title, image, eventId, club, onClick }) => {
   const navigate = useNavigate();
 
-  // La función handleClick ahora maneja toda la lógica de navegación.
-  // El NavLink ya no tendrá una 'to' prop directa, forzando la navegación programática.
   const handleClick = async (event) => {
-    // Siempre previene el comportamiento por defecto del evento del clic,
-    // ya que ahora controlaremos la navegación manualmente.
-    event.preventDefault();
-    event.stopPropagation(); // Detiene la propagación del evento
-
     const token = localStorage.getItem('token');
 
-    // Validación: Si no hay token, el usuario no está logueado
     if (!token) {
-      // Muestra una alerta informando al usuario que debe iniciar sesión.
-      // Usamos 'await' para asegurar que la alerta se muestre y se cierre
-      // antes de que la función termine.
+      event.preventDefault(); // Previene la navegación por defecto del NavLink
+      event.stopPropagation(); // Detiene la propagación del evento
+
       await Swal.fire({
         imageUrl: '/logitotriste.png',
         imageWidth: 130,
@@ -30,31 +22,31 @@ export const EventCard = ({ date, title, image, eventId, onClick }) => {
         title: 'Debes iniciar sesión primero',
         text: 'Para acceder a este evento, necesitas tener una sesión activa.',
       });
-      return; // Detiene la ejecución de la función aquí
+      return; // Detiene la ejecución de la función
     }
 
-    // Si un 'onClick' personalizado fue proporcionado desde el padre, lo llamamos.
-    // Esto es útil si el componente padre (como Eventos.jsx) tiene lógica adicional
-    // que debe ejecutarse ANTES de la navegación.
+    // Si se proporciona un 'onClick' personalizado desde el padre, lo llamamos.
+    // Esto permite que el componente padre (como Eventos.jsx) maneje la navegación o lógica adicional.
     if (onClick) {
-      // Pasamos el evento original y el eventId al onClick del padre.
-      // Es responsabilidad del padre decidir si navega o no.
       onClick(event, eventId);
     } else {
-      // Si hay token y no hay un onClick personalizado,
+      // Si no se proporciona un 'onClick' personalizado y hay token,
       // navega programáticamente a la página del mapa del evento.
       navigate(`/mapa/${eventId}`);
     }
   };
 
   return (
-    // Eliminamos la prop 'to' del NavLink. Ahora, el NavLink actúa como un contenedor
-    // con estilos de enlace, pero la navegación es controlada por handleClick.
-    <NavLink to="#" className="event-mini-card" onClick={handleClick}>
-      <img src={image} alt={title} className="event-mini-img" />
-      <div className="event-mini-details">
-        <span className="event-mini-title">{title}</span>
-        <span className="event-mini-date">{date}</span>
+    // CAMBIO CLAVE: La clase principal del NavLink ahora es "evento-card"
+    // Esto asegura que los estilos definidos en Eventos.css se apliquen.
+    <NavLink to={`/mapa/${eventId}`} className="evento-card" onClick={handleClick}>
+      <div className="event-img-wrap"> {/* Contenedor para la imagen */}
+        <img src={image} alt={`Imagen del evento ${title}`} className="event-img" /> {/* Clase "event-img" */}
+      </div>
+      <div className="event-details"> {/* Contenedor para los detalles del texto */}
+        <span className="event-title">{title}</span> {/* Clase "event-title" */}
+        <span className="event-date">{date}</span> {/* Clase "event-date" */}
+        <span className="event-club">{club}</span> {/* Clase "event-club" para el nombre del club */}
       </div>
     </NavLink>
   );
