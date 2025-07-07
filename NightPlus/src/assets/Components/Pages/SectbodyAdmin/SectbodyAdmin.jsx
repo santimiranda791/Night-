@@ -1052,25 +1052,26 @@ const deleteReserva = async (idReserva) => {
   }
 };
 
-
-// Función para renderizar el contenido principal según la pestaña activa
 const renderMainContent = () => {
-  switch (activeTab) {
-    case "perfil":
-      return (
-        <div className="profile-container">
-          <h2>Mi Perfil</h2>
-          {currentAdmin ? (
-            <div>
-              <p><strong>Nombre:</strong> {currentAdmin.nombre}</p>
-              <p><strong>Email:</strong> {currentAdmin.email}</p>
-              {/* Agrega más detalles del perfil si los tienes */}
-            </div>
-          ) : (
-            <p>Cargando información del perfil...</p>
-          )}
-        </div>
-      );
+  switch (activeTab) {
+    case "perfil":
+      return (
+        <div className="profile-container">
+          <h2>Mi Perfil</h2>
+          {currentAdmin ? (
+            <div>
+              <p><strong>ID Admin:</strong> {currentAdmin.id_admin}</p>
+              <p><strong>Nombre:</strong> {currentAdmin.nombre_admin}</p>
+              <p><strong>Usuario:</strong> {currentAdmin.usuario_admin}</p>
+              <p><strong>Teléfono:</strong> {currentAdmin.telefono_admin}</p>
+              <p><strong>Correo:</strong> {currentAdmin.correo_admin}</p>
+              {/* Agrega más detalles del perfil si los tienes */}
+            </div>
+          ) : (
+            <p>Cargando información del perfil...</p>
+          )}
+        </div>
+      );
     case "discotecas":
       return (
         <div className="events-container">
