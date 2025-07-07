@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../../../Styles/UserProfile.css';
-import QRCode from 'qrcode.react'; // Importar la librería de QR
+import { QRCode } from 'qrcode.react'; // CAMBIO: Importación nombrada de QRCode
 
 export const UserProfile = () => {
   const [cliente, setCliente] = useState({
@@ -212,7 +212,6 @@ export const UserProfile = () => {
             <label>Correo</label>
             <input type="text" value={cliente.correo} disabled />
             <button onClick={openModal} className="updatee-button">Actualizar</button>
-            {/* Se elimina el botón "Ver QR" de aquí */}
           </div>
         ) : activeTab === 'mis reservas' ? (
           <div className="reservas-section">
@@ -241,7 +240,7 @@ export const UserProfile = () => {
                     <tr key={reserva.idReserva}>
                       <td data-label="ID Reserva">{reserva.idReserva}</td>
                       <td data-label="Evento">{reserva.nombreEvento || 'N/A'}</td>
-                      <td data-label="Usuario">{reserva.usuarioCliente || reserva.nombreCliente || 'N/A'}</td>
+                      <td data-label="Usuario">{reserva.usuarioCliente || reserva.cliente?.usuarioCliente || 'N/A'}</td>
                       <td data-label="Tickets">{reserva.cantidadTickets}</td>
                       <td data-label="Fecha Reserva">{reserva.fechaReserva}</td>
                       <td data-label="Estado Pago">{reserva.estadoPago}</td>
@@ -300,7 +299,7 @@ export const UserProfile = () => {
                   value={JSON.stringify({
                     idReserva: currentQrData.idReserva,
                     evento: currentQrData.nombreEvento,
-                    usuario: currentQrData.usuarioCliente || currentQrData.nombreCliente,
+                    usuario: currentQrData.usuarioCliente || currentQrData.cliente?.usuarioCliente || currentQrData.nombreCliente, // Mejorado para obtener el usuario
                     tickets: currentQrData.cantidadTickets
                   })}
                   size={256}
