@@ -73,8 +73,8 @@ export const SectBodyPrincipalPage = () => {
 
       <div className="body-container">
         <div className="content">
-          <h1>Bienvenido a la página principal</h1>
-          <p>Este es el contenido principal de la página con un video de fondo.</p>
+          <h1>Bienvenido a la página principal de Night +</h1>
+          
 
           <section className="upcoming-events">
             <h2>Próximos Eventos</h2>

@@ -1067,9 +1067,7 @@ export const SectbodyAdmin = () => {
               <h1>Discotecas</h1>
               <button className="btn-add" onClick={addDiscoteca}>+ Añadir Discoteca</button>
             </div>
-            <div className="actions-bar">
-              <input type="text" placeholder="Buscar discoteca..." />
-            </div>
+        
             {loadingDisco ? (
               <p>Cargando discotecas...</p>
             ) : errorDisco ? (
@@ -1127,9 +1125,7 @@ export const SectbodyAdmin = () => {
               <h1>Eventos</h1>
               <button className="btn-add" onClick={addEvento}>+ Añadir Evento</button>
             </div>
-            <div className="actions-bar">
-              <input type="text" placeholder="Buscar evento..." />
-            </div>
+          
             {loadingEventos ? (
               <p>Cargando eventos...</p>
             ) : errorEventos ? (
@@ -1191,9 +1187,7 @@ export const SectbodyAdmin = () => {
               <h1>Reservas</h1>
               <button className="btn-add" onClick={addReserva}>+ Añadir Reserva</button>
             </div>
-            <div className="actions-bar">
-              <input type="text" placeholder="Buscar reserva..." />
-            </div>
+        
             {loadingReservas ? (
               <p>Cargando reservas...</p>
             ) : errorReservas ? (
