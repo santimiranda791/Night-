@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PlanoDiscoteca from './PlanoDiscoteca';
-import { CarritoCompra } from './CarritoCompra'; // Importa el componente CarritoCompra
 import '../../../../Styles/MapaDiscotecaResponsive.css';
 import { jwtDecode } from 'jwt-decode'; // Importa jwt-decode
 
@@ -19,11 +18,17 @@ export const MapaDiscoteca = () => {
     const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
     const [evento, setEvento] = useState(null);
     const [error, setError] = useState(null);
-    const [currentUserId, setCurrentUserId] = useState(null); // Estado para el ID del usuario logueado
+    const [currentUserId, setCurrentUserId] = useState(null); // Nuevo estado para el ID del usuario logueado
 
     const BASE_URL = 'https://backendnight-production.up.railway.app';
 
-    // Efecto para extraer el ID del usuario del token al cargar el componente
+    // Función para obtener las cabeceras de autenticación
+    const getAuthHeaders = () => {
+        const token = localStorage.getItem('token');
+        return token ? { 'Authorization': `Bearer ${token}` } : {};
+    };
+
+    // Nuevo useEffect para extraer el ID del usuario del token al cargar el componente
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -59,67 +64,176 @@ export const MapaDiscoteca = () => {
         new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP' }).format(valor);
 
     useEffect(() => {
-        console.log(`MapaDiscoteca.jsx: idEvento obtenido de la URL: "${idEventoParam}" (Tipo: ${typeof idEventoParam})`);
+        console.log(`MapaDiscoteca.jsx: idEvento obtained from URL: "${idEventoParam}" (Type: ${typeof idEventoParam})`);
 
         const numericId = parseInt(idEventoParam);
 
         if (idEventoParam && !Number.isNaN(numericId) && numericId > 0) {
             const apiUrl = `${BASE_URL}/servicio/evento/${numericId}`;
-            console.log(`MapaDiscoteca.jsx: Obteniendo datos de: ${apiUrl}`);
+            console.log(`MapaDiscoteca.jsx: Fetching from: ${apiUrl}`);
 
             fetch(apiUrl)
                 .then(response => {
-                    console.log(`MapaDiscoteca.jsx: Respuesta de la API - Estado: ${response.status}`);
+                    console.log(`MapaDiscoteca.jsx: API Response - Status: ${response.status}`);
                     if (!response.ok) {
                         return response.text().then(text => {
-                            throw new Error(`No se pudo cargar el evento con ID: ${numericId}. Estado: ${response.status}. Mensaje del backend: ${text}`);
+                            throw new Error(`Could not load event with ID: ${numericId}. Status: ${response.status}. Backend message: ${text}`);
                         });
                     }
                     return response.json();
                 })
                 .then(data => {
-                    console.log("MapaDiscoteca.jsx: Datos del evento cargados exitosamente:", data);
+                    console.log("MapaDiscoteca.jsx: Event data loaded successfully:", data);
                     setEvento(data);
                     setError(null);
                 })
                 .catch(err => {
-                    console.error('MapaDiscoteca.jsx: Error al cargar el evento:', err);
+                    console.error('MapaDiscoteca.jsx: Error loading event:', err);
                     setEvento(null);
-                    setError(`Error al cargar el evento: ${err.message}. Por favor, revisa los logs del servidor.`);
+                    setError(`Error loading event: ${err.message}. Please check server logs.`);
                 });
         } else {
-            console.warn("MapaDiscoteca.jsx: ID de evento inválido o faltante. No se realizará ninguna solicitud a la API.");
+            console.warn("MapaDiscoteca.jsx: Invalid or missing event ID. No API request will be made.");
             setEvento(null);
-            setError("No se proporcionó un ID de evento válido para mostrar el mapa.");
+            setError("No valid event ID provided to display the map.");
         }
     }, [idEventoParam]);
 
     const handleSeleccionarZona = (zona) => {
         if (!zona || (typeof zona.id === 'undefined' || zona.id === null)) {
-            console.error("Error: La zona seleccionada no tiene un ID válido.", zona);
-            alert("No se pudo seleccionar la zona. Asegúrate de que tenga un ID único.");
+            console.error("Error: Selected zone has no valid ID.", zona);
+            alert("Could not select zone. Please ensure it has a unique ID.");
             return;
         }
 
-        console.log("Zona seleccionada recibida de PlanoDiscoteca:", zona);
+        console.log("Zone selected received from PlanoDiscoteca:", zona);
         setZonaSeleccionada({
             ...zona,
             id: zona.id,
-            nombre: zona.nombre || 'ZONA DESCONOCIDA',
+            nombre: zona.nombre || 'UNKNOWN ZONE',
             precio: parsearPrecio(zona.precio),
             cantidad: 1
         });
-        console.log("Zona seleccionada establecida en el estado:", { ...zona, id: zona.id, precio: parsearPrecio(zona.precio), cantidad: 1 });
+        console.log("Zone selected set in state:", { ...zona, id: zona.id, precio: parsearPrecio(zona.precio), cantidad: 1 });
     };
 
     const handleEliminarCarrito = () => {
         setZonaSeleccionada(null);
     };
 
+    const finalizarCompra = async () => {
+        console.log("MapaDiscoteca.jsx: 'evento' state at start of finalizarCompra:", evento);
+        console.log("MapaDiscoteca.jsx: 'evento.idEvento' value at start of finalizarCompra:", evento ? evento.idEvento : 'N/A');
+        console.log("MapaDiscoteca.jsx: 'currentUserId' at start of finalizarCompra:", currentUserId);
+
+
+        if (!zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null) {
+            alert("Please select a valid zone to finalize the purchase. The zone ID is undefined.");
+            console.error("MapaDiscoteca.jsx: ERROR - Invalid or missing zone ID:", zonaSeleccionada);
+            return;
+        }
+
+        if (!evento || !evento.idEvento) {
+            console.error("MapaDiscoteca.jsx: ERROR - 'evento' or 'evento.idEvento' are not available in finalizarCompra.");
+            alert("Could not get event information to process payment. Please reload the page and try again.");
+            return;
+        }
+
+        // --- VALIDACIÓN CRÍTICA: Asegurarse de que el usuario esté logueado ---
+        if (currentUserId === null) {
+            alert("Para finalizar la compra, debes iniciar sesión.");
+            console.error("MapaDiscoteca.jsx: User ID is null. User is not logged in or token is invalid.");
+            // Aquí podrías redirigir al login
+            return;
+        }
+
+
+        let numericZonaId;
+        if (typeof zonaSeleccionada.id === 'string' && ZONA_ID_FRONTEND_MAPPING[zonaSeleccionada.id.toLowerCase()]) {
+            numericZonaId = ZONA_ID_FRONTEND_MAPPING[zonaSeleccionada.id.toLowerCase()];
+            console.log(`MapaDiscoteca.jsx: Mapping frontend zone ID '${zonaSeleccionada.id}' to numeric '${numericZonaId}' for reservationDetails.`);
+        } else {
+            numericZonaId = parseInt(zonaSeleccionada.id);
+            if (isNaN(numericZonaId)) {
+                console.error("MapaDiscoteca.jsx: Invalid zone ID for numeric conversion. Expected a number or a mappable string.", zonaSeleccionada.id);
+                alert("Internal error: The selected zone ID is not a valid number or is not mapped correctly. Check the console for more details.");
+                return;
+            }
+        }
+
+        const ticketsParaReserva = [{
+            zonaId: numericZonaId,
+            quantity: zonaSeleccionada.cantidad,
+            unitPrice: zonaSeleccionada.precio,
+        }];
+
+        const reservationDetails = {
+            eventId: parseInt(evento.idEvento),
+            // --- ¡CAMBIO CLAVE AQUÍ! ---
+            // Usar el ID del usuario extraído del token, no el hardcodeado.
+            userId: currentUserId, 
+            tickets: ticketsParaReserva,
+            totalAmount: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
+        };
+
+        const itemIdForMercadoPago = String(zonaSeleccionada.id || `zone-${zonaSeleccionada.nombre.toLowerCase().replace(/ /g, '-')}-fallback`);
+
+        const itemsParaMercadoPago = [{
+            id: itemIdForMercadoPago,
+            title: zonaSeleccionada.nombre,
+            description: `Ticket for sector ${zonaSeleccionada.nombre} (${zonaSeleccionada.tipo || 'N/A'})`,
+            picture_url: "",
+            quantity: zonaSeleccionada.cantidad,
+            unit_price: zonaSeleccionada.precio,
+            currency_id: "COP",
+        }];
+
+        const orderData = {
+            items: itemsParaMercadoPago,
+            total: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
+            reservationDetails: reservationDetails,
+        };
+
+        console.log("MapaDiscoteca.jsx: Data to send to Mercado Pago:", JSON.stringify(orderData, null, 2));
+
+        try {
+            const response = await fetch(`${BASE_URL}/servicio/create-mercadopago-preference`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // No necesitas enviar el token aquí si MercadoPagoController no lo requiere
+                    // Pero si tu backend lo usa para validación general, puedes mantenerlo:
+                    ...getAuthHeaders(), 
+                },
+                body: JSON.stringify(orderData),
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error("MapaDiscoteca.jsx: Detailed API error creating preference:", errorText);
+                throw new Error(`Error creating payment preference: ${response.status} - ${errorText}`);
+            }
+
+            const data = await response.json();
+            const checkoutUrl = data.checkoutUrl;
+
+            if (checkoutUrl) {
+                window.location.href = checkoutUrl;
+            } else {
+                console.error('MapaDiscoteca.jsx: No checkout URL received from Mercado Pago.');
+                alert('There was a problem initiating the payment process. Please try again.');
+            }
+
+        } catch (error) {
+            console.error('MapaDiscoteca.jsx: Error in finalizarCompra:', error);
+            alert(`Error processing purchase: ${error.message}`);
+        }
+    };
+
     return (
         <div className="mapa-discoteca-container">
             <div className="map-section">
-                <h2>Mapa de la Discoteca</h2>
+                <h2>Map of the Nightclub</h2>
 
                 <div className="plano-discoteca-wrapper-outer">
                     <PlanoDiscoteca onSeleccionarZona={handleSeleccionarZona} />
@@ -132,22 +246,22 @@ export const MapaDiscoteca = () => {
                                 onClick={() => setMostrarPrecios(false)}
                                 className="toggle-button"
                             >
-                                <span>Ocultar precios</span>
+                                <span>Hide prices</span>
                                 <span>⌄</span>
                             </div>
                             <div className="price-item">
                                 <span className="color-dot" style={{ backgroundColor: '#0ea5e9' }}></span>
-                                <span className="zone-name">ZONA GENERAL</span>
+                                <span className="zone-name">GENERAL ZONE</span>
                                 <span className="zone-price">$ 50.000</span>
                             </div>
                             <div className="price-item">
                                 <span className="color-dot" style={{ backgroundColor: '#ef4444' }}></span>
-                                <span className="zone-name">ZONA PREFERENCIAL</span>
+                                <span className="zone-name">PREFERENTIAL ZONE</span>
                                 <span className="zone-price">$ 80.000</span>
                             </div>
                             <div className="price-item">
                                 <span className="color-dot" style={{ backgroundColor: '#1d4ed8' }}></span>
-                                <span className="zone-name">ZONA VIP</span>
+                                <span className="zone-name">VIP ZONE</span>
                                 <span className="zone-price">$ 120.000</span>
                             </div>
                         </div>
@@ -156,7 +270,7 @@ export const MapaDiscoteca = () => {
                             onClick={() => setMostrarPrecios(true)}
                             className="show-prices-button"
                         >
-                            Mostrar precios <span style={{ transform: 'rotate(180deg)' }}>⌄</span>
+                            Show prices <span style={{ transform: 'rotate(180deg)' }}>⌄</span>
                         </button>
                     )}
                 </div>
@@ -168,29 +282,55 @@ export const MapaDiscoteca = () => {
                         <p className="error-message">Error: {error}</p>
                     ) : evento ? (
                         <>
-                            <h2>{evento.nombreEvento || 'Nombre del evento no disponible'}</h2>
+                            <h2>{evento.nombreEvento || 'Event name not available'}</h2>
                             <p>
-                                {evento.fecha || 'Fecha no disponible'} {evento.hora || 'Hora no disponible'}<br />
+                                {evento.fecha || 'Date not available'} {evento.hora || 'Time not available'}<br />
                             </p>
-                            <p>La fiesta es en: {evento.discoteca?.nombre || 'Dirección no disponible'}</p>
+                            <p>The party is at: {evento.discoteca?.nombre || 'Address not available'}</p>
                             <br />
                         </>
                     ) : (
-                        <p>Cargando evento...</p>
+                        <p>Loading event...</p>
                     )}
 
-                    {/* Renderiza CarritoCompra y pasa las props necesarias */}
-                    {zonaSeleccionada ? (
-                        <CarritoCompra
-                            carrito={[zonaSeleccionada]} // Pasa la zona seleccionada como un array al carrito
-                            onEliminarZona={handleEliminarCarrito}
-                            eventId={evento ? evento.idEvento : null}
-                            userId={currentUserId} // <-- ¡PASANDO EL currentUserId AQUÍ!
-                        />
-                    ) : (
-                        <p>No hay zona seleccionada.</p>
-                    )}
+                    <div className="cart-summary">
+                        {zonaSeleccionada ? (
+                            <>
+                                <h3>Cart (1)</h3>
+                                <div className="selected-zone-details">
+                                    <div>
+                                        <strong>Sector:</strong> {zonaSeleccionada.nombre}
+                                    </div>
+                                    <div><strong>Price:</strong> {formatearPrecio(zonaSeleccionada.precio)}</div>
+                                </div>
+                            </>
+                        ) : (
+                            <p>No zone selected.</p>
+                        )}
+                    </div>
                 </div>
+
+                {zonaSeleccionada && (
+                    <div className="button-group">
+                        <div className="total-display">
+                            TOTAL: {formatearPrecio(zonaSeleccionada.precio)}
+                        </div>
+                        <button
+                            onClick={handleEliminarCarrito}
+                            className="btn-remove-from-cart"
+                        >
+                            🗑️ Remove from cart
+                        </button>
+                        <button
+                            onClick={finalizarCompra}
+                            className="btn-checkout"
+                            // Deshabilitar si no hay evento, zona seleccionada, o si el ID del usuario no se ha cargado
+                            disabled={!evento || !evento.idEvento || !zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null || currentUserId === null}
+                        >
+                            Finalize purchase
+                        </button>
+                    </div>
+                )}
             </div>
         </div>
     );
