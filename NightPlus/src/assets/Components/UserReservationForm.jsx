@@ -40,11 +40,11 @@ export const UserReservationForm = ({ idEventoSeleccionado, onReservaExitosa }) 
         fechaReserva: fechaReserva, // Formato YYYY-MM-DD
         estado: 'RESERVADA', // Estado inicial por defecto
         estadoPago: 'PENDIENTE', // Estado de pago inicial por defecto
-        // NO INCLUIR idCliente o usuarioCliente aquí. El backend los obtiene del token.
+        // ¡IMPORTANTE! NO INCLUIR idCliente o usuarioCliente aquí.
+        // El backend los obtiene del token automáticamente para este endpoint.
       };
 
-      // --- ¡CAMBIO CRÍTICO AQUÍ! ---
-      // Asegúrate de que estás llamando al endpoint correcto para el usuario final
+      // --- ¡ESTA ES LA LLAMADA AL ENDPOINT CORRECTO PARA EL USUARIO FINAL! ---
       const response = await fetch(`${BASE_URL}/servicio/cliente/reservar`, { 
         method: 'POST',
         headers: {
@@ -64,7 +64,7 @@ export const UserReservationForm = ({ idEventoSeleccionado, onReservaExitosa }) 
           title: "Error de Autenticación",
           text: "Tu sesión ha expirado o no tienes permisos. Por favor, inicia sesión de nuevo.",
         });
-        // Aquí podrías redirigir al login
+        // Aquí podrías redirigir al login si es necesario
         return;
       }
 
