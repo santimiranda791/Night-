@@ -782,7 +782,8 @@ const addReserva = async () => {
     title: "Añadir Reserva",
     html:
       '<input id="swal-input1" class="swal2-input" placeholder="ID Evento">' +
-      '<input id="swal-input2" class="swal2-input" type="number" placeholder="ID Usuario">' +
+      // CAMBIO CLAVE AQUÍ: Pide el usuario_cliente (username)
+      '<input id="swal-input2" class="swal2-input" placeholder="Usuario Cliente (ej. juanperez)">' +
       '<input id="swal-input3" class="swal2-input" type="number" placeholder="Cantidad Tickets">' +
       '<input id="swal-input4" class="swal2-input" type="date" placeholder="Fecha Reserva (YYYY-MM-DD)">' +
       '<select id="swal-select5" class="swal2-input">' +
@@ -790,26 +791,24 @@ const addReserva = async () => {
       '<option value="PENDIENTE">PENDIENTE</option>' +
       '<option value="APROBADO">APROBADO</option>' +
       '<option value="RECHAZADO">RECHAZADO</option>' +
-      '</select>', // CAMBIO: Campo 'ID Transacción' eliminado de aquí
+      '</select>',
     focusConfirm: false,
     showCancelButton: true,
     confirmButtonText: "Guardar",
     cancelButtonText: "Cancelar",
     preConfirm: () => {
       const idEvento = document.getElementById("swal-input1").value.trim();
-      const idUsuario = document.getElementById("swal-input2").value.trim();
+      // CAMBIO CLAVE AQUÍ: Obtiene el usuario_cliente como string
+      const usuarioCliente = document.getElementById("swal-input2").value.trim();
       const cantidadTickets = document.getElementById("swal-input3").value.trim();
       const fechaReserva = document.getElementById("swal-input4").value.trim();
       const estadoPago = document.getElementById("swal-select5").value.trim();
-      // CAMBIO: Variable idTransaccion eliminada de la lectura del DOM
 
-      if (!idEvento || !idUsuario || !cantidadTickets || !fechaReserva || !estadoPago) {
-        Swal.showValidationMessage("Completa todos los campos obligatorios (ID Evento, ID Usuario, Tickets, Fecha, Estado Pago)");
+      if (!idEvento || !usuarioCliente || !cantidadTickets || !fechaReserva || !estadoPago) {
+        Swal.showValidationMessage("Completa todos los campos obligatorios (ID Evento, Usuario Cliente, Tickets, Fecha, Estado Pago)");
         return;
       }
 
-      // CAMBIO: Lógica de simulación de ID de transacción si ya no se pide
-      // Si aún quieres un ID de transacción para el backend aunque no se pida al usuario:
       let finalIdTransaccion = "";
       if (estadoPago === "APROBADO") {
         finalIdTransaccion = `MP_ADM_${Date.now()}`;
@@ -817,11 +816,12 @@ const addReserva = async () => {
 
       return {
         evento: { idEvento: Number(idEvento) },
-        cliente: { idCliente: Number(idUsuario) },
+        // CAMBIO CLAVE AQUÍ: Envía el usuario_cliente en el objeto cliente
+        cliente: { usuarioCliente: usuarioCliente },
         cantidadTickets: Number(cantidadTickets),
         fechaReserva,
         estadoPago,
-        idTransaccion: finalIdTransaccion, // CAMBIO: Se envía, pero se genera automáticamente si es APROBADO
+        idTransaccion: finalIdTransaccion,
       };
     },
   });
@@ -884,7 +884,8 @@ const updateReserva = async (reservaData) => {
     title: "Actualizar Reserva",
     html: `
       <input id="swal-input1" class="swal2-input" placeholder="ID Evento" value="${reservaData.idEvento || reservaData.evento?.idEvento || ''}">
-      <input id="swal-input2" class="swal2-input" type="number" placeholder="ID Usuario" value="${reservaData.idUsuario || reservaData.cliente?.idUsuario || ''}">
+      <!-- CAMBIO CLAVE AQUÍ: Muestra el usuario_cliente existente y pide el usuario_cliente -->
+      <input id="swal-input2" class="swal2-input" placeholder="Usuario Cliente" value="${reservaData.usuarioCliente || reservaData.cliente?.usuarioCliente || ''}">
       <input id="swal-input3" class="swal2-input" type="number" placeholder="Cantidad Tickets" value="${reservaData.cantidadTickets}">
       <input id="swal-input4" class="swal2-input" type="date" placeholder="Fecha Reserva (YYYY-MM-DD)" value="${reservaData.fechaReserva}">
       <select id="swal-select5" class="swal2-input">
@@ -892,45 +893,44 @@ const updateReserva = async (reservaData) => {
         <option value="APROBADO" ${reservaData.estadoPago === 'APROBADO' ? 'selected' : ''}>APROBADO</option>
         <option value="RECHAZADO" ${reservaData.estadoPago === 'RECHAZADO' ? 'selected' : ''}>RECHAZADO</option>
       </select>
-    `, // CAMBIO: Campo 'ID Transacción' eliminado de aquí
+    `,
     focusConfirm: false,
     showCancelButton: true,
     confirmButtonText: "Actualizar",
     cancelButtonText: "Cancelar",
     preConfirm: () => {
       const idEvento = document.getElementById("swal-input1").value.trim();
-      const idUsuario = document.getElementById("swal-input2").value.trim();
+      // CAMBIO CLAVE AQUÍ: Obtiene el usuario_cliente como string
+      const usuarioCliente = document.getElementById("swal-input2").value.trim();
       const cantidadTickets = document.getElementById("swal-input3").value.trim();
       const fechaReserva = document.getElementById("swal-input4").value.trim();
       const estadoPago = document.getElementById("swal-select5").value.trim();
-      // CAMBIO: Variable idTransaccion eliminada de la lectura del DOM
 
-      if (!idEvento || !idUsuario || !cantidadTickets || !fechaReserva || !estadoPago) {
-        Swal.showValidationMessage("Completa todos los campos obligatorios (ID Evento, ID Usuario, Tickets, Fecha, Estado Pago)");
+      if (!idEvento || !usuarioCliente || !cantidadTickets || !fechaReserva || !estadoPago) {
+        Swal.showValidationMessage("Completa todos los campos obligatorios (ID Evento, Usuario Cliente, Tickets, Fecha, Estado Pago)");
         return;
       }
 
-      // CAMBIO: Lógica de simulación de ID de transacción si ya no se pide
       let finalIdTransaccion = "";
       if (estadoPago === "APROBADO") {
         finalIdTransaccion = `MP_ADM_UPD_${Date.now()}`;
       } else {
-        // Si el estado no es APROBADO, limpia el ID de transacción existente
         finalIdTransaccion = "";
       }
-
 
       return {
         idReserva: reservaData.idReserva,
         evento: { idEvento: Number(idEvento) },
-        cliente: { idCliente: Number(idUsuario) },
+        // CAMBIO CLAVE AQUÍ: Envía el usuario_cliente en el objeto cliente
+        cliente: { usuarioCliente: usuarioCliente },
         cantidadTickets: Number(cantidadTickets),
         fechaReserva,
         estadoPago,
-        idTransaccion: finalIdTransaccion, // CAMBIO: Se envía, pero se genera automáticamente si es APROBADO
+        idTransaccion: finalIdTransaccion,
       };
     },
   });
+
 
   if (formValues) {
     try {
