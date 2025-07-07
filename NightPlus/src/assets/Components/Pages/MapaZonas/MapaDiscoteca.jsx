@@ -29,8 +29,10 @@ export const MapaDiscoteca = () => {
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
+                // Asegúrate de que el campo en tu token sea 'id_cliente' o 'idCliente' o 'idUsuario'
+                // Basado en tu log de login anterior, el campo es 'idCliente'
                 setCurrentUserId(decodedToken.idCliente); 
-                console.log("MapaDiscoteca.jsx: ID de usuario extraído del token:", decodedToken.idCliente);
+                console.log("MapaDiscoteca.jsx: ID de usuario extraído del token (desde JWT):", decodedToken.idCliente);
             } catch (e) {
                 console.error("MapaDiscoteca.jsx: Error decodificando token JWT:", e);
                 setCurrentUserId(null);
@@ -42,9 +44,10 @@ export const MapaDiscoteca = () => {
     }, []); // Se ejecuta solo una vez al montar el componente
 
     // --- NUEVO LOG DE DEPURACIÓN AQUÍ ---
+    // Este useEffect se ejecuta cada vez que currentUserId cambia, mostrando su valor actual.
     useEffect(() => {
-        console.log("MapaDiscoteca.jsx: Valor de currentUserId (después de useEffect):", currentUserId);
-    }, [currentUserId]); // Se ejecuta cada vez que currentUserId cambia
+        console.log("MapaDiscoteca.jsx: Valor actual de currentUserId (estado):", currentUserId);
+    }, [currentUserId]);
 
 
     const parsearPrecio = (precioStr) => {
@@ -73,10 +76,10 @@ export const MapaDiscoteca = () => {
 
             fetch(apiUrl)
                 .then(response => {
-                    console.log(`MapaDiscoteca.jsx: Respuesta de la API - Estado: ${response.status}`);
+                    console.log(`MapaDiscoteca.jsx: Respuesta de la API - Status: ${response.status}`);
                     if (!response.ok) {
                         return response.text().then(text => {
-                            throw new Error(`No se pudo cargar el evento con ID: ${numericId}. Estado: ${response.status}. Mensaje del backend: ${text}`);
+                            throw new Error(`No se pudo cargar el evento con ID: ${numericId}. Status: ${response.status}. Backend message: ${text}`);
                         });
                     }
                     return response.json();
@@ -89,12 +92,12 @@ export const MapaDiscoteca = () => {
                 .catch(err => {
                     console.error('MapaDiscoteca.jsx: Error al cargar el evento:', err);
                     setEvento(null);
-                    setError(`Error al cargar el evento: ${err.message}. Por favor, revisa los logs del servidor.`);
+                    setError(`Error al cargar el evento: ${err.message}. Please check server logs.`);
                 });
         } else {
             console.warn("MapaDiscoteca.jsx: ID de evento inválido o faltante. No se realizará ninguna solicitud a la API.");
             setEvento(null);
-            setError("No se proporcionó un ID de evento válido para mostrar el mapa.");
+            setError("No valid event ID provided to display the map.");
         }
     }, [idEventoParam]);
 
@@ -105,7 +108,7 @@ export const MapaDiscoteca = () => {
             return;
         }
 
-        console.log("Zona seleccionada recibida de PlanoDiscoteca:", zona);
+        console.log("MapaDiscoteca.jsx: Zona seleccionada recibida de PlanoDiscoteca:", zona);
         setZonaSeleccionada({
             ...zona,
             id: zona.id,
@@ -113,7 +116,7 @@ export const MapaDiscoteca = () => {
             precio: parsearPrecio(zona.precio),
             cantidad: 1
         });
-        console.log("Zona seleccionada establecida en el estado:", { ...zona, id: zona.id, precio: parsearPrecio(zona.precio), cantidad: 1 });
+        console.log("MapaDiscoteca.jsx: Zona seleccionada establecida en el estado:", { ...zona, id: zona.id, precio: parsearPrecio(zona.precio), cantidad: 1 });
     };
 
     const handleEliminarCarrito = () => {
