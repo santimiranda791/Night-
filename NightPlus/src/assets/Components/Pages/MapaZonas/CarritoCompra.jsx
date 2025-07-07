@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react'; // Asegúrate de importar useEffect
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2'; // Importa Swal para feedback al usuario
 // Importa el nuevo archivo CSS
@@ -39,6 +39,13 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
         const precioUnitario = parsearPrecio(zona.precio);
         return acc + calcularTotalZona(zona.id, precioUnitario);
     }, 0);
+
+    // --- NUEVO LOG DE DEPURACIÓN AQUÍ ---
+    useEffect(() => {
+        console.log("CarritoCompra.jsx: Valor de userId prop:", userId);
+        console.log("CarritoCompra.jsx: Tipo de userId prop:", typeof userId);
+    }, [userId]); // Se ejecuta cada vez que la prop userId cambia
+
 
     const finalizarCompra = async () => {
         if (!eventId) {

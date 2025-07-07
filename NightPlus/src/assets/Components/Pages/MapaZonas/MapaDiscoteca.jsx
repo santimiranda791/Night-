@@ -29,8 +29,6 @@ export const MapaDiscoteca = () => {
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
-                // Asegúrate de que el campo en tu token sea 'id_cliente' o 'idCliente' o 'idUsuario'
-                // Basado en tu log de login anterior, el campo es 'idCliente'
                 setCurrentUserId(decodedToken.idCliente); 
                 console.log("MapaDiscoteca.jsx: ID de usuario extraído del token:", decodedToken.idCliente);
             } catch (e) {
@@ -42,6 +40,12 @@ export const MapaDiscoteca = () => {
             setCurrentUserId(null); // Asegúrate de que el ID sea null si no hay token
         }
     }, []); // Se ejecuta solo una vez al montar el componente
+
+    // --- NUEVO LOG DE DEPURACIÓN AQUÍ ---
+    useEffect(() => {
+        console.log("MapaDiscoteca.jsx: Valor de currentUserId (después de useEffect):", currentUserId);
+    }, [currentUserId]); // Se ejecuta cada vez que currentUserId cambia
+
 
     const parsearPrecio = (precioStr) => {
         if (typeof precioStr === 'number') {
@@ -115,9 +119,6 @@ export const MapaDiscoteca = () => {
     const handleEliminarCarrito = () => {
         setZonaSeleccionada(null);
     };
-
-    // LA FUNCIÓN finalizarCompra HA SIDO ELIMINADA DE AQUÍ
-    // Ahora la lógica de compra se maneja completamente dentro de CarritoCompra.jsx
 
     return (
         <div className="mapa-discoteca-container">
