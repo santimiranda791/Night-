@@ -172,7 +172,7 @@ export const UserProfile = () => {
   return (
     <div className={`user-profile-container ${showModal ? 'modal-open' : ''}`}>
       <div className="user-header">
-        <img src="/userphoto.jpg" alt="Foto" className="profile-image" />
+        <img src="/logito.svg" alt="Logo Night" className="profile-image" />
         <h1>{cliente.nombre}</h1>
         <p>{cliente.correo}</p>
       </div>

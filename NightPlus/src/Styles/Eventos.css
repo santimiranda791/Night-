@@ -3,59 +3,87 @@
 .eventos-container { /* Renamed from .eventos14-container for consistency with the JS component */
     display: flex;
     flex-wrap: wrap;
-    padding: 1rem; /* Adjusted padding for smaller screens */
-    background-color: #0b0b14;
+    padding: 1.5rem;
+    background: linear-gradient(135deg, #1a1333 60%, #2d1846 100%);
     color: white;
-    gap: 1.5rem; /* Adjusted gap */
+    gap: 2rem;
     justify-content: center;
-    align-items: flex-start; /* Align items to the start for better stacking */
+    align-items: flex-start;
+    min-height: 100vh;
 }
 
 .evento-principal {
     flex: 2;
-    min-width: 280px; /* Smaller min-width for mobile */
+    min-width: 300px;
     max-width: 600px;
-    padding: 1rem; /* Added padding to the principal event card */
-    box-sizing: border-box; /* Include padding in the element's total width and height */
+    padding: 2rem 1.5rem;
+    background: linear-gradient(120deg, #2d1846 80%, #3f0172 100%);
+    border-radius: 22px;
+    box-shadow: 0 8px 32px 0 #3f017288, 0 1.5px 8px #0004;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 2px solid #3f0172;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.evento-principal:hover {
+    box-shadow: 0 12px 36px 0 #3f0172cc, 0 2px 12px #0006;
+    transform: translateY(-4px) scale(1.01);
 }
 
 .evento-principal h2 {
-    font-size: 1.8rem; /* Adjusted font size for smaller screens */
+    font-size: 2rem;
     font-weight: bold;
-    color: white;
-    word-break: break-word; /* Ensure long titles wrap */
+    color: #fff;
+    margin-bottom: 0.5rem;
+    word-break: break-word;
+    letter-spacing: 1px;
 }
 
 .evento-principal .hashtag {
-    font-size: 1rem; /* Adjusted font size */
-    color: #f50082;
-    margin-top: 0.3rem;
+    font-size: 1.05rem;
+    color: #ff00b8;
+    margin-top: 0.2rem;
     font-weight: bold;
+    letter-spacing: 0.5px;
 }
 
 .boton-fucsia {
-    margin: 1rem 0;
-    padding: 0.7rem 1.5rem;
-    background: #ff006a;
+    margin: 1.2rem 0;
+    padding: 0.8rem 1.7rem;
+    background: linear-gradient(90deg, #ff006a 60%, #8b08a5 100%);
     color: white;
     border: none;
     font-weight: bold;
-    border-radius: 8px;
+    border-radius: 12px;
     cursor: not-allowed;
-    width: 100%; /* Make button full width on smaller screens */
-    max-width: 250px; /* Limit button width on larger screens */
+    width: 100%;
+    max-width: 270px;
+    font-size: 1.08rem;
+    box-shadow: 0 2px 8px #8b08a555;
+    transition: background 0.2s, box-shadow 0.2s;
+}
+
+.boton-fucsia:active {
+    background: linear-gradient(90deg, #8b08a5 60%, #ff006a 100%);
 }
 
 .ver-otros-eventos {
     display: inline-block;
-    margin-top: 0.5rem;
+    margin-top: 0.7rem;
     color: #fff;
     text-decoration: underline;
-    font-size: 0.9rem;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+
+.ver-otros-eventos:hover {
+    color: #ff00b8;
 }
 
 .ubicacion {
-    margin-top: 1.5rem; /* Adjusted margin */
+    margin-top: 1.5rem;
 }
 
 .ubicacion h3 {
@@ -66,68 +94,85 @@
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    min-width: 280px; /* Ensure lateral events are also readable on small screens */
-    padding: 1rem; /* Added padding */
+    gap: 1.2rem;
+    min-width: 280px;
+    padding: 1.2rem 1rem;
     box-sizing: border-box;
 }
 
+.evento-lateral-card {
+    background: linear-gradient(120deg, #23143a 80%, #3f0172 100%);
+    border-radius: 18px;
+    box-shadow: 0 4px 18px 0 #3f017288, 0 1px 4px #0003;
+    padding: 1.1rem 1rem;
+    color: #fff;
+    border: 1.5px solid #3f0172;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: box-shadow 0.2s, transform 0.2s;
+}
+
+.evento-lateral-card:hover {
+    box-shadow: 0 8px 24px 0 #3f0172cc, 0 2px 8px #0005;
+    transform: translateY(-2px) scale(1.01);
+}
+
+.evento-lateral-card h3 {
+    font-size: 1.15rem;
+    font-weight: bold;
+    margin-bottom: 0.3rem;
+    color: #ffccff;
+}
+
+.evento-lateral-card .hashtag {
+    font-size: 0.95rem;
+    color: #ff00b8;
+    margin-bottom: 0.2rem;
+    font-weight: bold;
+}
+
+.evento-lateral-card .boton-fucsia {
+    margin: 0.7rem 0 0 0;
+    max-width: 180px;
+    font-size: 0.98rem;
+    padding: 0.6rem 1.2rem;
+}
+
 /* Media Queries for responsiveness */
-@media (max-width: 768px) {
+@media (max-width: 900px) {
     .eventos-container {
-        flex-direction: column; /* Stack items vertically on smaller screens */
-        align-items: center; /* Center items when stacked */
+        flex-direction: column;
+        align-items: center;
         padding: 1rem;
     }
-
     .evento-principal,
     .eventos-lateral {
-        width: 100%; /* Take full width */
-        max-width: 500px; /* Limit max-width even when full width to prevent stretching on small tablets */
-        margin-bottom: 1rem; /* Add some space between stacked elements */
-    }
-
-    .evento-principal h2 {
-        font-size: 1.6rem;
-    }
-
-    .evento-principal .hashtag {
-        font-size: 0.9rem;
-    }
-
-    .boton-fucsia {
-        max-width: 100%; /* Ensure button takes full width within its container */
+        width: 100%;
+        max-width: 540px;
+        margin-bottom: 1.2rem;
     }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 600px) {
     .eventos-container {
-        padding: 0.5rem; /* Even less padding on very small screens */
+        padding: 0.5rem;
         gap: 1rem;
     }
-
     .evento-principal {
-        padding: 0.8rem;
+        padding: 1rem 0.5rem;
     }
-
     .evento-principal h2 {
-        font-size: 1.4rem;
+        font-size: 1.3rem;
     }
-
-    .evento-principal .hashtag {
-        font-size: 0.85rem;
-    }
-
     .boton-fucsia {
         padding: 0.6rem 1rem;
-        font-size: 0.9rem;
+        font-size: 0.95rem;
     }
-
-    .ver-otros-eventos {
-        font-size: 0.8rem;
-    }
-
     .eventos-lateral {
-        padding: 0.8rem;
+        padding: 0.7rem 0.3rem;
+    }
+    .evento-lateral-card {
+        padding: 0.7rem 0.5rem;
     }
 }

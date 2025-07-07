@@ -1263,7 +1263,7 @@ return (
     <aside className={`sidebar ${isSidebarActive ? 'active' : ''}`} id="sidebar">
       <div className="sidebar-content">
         <div className="logo-container">
-          <img src="/logonegro.png" alt="Logo Night" className="logo-img" />
+          <img src="/logito.svg" alt="Logo Night" className="logo-img" />
         </div>
         <h2>Panel de Administrador</h2>
         <ul>
