@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../../../Styles/UserProfile.css';
+import QRCode from 'qrcode.react'; // Importar la librería de QR
 
 export const UserProfile = () => {
   const [cliente, setCliente] = useState({
@@ -13,12 +14,13 @@ export const UserProfile = () => {
 
   const [activeTab, setActiveTab] = useState('cuenta');
   const [showModal, setShowModal] = useState(false);
+  const [showQrModal, setShowQrModal] = useState(false); // Nuevo estado para el modal QR
 
   const [misReservas, setMisReservas] = useState([]);
   const [loadingMisReservas, setLoadingMisReservas] = useState(false);
   const [errorMisReservas, setErrorMisReservas] = useState(null);
 
-  const BASE_URL = 'https://backendnight-production.up.railway.app'; 
+  const BASE_URL = 'https://backendnight-production.up.railway.app';
 
   const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
@@ -82,6 +84,9 @@ export const UserProfile = () => {
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
+  const openQrModal = () => setShowQrModal(true); // Función para abrir el modal QR
+  const closeQrModal = () => setShowQrModal(false); // Función para cerrar el modal QR
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -99,16 +104,16 @@ export const UserProfile = () => {
     try {
         const requestBody = {
             nombre: cliente.nombre,
-            edad: cliente.edad === '' ? null : Number(cliente.edad), 
+            edad: cliente.edad === '' ? null : Number(cliente.edad),
             telefono: cliente.telefono === '' ? null : cliente.telefono,
             correo: cliente.correo,
-            usuarioCliente: localStorage.getItem('usuarioCliente') || null, 
-            contrasenaCliente: cliente.contrasenaCliente === '' ? null : cliente.contrasenaCliente, 
+            usuarioCliente: localStorage.getItem('usuarioCliente') || null,
+            contrasenaCliente: cliente.contrasenaCliente === '' ? null : cliente.contrasenaCliente,
         };
 
-        const response = await fetch(`${BASE_URL}/servicio/update`, { 
+        const response = await fetch(`${BASE_URL}/servicio/update`, {
           method: 'PUT',
-          headers: { 
+          headers: {
             'Content-Type': 'application/json',
             ...getAuthHeaders(),
           },
@@ -170,7 +175,7 @@ export const UserProfile = () => {
   };
 
   return (
-    <div className={`user-profile-container ${showModal ? 'modal-open' : ''}`}>
+    <div className={`user-profile-container ${showModal || showQrModal ? 'modal-open' : ''}`}>
       <div className="user-header">
         <img src="/logito.svg" alt="Logo Night" className="profile-image" />
         <h1>{cliente.nombre}</h1>
@@ -199,6 +204,8 @@ export const UserProfile = () => {
             <label>Correo</label>
             <input type="text" value={cliente.correo} disabled />
             <button onClick={openModal} className="updatee-button">Actualizar</button>
+            {/* Nuevo botón para ver QR */}
+            <button onClick={openQrModal} className="qr-button">Ver QR</button>
           </div>
         ) : activeTab === 'mis reservas' ? (
           <div className="reservas-section">
@@ -215,12 +222,10 @@ export const UserProfile = () => {
                   <tr>
                     <th>ID Reserva</th>
                     <th>Evento</th>
-                    <th>USUARIO</th> {/* Asegúrate de que esta columna exista en tu tabla HTML */}
+                    <th>USUARIO</th>
                     <th>Tickets</th>
                     <th>Fecha Reserva</th>
                     <th>Estado Pago</th>
-                    {/* Si tienes una columna de acciones, asegúrate de que el thead y tbody coincidan */}
-                 
                   </tr>
                 </thead>
                 <tbody>
@@ -228,12 +233,10 @@ export const UserProfile = () => {
                     <tr key={reserva.idReserva}>
                       <td data-label="ID Reserva">{reserva.idReserva}</td>
                       <td data-label="Evento">{reserva.nombreEvento || 'N/A'}</td>
-                      {/* ESTO ES LO CRÍTICO: Acceder al campo correcto del DTO */}
                       <td data-label="Usuario">{reserva.usuarioCliente || reserva.nombreCliente || 'N/A'}</td>
                       <td data-label="Tickets">{reserva.cantidadTickets}</td>
                       <td data-label="Fecha Reserva">{reserva.fechaReserva}</td>
                       <td data-label="Estado Pago">{reserva.estadoPago}</td>
-                      {/* Si tienes acciones, asegúrate de que el td correspondiente esté aquí */}
                       <td>
                         {/* Aquí irían tus botones de acción si los tienes, por ejemplo: */}
                         {/* <button onClick={() => handleVerReserva(reserva.idReserva)}>Ver</button> */}
@@ -272,6 +275,25 @@ export const UserProfile = () => {
                 <button type="submit" className="updatee-button">Guardar</button>
               </div>
             </form>
+          </div>
+        </>
+      )}
+
+      {/* Nuevo Modal para el Código QR */}
+      {showQrModal && (
+        <>
+          <div className="modal-overlay" onClick={closeQrModal} />
+          <div className="modal-content qr-modal">
+            <h2>Tu Código QR</h2>
+            {cliente.correo ? (
+              <div className="qr-code-wrapper">
+                <QRCode value={cliente.correo} size={256} level="H" includeMargin={true} />
+                <p className="qr-info">Este QR contiene tu correo electrónico para una identificación rápida.</p>
+              </div>
+            ) : (
+              <p>No se puede generar el QR. Correo electrónico no disponible.</p>
+            )}
+            <button type="button" className="logout-button" onClick={closeQrModal}>Cerrar</button>
           </div>
         </>
       )}
