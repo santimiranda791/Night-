@@ -92,7 +92,7 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
 
         const reservationDetails = {
             eventId: parseInt(eventId),
-            userId: parsedUserId, // ¡Usa el userId parseado de las props!
+            userId: parsedUserId, // <-- ¡ENVIANDO EL userId PARSEADO AQUÍ!
             tickets: carrito.map((zona) => ({
                 zonaId: zona.id,
                 quantity: cantidades[zona.id],
