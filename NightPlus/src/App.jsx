@@ -27,7 +27,8 @@ import { Header } from './assets/Components/Header/Header';
 import CompraExitosa from './assets/Components/CompraExitosa';
 
 // --- NUEVA IMPORTACIÓN ---
-import { QrDetailsPage } from './assets/Components/QrDetailsPage/QrDetailsPage'; // <--- Asegúrate que esta ruta sea correcta
+// Asegúrate de que esta ruta sea correcta y que el nombre de la carpeta y el archivo coincidan exactamente (sensible a mayúsculas/minúsculas)
+import { QrDetailsPage } from './assets/Components/QrDetailsPage/QrDetailsPage'; 
 
 
 // Componente Wrapper para LoadingAlert
@@ -46,11 +47,6 @@ export const App = () => {
       <Routes>
         <Route path="/" element={<PrincipalPage />} />
         <Route path="/discotecas" element={<Discotecas />} />
-        {/*
-          ¡IMPORTANTE! Esta es la ÚNICA ruta para MapaDiscoteca.
-          Si tenías una <Route path="/mapa" element={<MapaDiscoteca />} />, DEBISTE ELIMINARLA.
-          Esto asegura que MapaDiscoteca siempre reciba un ID en la URL.
-        */}
         <Route path="/CompraExitosa" element={<CompraExitosa />} />
         <Route path="/mapa/:idEvento" element={<MapaDiscoteca />} />
         <Route path="/eventos" element={<Eventos />} />
