@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../../../Styles/UserProfile.css';
-import QRCode from 'qrcode.react'; // CAMBIO: Revertido a importación por defecto
+// Eliminamos la importación de qrcode.react ya que usaremos la API de Google Charts
 
 export const UserProfile = () => {
   const [cliente, setCliente] = useState({
@@ -294,17 +294,18 @@ export const UserProfile = () => {
             <h2>Código QR de la Reserva</h2>
             {currentQrData ? (
               <div className="qr-code-wrapper">
-                {/* El valor del QR ahora es un JSON string con datos de la reserva */}
-                <QRCode
-                  value={JSON.stringify({
-                    idReserva: currentQrData.idReserva,
-                    evento: currentQrData.nombreEvento,
-                    usuario: currentQrData.usuarioCliente || currentQrData.cliente?.usuarioCliente || currentQrData.nombreCliente, // Mejorado para obtener el usuario
-                    tickets: currentQrData.cantidadTickets
-                  })}
-                  size={256}
-                  level="H"
-                  includeMargin={true}
+                {/* Generamos la URL de la API de Google Charts para el QR */}
+                <img
+                  src={`https://chart.googleapis.com/chart?cht=qr&chs=256x256&chl=${encodeURIComponent(
+                    JSON.stringify({
+                      idReserva: currentQrData.idReserva,
+                      evento: currentQrData.nombreEvento,
+                      usuario: currentQrData.usuarioCliente || currentQrData.cliente?.usuarioCliente || currentQrData.nombreCliente,
+                      tickets: currentQrData.cantidadTickets
+                    })
+                  )}&choe=UTF-8`}
+                  alt={`QR de la reserva ${currentQrData.idReserva}`}
+                  style={{ width: '256px', height: '256px' }}
                 />
                 <p className="qr-info">
                   Este QR contiene los detalles de la reserva: ID {currentQrData.idReserva}, Evento {currentQrData.nombreEvento}.
