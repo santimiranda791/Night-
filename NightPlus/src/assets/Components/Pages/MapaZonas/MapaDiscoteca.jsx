@@ -121,6 +121,22 @@ export const MapaDiscoteca = () => {
         console.log("Zone selected set in state:", { ...zona, id: zona.id, precio: parsearPrecio(zona.precio), cantidad: 1 });
     };
 
+    const handleCantidadChange = (event) => {
+        const newCantidad = parseInt(event.target.value);
+        if (isNaN(newCantidad) || newCantidad < 1) {
+            alert("La cantidad debe ser al menos 1.");
+            return;
+        }
+        if (newCantidad > 3) {
+            alert("Solo puedes seleccionar un máximo de 3 boletas.");
+            return;
+        }
+        setZonaSeleccionada(prev => ({
+            ...prev,
+            cantidad: newCantidad
+        }));
+    };
+
     const handleEliminarCarrito = () => {
         setZonaSeleccionada(null);
     };
@@ -130,10 +146,14 @@ export const MapaDiscoteca = () => {
         console.log("MapaDiscoteca.jsx: 'evento.idEvento' value at start of finalizarCompra:", evento ? evento.idEvento : 'N/A');
         console.log("MapaDiscoteca.jsx: 'currentUserId' at start of finalizarCompra:", currentUserId);
 
-
         if (!zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null) {
             alert("Please select a valid zone to finalize the purchase. The zone ID is undefined.");
             console.error("MapaDiscoteca.jsx: ERROR - Invalid or missing zone ID:", zonaSeleccionada);
+            return;
+        }
+
+        if (zonaSeleccionada.cantidad > 3) {
+            alert("No puedes comprar más de 3 boletas por usuario.");
             return;
         }
 
@@ -293,21 +313,33 @@ export const MapaDiscoteca = () => {
                         <p>Loading event...</p>
                     )}
 
-                    <div className="cart-summary">
-                        {zonaSeleccionada ? (
-                            <>
-                                <h3>Cart (1)</h3>
-                                <div className="selected-zone-details">
-                                    <div>
-                                        <strong>Sector:</strong> {zonaSeleccionada.nombre}
-                                    </div>
-                                    <div><strong>Price:</strong> {formatearPrecio(zonaSeleccionada.precio)}</div>
+                <div className="cart-summary">
+                    {zonaSeleccionada ? (
+                        <>
+                            <h3>Cart ({zonaSeleccionada.cantidad})</h3>
+                            <div className="selected-zone-details">
+                                <div>
+                                    <strong>Sector:</strong> {zonaSeleccionada.nombre}
                                 </div>
-                            </>
-                        ) : (
-                            <p>No zone selected.</p>
-                        )}
-                    </div>
+                                <div><strong>Price:</strong> {formatearPrecio(zonaSeleccionada.precio)}</div>
+                                <div>
+                                    <label htmlFor="cantidadBoletas"><strong>Cantidad:</strong></label>
+                                    <input
+                                        id="cantidadBoletas"
+                                        type="number"
+                                        min="1"
+                                        max="3"
+                                        value={zonaSeleccionada.cantidad}
+                                        onChange={handleCantidadChange}
+                                        style={{ width: '50px', marginLeft: '10px' }}
+                                    />
+                                </div>
+                            </div>
+                        </>
+                    ) : (
+                        <p>No zone selected.</p>
+                    )}
+                </div>
                 </div>
 
                 {zonaSeleccionada && (
