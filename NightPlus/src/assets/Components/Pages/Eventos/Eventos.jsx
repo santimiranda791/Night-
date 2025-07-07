@@ -67,6 +67,7 @@ export const Eventos = () => {
         title: 'Debes iniciar sesión primero',
         text: 'Para acceder a este evento, debes iniciar sesión primero.',
       });
+      return; // Prevent navigation
     } else {
       navigate(`/mapa/${eventId}`);
     }
