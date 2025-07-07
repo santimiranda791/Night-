@@ -2,16 +2,14 @@ import React, { useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import PlanoDiscoteca from './PlanoDiscoteca';
 import '../../../../Styles/MapaDiscotecaResponsive.css';
-
-const CURRENT_USER_ID = 1; // <--- TEST VALUE. CHANGE IT TO THE LOGGED-IN USER'S ID!
+import { jwtDecode } from 'jwt-decode'; // Importa jwt-decode
 
 // IMPORTANT: Ensure these numeric IDs match your database zone IDs.
 const ZONA_ID_FRONTEND_MAPPING = {
     "general": 1,
-    "preferencial": 2, // <--- ADD THIS ENTRY!
-    "vip": 3,          // <--- ADD THIS if you have a VIP zone!
+    "preferencial": 2,
+    "vip": 3,
     // Add more mappings here for any other text-based zone IDs from PlanoDiscoteca.
-    // Example: "palco": 4, etc.
 };
 
 export const MapaDiscoteca = () => {
@@ -20,8 +18,35 @@ export const MapaDiscoteca = () => {
     const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
     const [evento, setEvento] = useState(null);
     const [error, setError] = useState(null);
+    const [currentUserId, setCurrentUserId] = useState(null); // Nuevo estado para el ID del usuario logueado
 
     const BASE_URL = 'https://backendnight-production.up.railway.app';
+
+    // Función para obtener las cabeceras de autenticación
+    const getAuthHeaders = () => {
+        const token = localStorage.getItem('token');
+        return token ? { 'Authorization': `Bearer ${token}` } : {};
+    };
+
+    // Nuevo useEffect para extraer el ID del usuario del token al cargar el componente
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            try {
+                const decodedToken = jwtDecode(token);
+                // Asegúrate de que el campo en tu token sea 'id_cliente' o 'idCliente' o 'idUsuario'
+                // Basado en tu log de login, el campo es 'idCliente'
+                setCurrentUserId(decodedToken.idCliente); 
+                console.log("MapaDiscoteca.jsx: ID de usuario extraído del token:", decodedToken.idCliente);
+            } catch (e) {
+                console.error("MapaDiscoteca.jsx: Error decodificando token JWT:", e);
+                setCurrentUserId(null);
+            }
+        } else {
+            console.warn("MapaDiscoteca.jsx: No hay token en localStorage. El usuario no está logueado.");
+            setCurrentUserId(null); // Asegúrate de que el ID sea null si no hay token
+        }
+    }, []); // Se ejecuta solo una vez al montar el componente
 
     const parsearPrecio = (precioStr) => {
         if (typeof precioStr === 'number') {
@@ -99,6 +124,8 @@ export const MapaDiscoteca = () => {
     const finalizarCompra = async () => {
         console.log("MapaDiscoteca.jsx: 'evento' state at start of finalizarCompra:", evento);
         console.log("MapaDiscoteca.jsx: 'evento.idEvento' value at start of finalizarCompra:", evento ? evento.idEvento : 'N/A');
+        console.log("MapaDiscoteca.jsx: 'currentUserId' at start of finalizarCompra:", currentUserId);
+
 
         if (!zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null) {
             alert("Please select a valid zone to finalize the purchase. The zone ID is undefined.");
@@ -111,6 +138,15 @@ export const MapaDiscoteca = () => {
             alert("Could not get event information to process payment. Please reload the page and try again.");
             return;
         }
+
+        // --- VALIDACIÓN CRÍTICA: Asegurarse de que el usuario esté logueado ---
+        if (currentUserId === null) {
+            alert("Para finalizar la compra, debes iniciar sesión.");
+            console.error("MapaDiscoteca.jsx: User ID is null. User is not logged in or token is invalid.");
+            // Aquí podrías redirigir al login
+            return;
+        }
+
 
         let numericZonaId;
         if (typeof zonaSeleccionada.id === 'string' && ZONA_ID_FRONTEND_MAPPING[zonaSeleccionada.id.toLowerCase()]) {
@@ -133,7 +169,9 @@ export const MapaDiscoteca = () => {
 
         const reservationDetails = {
             eventId: parseInt(evento.idEvento),
-            userId: CURRENT_USER_ID,
+            // --- ¡CAMBIO CLAVE AQUÍ! ---
+            // Usar el ID del usuario extraído del token, no el hardcodeado.
+            userId: currentUserId, 
             tickets: ticketsParaReserva,
             totalAmount: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
         };
@@ -163,6 +201,9 @@ export const MapaDiscoteca = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    // No necesitas enviar el token aquí si MercadoPagoController no lo requiere
+                    // Pero si tu backend lo usa para validación general, puedes mantenerlo:
+                    ...getAuthHeaders(), 
                 },
                 body: JSON.stringify(orderData),
             });
@@ -283,7 +324,8 @@ export const MapaDiscoteca = () => {
                         <button
                             onClick={finalizarCompra}
                             className="btn-checkout"
-                            disabled={!evento || !evento.idEvento || !zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null}
+                            // Deshabilitar si no hay evento, zona seleccionada, o si el ID del usuario no se ha cargado
+                            disabled={!evento || !evento.idEvento || !zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null || currentUserId === null}
                         >
                             Finalize purchase
                         </button>
