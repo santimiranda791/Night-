@@ -36,10 +36,10 @@ export const MapaDiscoteca = () => {
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
-                // Asegúrate de que el campo en tu token sea 'id_cliente' o 'idCliente' o 'idUsuario'
-                // Basado en tu log de login, el campo es 'idCliente'
-                setCurrentUserId(decodedToken.idCliente); 
-                console.log("MapaDiscoteca.jsx: ID de usuario extraído del token:", decodedToken.idCliente);
+                // ¡¡¡ESTA ES LA LÍNEA MODIFICADA!!!
+                // Antes: setCurrentUserId(decodedToken.idCliente);
+                setCurrentUserId(decodedToken.idUsuario); // <-- CORRECCIÓN: Usar 'idUsuario'
+                console.log("MapaDiscoteca.jsx: ID de usuario extraído del token:", decodedToken.idUsuario);
             } catch (e) {
                 console.error("MapaDiscoteca.jsx: Error decodificando token JWT:", e);
                 setCurrentUserId(null);
