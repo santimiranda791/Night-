@@ -55,7 +55,9 @@ export const Eventos = () => {
       });
   }, []);
 
-  const handleEventClick = (eventId) => {
+  const handleEventClick = (event, eventId) => {
+    event.preventDefault();
+    event.stopPropagation();
     const token = localStorage.getItem('token');
     if (!token) {
       Swal.fire({

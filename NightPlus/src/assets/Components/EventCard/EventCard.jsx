@@ -5,9 +5,9 @@ import '../../../Styles/EventCard.css';
 export const EventCard = ({ date, title, image, eventId, onClick }) => {
   const navigate = useNavigate();
 
-  const handleClick = () => {
+  const handleClick = (event) => {
     if (onClick) {
-      onClick(eventId);
+      onClick(event, eventId);
     } else {
       navigate(`/mapa/${eventId}`);
     }
