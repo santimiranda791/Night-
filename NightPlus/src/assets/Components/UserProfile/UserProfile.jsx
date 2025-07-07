@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../../../Styles/UserProfile.css';
-import { QRCode } from 'qrcode.react'; // ¡Esta línea es crucial y debe estar así!
+import QRCode from 'qrcode.react'; // CAMBIO: Revertido a importación por defecto
 
 export const UserProfile = () => {
   const [cliente, setCliente] = useState({
@@ -318,6 +318,5 @@ export const UserProfile = () => {
         </>
       )}
     </div>
-    
   );
 };
