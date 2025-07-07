@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'; // Importa Swal para feedback al usuario
 // Importa el nuevo archivo CSS
 import '../../../../Styles/MapaDiscotecaResponsive.css';
 
@@ -12,7 +13,7 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
 
     const parsearPrecio = (precioStr) =>
         parseFloat(
-            precioStr
+            String(precioStr)
                 .replace(/[^0-9,.-]+/g, '')
                 .replace(/\./g, '')
                 .replace(',', '.')
@@ -41,13 +42,41 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
 
     const finalizarCompra = async () => {
         if (!eventId) {
-            alert("Error: ID del evento no disponible para la compra.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'ID del evento no disponible para la compra.',
+                background: '#000',
+                color: '#fff'
+            });
             return;
         }
 
-        const parsedUserId = userId ? parseInt(userId) : null;
-        if (userId && isNaN(parsedUserId)) {
-            alert("Error: ID de usuario inválido.");
+        // --- VALIDACIÓN CRÍTICA: Asegurarse de que el usuario esté logueado ---
+        if (userId === null || typeof userId === 'undefined') {
+            Swal.fire({
+                imageUrl: '/logitotriste.png',
+                imageWidth: 130,
+                imageHeight: 130,
+                background: '#000',
+                color: '#fff',
+                title: "No Autorizado",
+                text: "Para finalizar la compra, debes iniciar sesión.",
+            });
+            // Opcionalmente, puedes redirigir al login si lo deseas
+            // navigate('/login');
+            return;
+        }
+        
+        const parsedUserId = parseInt(userId);
+        if (isNaN(parsedUserId)) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'ID de usuario inválido. Por favor, intenta iniciar sesión de nuevo.',
+                background: '#000',
+                color: '#fff'
+            });
             return;
         }
 
@@ -63,7 +92,7 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
 
         const reservationDetails = {
             eventId: parseInt(eventId),
-            userId: parsedUserId,
+            userId: parsedUserId, // ¡Usa el userId parseado de las props!
             tickets: carrito.map((zona) => ({
                 zonaId: zona.id,
                 quantity: cantidades[zona.id],
@@ -85,6 +114,8 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    // No necesitas enviar el token aquí si MercadoPagoController no lo requiere
+                    // (ya que el userId va en el body). Si tu backend lo usa para validación general, puedes añadirlo.
                 },
                 body: JSON.stringify(orderData),
             });
@@ -101,12 +132,24 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
                 window.location.href = checkoutUrl;
             } else {
                 console.error('No se recibió una URL de checkout de Mercado Pago.');
-                alert('Hubo un problema al iniciar el proceso de pago. Intenta de nuevo.');
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'Hubo un problema al iniciar el proceso de pago. Intenta de nuevo.',
+                    background: '#000',
+                    color: '#fff'
+                });
             }
 
         } catch (error) {
             console.error('Error en finalizarCompra:', error);
-            alert(`Error al procesar la compra: ${error.message}`);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: `Error al procesar la compra: ${error.message}`,
+                background: '#000',
+                color: '#fff'
+            });
         }
     };
 
@@ -160,11 +203,10 @@ export const CarritoCompra = ({ carrito, onEliminarZona, eventId, userId }) => {
             <button
                 onClick={finalizarCompra}
                 className="finalizar-compra-btn" /* Aplica la clase para el botón finalizar compra */
+                disabled={!eventId || !carrito.length || userId === null || typeof userId === 'undefined'} // Deshabilitar si no hay evento, carrito vacío, o ID de usuario no cargado
             >
                 Finalizar compra
             </button>
         </div>
     );
 };
-
-// Se elimina la definición de 'boton' aquí ya que se manejará con CSS
