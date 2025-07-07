@@ -277,12 +277,12 @@
     box-shadow: 0 4px 14px #3f0091aa;
 }
 .btn.delete {
-    background: linear-gradient(90deg, #e74c3c 70%, #3f0172 100%);
-    border: 2px solid #e74c3c;
+    background: linear-gradient(90deg, #000000 70%, #3f0172 100%);
+    border: 2px solid #000000;
 }
 .btn.delete:hover {
-    background: linear-gradient(90deg, #3f0172 70%, #e74c3c 100%);
-    box-shadow: 0 4px 14px #e74c3caa;
+    background: linear-gradient(90deg, #3f0172 70%, #000000 100%);
+    box-shadow: 0 4px 14px #000000aa;
 }
 
 /* Scrollbar for main content */
