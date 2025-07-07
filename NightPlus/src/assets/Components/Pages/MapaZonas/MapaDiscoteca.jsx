@@ -18,7 +18,8 @@ export const MapaDiscoteca = () => {
     const [zonaSeleccionada, setZonaSeleccionada] = useState(null);
     const [evento, setEvento] = useState(null);
     const [error, setError] = useState(null);
-    const [currentUserId, setCurrentUserId] = useState(null); // Nuevo estado para el ID del usuario logueado
+    const [currentUserId, setCurrentUserId] = useState(null); // Estado para el ID del usuario logueado
+    const [loadingUserId, setLoadingUserId] = useState(true); // Nuevo estado para indicar si se está cargando el userId
 
     const BASE_URL = 'https://backendnight-production.up.railway.app';
 
@@ -28,8 +29,9 @@ export const MapaDiscoteca = () => {
         return token ? { 'Authorization': `Bearer ${token}` } : {};
     };
 
-    // Nuevo useEffect para extraer el ID del usuario del token al cargar el componente
+    // useEffect para extraer el ID del usuario del token al cargar el componente
     useEffect(() => {
+        console.log("MapaDiscoteca.jsx: useEffect para cargar ID de usuario - INICIO");
         const token = localStorage.getItem('token');
         if (token) {
             try {
@@ -46,6 +48,8 @@ export const MapaDiscoteca = () => {
             console.warn("MapaDiscoteca.jsx: No hay token en localStorage. El usuario no está logueado.");
             setCurrentUserId(null); // Asegúrate de que el ID sea null si no hay token
         }
+        setLoadingUserId(false); // Marcar que la carga del userId ha terminado
+        console.log("MapaDiscoteca.jsx: useEffect para cargar ID de usuario - FIN");
     }, []); // Se ejecuta solo una vez al montar el componente
 
     const parsearPrecio = (precioStr) => {
@@ -169,9 +173,7 @@ export const MapaDiscoteca = () => {
 
         const reservationDetails = {
             eventId: parseInt(evento.idEvento),
-            // --- ¡CAMBIO CLAVE AQUÍ! ---
-            // Usar el ID del usuario extraído del token, no el hardcodeado.
-            userId: currentUserId, 
+            userId: currentUserId, // Usar el ID del usuario extraído del token
             tickets: ticketsParaReserva,
             totalAmount: zonaSeleccionada.precio * zonaSeleccionada.cantidad,
         };
@@ -201,8 +203,6 @@ export const MapaDiscoteca = () => {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    // No necesitas enviar el token aquí si MercadoPagoController no lo requiere
-                    // Pero si tu backend lo usa para validación general, puedes mantenerlo:
                     ...getAuthHeaders(), 
                 },
                 body: JSON.stringify(orderData),
@@ -325,7 +325,7 @@ export const MapaDiscoteca = () => {
                             onClick={finalizarCompra}
                             className="btn-checkout"
                             // Deshabilitar si no hay evento, zona seleccionada, o si el ID del usuario no se ha cargado
-                            disabled={!evento || !evento.idEvento || !zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null || currentUserId === null}
+                            disabled={!evento || !evento.idEvento || !zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null || currentUserId === null || loadingUserId}
                         >
                             Finalize purchase
                         </button>
