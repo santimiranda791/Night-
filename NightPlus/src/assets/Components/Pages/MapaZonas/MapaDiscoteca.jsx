@@ -29,6 +29,8 @@ export const MapaDiscoteca = () => {
         if (token) {
             try {
                 const decodedToken = jwtDecode(token);
+                // Asegúrate de que el campo en tu token sea 'id_cliente' o 'idCliente' o 'idUsuario'
+                // Basado en tu log de login, el campo es 'idCliente'
                 setCurrentUserId(decodedToken.idCliente); 
                 console.log("MapaDiscoteca.jsx: ID de usuario extraído del token:", decodedToken.idCliente);
             } catch (e) {
@@ -114,8 +116,6 @@ export const MapaDiscoteca = () => {
         setZonaSeleccionada(null);
     };
 
-    // La lógica de finalizarCompra ahora se maneja en CarritoCompra.jsx
-
     return (
         <div className="mapa-discoteca-container">
             <div className="map-section">
@@ -185,7 +185,7 @@ export const MapaDiscoteca = () => {
                             carrito={[zonaSeleccionada]} // Pasa la zona seleccionada como un array al carrito
                             onEliminarZona={handleEliminarCarrito}
                             eventId={evento ? evento.idEvento : null}
-                            userId={currentUserId} // Pasa el ID del usuario actual desde el JWT
+                            userId={currentUserId} // <-- ¡PASANDO EL currentUserId AQUÍ!
                         />
                     ) : (
                         <p>No hay zona seleccionada.</p>
