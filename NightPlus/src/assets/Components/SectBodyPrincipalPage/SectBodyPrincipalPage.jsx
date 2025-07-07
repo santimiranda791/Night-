@@ -111,7 +111,7 @@ export const SectBodyPrincipalPage = () => {
                 {events.length > 3 && (
                   <div className="row center">
                     {/* Este botón puede navegar directamente a la página de eventos, donde EventCard ya tiene su propia validación */}
-                    <button className="event-btn" onClick={() => navigate('/events')}>Ver todos los Eventos</button>
+                    <button className="event-btn" onClick={() => navigate('/Eventos')}>Ver todos los Eventos</button>
                   </div>
                 )}
               </div>
