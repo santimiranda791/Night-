@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../../../Styles/UserProfile.css';
-// No se necesita importar qrcode.react si usamos la API de Google Charts
+import QRCode from 'qrcode.react'; // Importación por defecto de qrcode.react
 
 export const UserProfile = () => {
   const [cliente, setCliente] = useState({
@@ -14,7 +14,7 @@ export const UserProfile = () => {
 
   const [activeTab, setActiveTab] = useState('cuenta');
   const [showModal, setShowModal] = useState(false);
-  const [showQrModal, setShowQrModal] = useState(false); // Nuevo estado para el modal QR
+  const [showQrModal, setShowQrModal] = useState(false); // Estado para controlar la visibilidad del modal QR
   const [currentQrData, setCurrentQrData] = useState(null); // Estado para almacenar los datos del QR de la reserva
 
   const [misReservas, setMisReservas] = useState([]);
@@ -23,11 +23,13 @@ export const UserProfile = () => {
 
   const BASE_URL = 'https://backendnight-production.up.railway.app';
 
+  // Helper para obtener los encabezados de autorización
   const getAuthHeaders = () => {
     const token = localStorage.getItem('token');
     return token ? { 'Authorization': `Bearer ${token}` } : {};
   };
 
+  // Efecto para cargar los datos del cliente desde el almacenamiento local al inicio
   useEffect(() => {
     setCliente({
       nombre: localStorage.getItem('nombre') || '',
@@ -38,6 +40,7 @@ export const UserProfile = () => {
     });
   }, []);
 
+  // Efecto para cargar las reservas del cliente cuando la pestaña activa es "mis reservas"
   useEffect(() => {
     const fetchMisReservas = async () => {
       if (activeTab === 'mis reservas') {
@@ -67,7 +70,7 @@ export const UserProfile = () => {
           const data = await response.json();
           setMisReservas(data);
         } catch (err) {
-          console.error("Error fetching mis reservas:", err);
+          console.error("Error al obtener mis reservas:", err);
           setErrorMisReservas(err.message);
         } finally {
           setLoadingMisReservas(false);
@@ -76,12 +79,14 @@ export const UserProfile = () => {
     };
 
     fetchMisReservas();
-  }, [activeTab]);
+  }, [activeTab]); // Dependencia: activeTab para recargar al cambiar de pestaña
 
+  // Manejador de cambios para los campos del formulario
   const handleChange = (e) => {
     setCliente({ ...cliente, [e.target.name]: e.target.value });
   };
 
+  // Funciones para abrir y cerrar el modal de edición de perfil
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
@@ -90,11 +95,13 @@ export const UserProfile = () => {
     setCurrentQrData(reservaData); // Almacena los datos de la reserva para el QR
     setShowQrModal(true);
   };
+  // Función para cerrar el modal QR
   const closeQrModal = () => {
     setShowQrModal(false);
     setCurrentQrData(null); // Limpia los datos del QR al cerrar el modal
   };
 
+  // Manejador para enviar el formulario de actualización de perfil
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -294,18 +301,17 @@ export const UserProfile = () => {
             <h2>Código QR de la Reserva</h2>
             {currentQrData ? (
               <div className="qr-code-wrapper">
-                {/* Generamos la URL de la API de Google Charts para el QR */}
-                <img
-                  src={`https://chart.googleapis.com/chart?cht=qr&chs=256x256&chl=${encodeURIComponent(
-                    JSON.stringify({
-                      idReserva: currentQrData.idReserva,
-                      evento: currentQrData.nombreEvento,
-                      usuario: currentQrData.usuarioCliente || currentQrData.cliente?.usuarioCliente || currentQrData.nombreCliente,
-                      tickets: currentQrData.cantidadTickets
-                    })
-                  )}&choe=UTF-8`}
-                  alt={`QR de la reserva ${currentQrData.idReserva}`}
-                  style={{ width: '256px', height: '256px' }}
+                {/* Usamos el componente QRCode de qrcode.react */}
+                <QRCode
+                  value={JSON.stringify({
+                    idReserva: currentQrData.idReserva,
+                    evento: currentQrData.nombreEvento,
+                    usuario: currentQrData.usuarioCliente || currentQrData.cliente?.usuarioCliente || currentQrData.nombreCliente,
+                    tickets: currentQrData.cantidadTickets
+                  })}
+                  size={256}
+                  level="H"
+                  includeMargin={true}
                 />
                 <p className="qr-info">
                   Este QR contiene los detalles de la reserva: ID {currentQrData.idReserva}, Evento {currentQrData.nombreEvento}.
