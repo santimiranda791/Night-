@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2'; // Importa SweetAlert2 para las alertas
 import '../../../Styles/SectBodyPrincipalPage.css';
 
 export const SectBodyPrincipalPage = () => {
@@ -11,13 +12,13 @@ export const SectBodyPrincipalPage = () => {
   const [error, setError] = useState(null);
 
   // URL base de tu backend en Railway.app
-  const BASE_URL = 'https://backendnight-production.up.railway.app'; 
+  const BASE_URL = 'https://backendnight-production.up.railway.app';
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
         setLoading(true);
-        // CAMBIO: Asegúrate de que el endpoint para obtener eventos sea '/servicio/eventos-list'
+        // Asegúrate de que el endpoint para obtener eventos sea '/servicio/eventos-list'
         const response = await fetch(`${BASE_URL}/servicio/eventos-list`);
         if (!response.ok) {
           throw new Error(`Error al cargar eventos: ${response.status} ${response.statusText}`);
@@ -35,9 +36,27 @@ export const SectBodyPrincipalPage = () => {
     fetchEvents();
   }, []);
 
-  // CAMBIO: La función handleVerEvento ahora navega a /mapa/{id}
-  const handleVerEvento = (id) => {
-    navigate(`/mapa/${id}`); // Navega a la ruta interna de tu aplicación
+  // Función para manejar el clic en "Ver Evento" con validación de sesión
+  const handleVerEvento = async (id) => {
+    const token = localStorage.getItem('token'); // Obtiene el token del localStorage
+
+    // Si no hay token, el usuario no está logueado
+    if (!token) {
+      // Muestra una alerta informando al usuario que debe iniciar sesión
+      await Swal.fire({
+        imageUrl: '/logitotriste.png',
+        imageWidth: 130,
+        imageHeight: 130,
+        background: '#000',
+        color: '#fff',
+        title: 'Debes iniciar sesión primero',
+        text: 'Para acceder a este evento, necesitas tener una sesión activa.',
+      });
+      return; // Detiene la ejecución de la función
+    }
+
+    // Si hay token, navega a la ruta interna de tu aplicación
+    navigate(`/mapa/${id}`);
   };
 
   return (
@@ -72,9 +91,9 @@ export const SectBodyPrincipalPage = () => {
                     <div className="event-card-custom" key={event.idEvento}>
                       <div className="event-card-img-wrap">
                         <img src={event.imagen || "/card.png"} alt={`Imagen del ${event.nombreEvento}`} className="event-card-img" />
+                        {/* Llama a la función handleVerEvento que ahora incluye la validación */}
                         <button className="event-btn" onClick={() => handleVerEvento(event.idEvento)}>Ver Evento</button>
                       </div>
-                      {/* CAMBIO: Eliminado el título, fecha/hora y descripción */}
                     </div>
                   ))}
                 </div>
@@ -83,15 +102,15 @@ export const SectBodyPrincipalPage = () => {
                     <div className="event-card-custom">
                       <div className="event-card-img-wrap">
                         <img src={events[2].imagen || "/card.png"} alt={`Imagen del ${events[2].nombreEvento}`} className="event-card-img" />
+                        {/* Llama a la función handleVerEvento que ahora incluye la validación */}
                         <button className="event-btn" onClick={() => handleVerEvento(events[2].idEvento)}>Ver Evento</button>
                       </div>
-                      {/* CAMBIO: Eliminado el título, fecha/hora y descripción */}
                     </div>
                   </div>
                 )}
-                {/* Puedes añadir un botón o enlace para "Ver más eventos" si hay más de 3 */}
                 {events.length > 3 && (
                   <div className="row center">
+                    {/* Este botón puede navegar directamente a la página de eventos, donde EventCard ya tiene su propia validación */}
                     <button className="event-btn" onClick={() => navigate('/events')}>Ver todos los Eventos</button>
                   </div>
                 )}

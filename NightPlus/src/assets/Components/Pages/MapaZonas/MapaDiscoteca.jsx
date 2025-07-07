@@ -321,7 +321,7 @@ export const MapaDiscoteca = () => {
                                 <div>
                                     <strong>Sector:</strong> {zonaSeleccionada.nombre}
                                 </div>
-                                <div><strong>Price:</strong> {formatearPrecio(zonaSeleccionada.precio)}</div>
+                                <div><strong>Precio:</strong> {formatearPrecio(zonaSeleccionada.precio)}</div>
                                 <div>
                                     <label htmlFor="cantidadBoletas"><strong>Cantidad:</strong></label>
                                     <input
@@ -351,7 +351,7 @@ export const MapaDiscoteca = () => {
                             onClick={handleEliminarCarrito}
                             className="btn-remove-from-cart"
                         >
-                            🗑️ Remove from cart
+                            🗑️ Remover del carrito
                         </button>
                         <button
                             onClick={finalizarCompra}
@@ -359,7 +359,7 @@ export const MapaDiscoteca = () => {
                             // Deshabilitar si no hay evento, zona seleccionada, o si el ID del usuario no se ha cargado
                             disabled={!evento || !evento.idEvento || !zonaSeleccionada || typeof zonaSeleccionada.id === 'undefined' || zonaSeleccionada.id === null || currentUserId === null || loadingUserId}
                         >
-                            Finalize purchase
+                            Finalizar Compra
                         </button>
                     </div>
                 )}
