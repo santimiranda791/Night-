@@ -99,7 +99,7 @@ export const Eventos = () => {
   return (
     <>
       <Header /> {/* Componente de cabecera */}
-      <div className="eventos-container">
+      <div className="eventos-container"> {/* Asegúrate de que esta clase esté aplicada */}
         {/* Muestra un mensaje de carga o de no eventos si la lista está vacía */}
         {events.length === 0 ? (
           <p className="loading-message">Cargando eventos o no hay eventos disponibles...</p>
