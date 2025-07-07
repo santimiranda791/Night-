@@ -26,6 +26,10 @@ import { ViewEvent } from './assets/Components/Pages/ViewEvent/ViewEvent';
 import { Header } from './assets/Components/Header/Header'; 
 import CompraExitosa from './assets/Components/CompraExitosa';
 
+// --- NUEVA IMPORTACIÓN ---
+import { QrDetailsPage } from './assets/Components/QrDetailsPage/QrDetailsPage'; // <--- Asegúrate que esta ruta sea correcta
+
+
 // Componente Wrapper para LoadingAlert
 const LoadingAlertWrapper = () => {
   const { loading } = useContext(LoadingContext);
@@ -60,6 +64,10 @@ export const App = () => {
         <Route path="/verify-code-password" element={<VerifyCodePassword />} />
         <Route path='/PrincipalAdmin' element={<SectbodyAdmin />} />
         <Route path="/view-event/:id" element={<ViewEvent />} /> 
+        
+        {/* --- NUEVA RUTA PARA LOS DETALLES DEL QR --- */}
+        <Route path="/detalles-qr" element={<QrDetailsPage />} /> 
+
       </Routes>
     </LoadingProvider>
   );

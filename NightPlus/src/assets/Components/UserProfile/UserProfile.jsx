@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
 import '../../../Styles/UserProfile.css';
-// Ya no necesitamos importar qrcode.react
+// No se necesita importar qrcode.react si usamos la API de goqr.me
 
 export const UserProfile = () => {
   const [cliente, setCliente] = useState({
@@ -22,6 +22,9 @@ export const UserProfile = () => {
   const [errorMisReservas, setErrorMisReservas] = useState(null);
 
   const BASE_URL = 'https://backendnight-production.up.railway.app';
+  // Define la URL base de tu aplicación donde se mostrarán los detalles del QR
+  // ¡IMPORTANTE: Reemplaza 'https://tu-dominio-de-aplicacion.com' con tu dominio real!
+  const APP_BASE_URL = 'https://nightplus.vercel.app'; 
 
   // Helper para obtener los encabezados de autorización
   const getAuthHeaders = () => {
@@ -304,18 +307,13 @@ export const UserProfile = () => {
                 {/* Generamos la URL de la API de goqr.me para el QR */}
                 <img
                   src={`https://api.qrserver.com/v1/create-qr-code/?size=256x256&data=${encodeURIComponent(
-                    JSON.stringify({
-                      idReserva: currentQrData.idReserva,
-                      evento: currentQrData.nombreEvento,
-                      usuario: currentQrData.usuarioCliente || currentQrData.cliente?.usuarioCliente || currentQrData.nombreCliente,
-                      tickets: currentQrData.cantidadTickets
-                    })
+                    `${APP_BASE_URL}/detalles-qr?idReserva=${currentQrData.idReserva}&idEvento=${currentQrData.evento?.idEvento || 'N/A'}`
                   )}`}
                   alt={`QR de la reserva ${currentQrData.idReserva}`}
                   style={{ width: '256px', height: '256px' }}
                 />
                 <p className="qr-info">
-                  Este QR contiene los detalles de la reserva: ID {currentQrData.idReserva}, Evento {currentQrData.nombreEvento}.
+                  Este QR te llevará a una página con los detalles de la reserva: ID {currentQrData.idReserva}, Evento {currentQrData.nombreEvento}.
                 </p>
               </div>
             ) : (
