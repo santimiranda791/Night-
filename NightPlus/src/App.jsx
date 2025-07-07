@@ -28,7 +28,7 @@ import CompraExitosa from './assets/Components/CompraExitosa';
 
 // --- NUEVA IMPORTACIÓN ---
 // Asegúrate de que esta ruta sea correcta y que el nombre de la carpeta y el archivo coincidan exactamente (sensible a mayúsculas/minúsculas)
-import { QrDetailsPage } from './assets/Components/QrDetailsPage/QrDetailsPage'; 
+import { QrDetailsPage } from './assets/Components/QrDetailsPage';  
 
 
 // Componente Wrapper para LoadingAlert
