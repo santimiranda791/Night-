@@ -5,7 +5,8 @@ import "../../../../Styles/SectbodyAdmin.css"; // Asegúrate que esta ruta CSS s
 
 export const SectbodyAdmin = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState("perfil");
+  // CAMBIO: activeTab inicializado en "discotecas"
+  const [activeTab, setActiveTab] = useState("discotecas");
   const [currentAdmin, setCurrentAdmin] = useState(null);
 
   // ESTADO PARA CONTROLAR LA VISIBILIDAD DE LA SIDEBAR EN MÓVILES
@@ -73,6 +74,7 @@ export const SectbodyAdmin = () => {
     }
 
     // Cargar datos según la pestaña activa
+    // Se elimina la lógica para 'perfil'
     if (activeTab === "discotecas") {
       fetchDiscotecas();
     } else if (activeTab === "eventos") {
@@ -733,108 +735,15 @@ export const SectbodyAdmin = () => {
     } finally {
       setLoadingEventos(false);
     }
-  };// --- RESERVAS CRUD (NUEVAS FUNCIONES CON MERCADO PAGO SIMULADO) ---
-const fetchReservas = async () => {
-  setLoadingReservas(true);
-  setErrorReservas(null);
-  try {
-    const response = await fetch(`${BASE_URL}/servicio/admin/reservas`, {
-      headers: getAuthHeaders(),
-    });
-    if (response.status === 401 || response.status === 403) {
-      Swal.fire({
-        imageUrl: '/logitotriste.png',
-        imageWidth: 130,
-        imageHeight: 130,
-        background: '#000',
-        color: '#fff',
-        title: "Error",
-        text: "No autorizado. Por favor, inicia sesión de nuevo.",
-      });
-      handleLogout();
-      return;
-    }
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`Error al obtener reservas: ${response.status} ${response.statusText} - ${errorText}`);
-    }
-    const data = await response.json();
-    setReservas(data);
-  } catch (err) {
-    console.error("Error fetching reservas:", err);
-    Swal.fire({
-      imageUrl: '/logitotriste.png',
-      imageWidth: 130,
-      imageHeight: 130,
-      background: '#000',
-      color: '#fff',
-      title: "Error",
-      text: err.message || "Hubo un error al cargar las reservas.",
-    });
-    setErrorReservas(err.message);
-  } finally {
-    setLoadingReservas(false);
-  }
-};
+  };
 
-const addReserva = async () => {
-  const { value: formValues } = await Swal.fire({
-    title: "Añadir Reserva",
-    html:
-      '<input id="swal-input1" class="swal2-input" placeholder="ID Evento">' +
-      // CAMBIO CLAVE AQUÍ: Pide el usuario_cliente (username)
-      '<input id="swal-input2" class="swal2-input" placeholder="Usuario Cliente (ej. juanperez)">' +
-      '<input id="swal-input3" class="swal2-input" type="number" placeholder="Cantidad Tickets">' +
-      '<input id="swal-input4" class="swal2-input" type="date" placeholder="Fecha Reserva (YYYY-MM-DD)">' +
-      '<select id="swal-select5" class="swal2-input">' +
-      '<option value="">Selecciona Estado de Pago</option>' +
-      '<option value="PENDIENTE">PENDIENTE</option>' +
-      '<option value="APROBADO">APROBADO</option>' +
-      '<option value="RECHAZADO">RECHAZADO</option>' +
-      '</select>',
-    focusConfirm: false,
-    showCancelButton: true,
-    confirmButtonText: "Guardar",
-    cancelButtonText: "Cancelar",
-    preConfirm: () => {
-      const idEvento = document.getElementById("swal-input1").value.trim();
-      // CAMBIO CLAVE AQUÍ: Obtiene el usuario_cliente como string
-      const usuarioCliente = document.getElementById("swal-input2").value.trim();
-      const cantidadTickets = document.getElementById("swal-input3").value.trim();
-      const fechaReserva = document.getElementById("swal-input4").value.trim();
-      const estadoPago = document.getElementById("swal-select5").value.trim();
-
-      if (!idEvento || !usuarioCliente || !cantidadTickets || !fechaReserva || !estadoPago) {
-        Swal.showValidationMessage("Completa todos los campos obligatorios (ID Evento, Usuario Cliente, Tickets, Fecha, Estado Pago)");
-        return;
-      }
-
-      let finalIdTransaccion = "";
-      if (estadoPago === "APROBADO") {
-        finalIdTransaccion = `MP_ADM_${Date.now()}`;
-      }
-
-      return {
-        evento: { idEvento: Number(idEvento) },
-        // CAMBIO CLAVE AQUÍ: Envía el usuario_cliente en el objeto cliente
-        cliente: { usuarioCliente: usuarioCliente },
-        cantidadTickets: Number(cantidadTickets),
-        fechaReserva,
-        estadoPago,
-        idTransaccion: finalIdTransaccion,
-      };
-    },
-  });
-
-  if (formValues) {
+  // --- RESERVAS CRUD (NUEVAS FUNCIONES CON MERCADO PAGO SIMULADO) ---
+  const fetchReservas = async () => {
+    setLoadingReservas(true);
+    setErrorReservas(null);
     try {
-      const response = await fetch(`${BASE_URL}/servicio/guardar-reserva`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          ...getAuthHeaders(),
-        },
-        body: JSON.stringify(formValues),
+      const response = await fetch(`${BASE_URL}/servicio/admin/reservas`, {
+        headers: getAuthHeaders(),
       });
       if (response.status === 401 || response.status === 403) {
         Swal.fire({
@@ -851,21 +760,12 @@ const addReserva = async () => {
       }
       if (!response.ok) {
         const errorText = await response.text();
-        throw new Error(`No se pudo añadir la reserva: ${response.status} ${response.statusText} - ${errorText}`);
+        throw new Error(`Error al obtener reservas: ${response.status} ${response.statusText} - ${errorText}`);
       }
-      // CAMBIO: Recargar todas las reservas para asegurar la actualización de la lista
-      fetchReservas();
-      Swal.fire({
-        imageUrl: '/logitonegro.png',
-        imageWidth: 130,
-        imageHeight: 130,
-        background: '#000',
-        color: '#fff',
-        title: "¡Guardado!",
-        text: "Reserva añadida correctamente",
-      });
+      const data = await response.json();
+      setReservas(data);
     } catch (err) {
-      console.error("Error adding reserva:", err);
+      console.error("Error fetching reservas:", err);
       Swal.fire({
         imageUrl: '/logitotriste.png',
         imageWidth: 130,
@@ -873,79 +773,103 @@ const addReserva = async () => {
         background: '#000',
         color: '#fff',
         title: "Error",
-        text: err.message || "Hubo un error al añadir la reserva.",
+        text: err.message || "Hubo un error al cargar las reservas.",
       });
+      setErrorReservas(err.message);
+    } finally {
+      setLoadingReservas(false);
     }
-  }
-};
+  };
 
-const updateReserva = async (reservaData) => {
-  const { value: formValues } = await Swal.fire({
-    title: "Actualizar Reserva",
-    html: `
-      <input id="swal-input1" class="swal2-input" placeholder="ID Evento" value="${reservaData.idEvento || reservaData.evento?.idEvento || ''}">
-      <!-- CAMBIO CLAVE AQUÍ: Muestra el usuario_cliente existente y pide el usuario_cliente -->
-      <input id="swal-input2" class="swal2-input" placeholder="Usuario Cliente" value="${reservaData.usuarioCliente || reservaData.cliente?.usuarioCliente || ''}">
-      <input id="swal-input3" class="swal2-input" type="number" placeholder="Cantidad Tickets" value="${reservaData.cantidadTickets}">
-      <input id="swal-input4" class="swal2-input" type="date" placeholder="Fecha Reserva (YYYY-MM-DD)" value="${reservaData.fechaReserva}">
-      <select id="swal-select5" class="swal2-input">
-        <option value="PENDIENTE" ${reservaData.estadoPago === 'PENDIENTE' ? 'selected' : ''}>PENDIENTE</option>
-        <option value="APROBADO" ${reservaData.estadoPago === 'APROBADO' ? 'selected' : ''}>APROBADO</option>
-        <option value="RECHAZADO" ${reservaData.estadoPago === 'RECHAZADO' ? 'selected' : ''}>RECHAZADO</option>
-      </select>
-    `,
-    focusConfirm: false,
-    showCancelButton: true,
-    confirmButtonText: "Actualizar",
-    cancelButtonText: "Cancelar",
-    preConfirm: () => {
-      const idEvento = document.getElementById("swal-input1").value.trim();
-      // CAMBIO CLAVE AQUÍ: Obtiene el usuario_cliente como string
-      const usuarioCliente = document.getElementById("swal-input2").value.trim();
-      const cantidadTickets = document.getElementById("swal-input3").value.trim();
-      const fechaReserva = document.getElementById("swal-input4").value.trim();
-      const estadoPago = document.getElementById("swal-select5").value.trim();
+  const addReserva = async () => {
+    const { value: formValues } = await Swal.fire({
+      title: "Añadir Reserva",
+      html:
+        '<input id="swal-input1" class="swal2-input" placeholder="ID Evento">' +
+        // CAMBIO CLAVE AQUÍ: Pide el usuario_cliente (username)
+        '<input id="swal-input2" class="swal2-input" placeholder="Usuario Cliente (ej. juanperez)">' +
+        '<input id="swal-input3" class="swal2-input" type="number" placeholder="Cantidad Tickets">' +
+        '<input id="swal-input4" class="swal2-input" type="date" placeholder="Fecha Reserva (YYYY-MM-DD)">' +
+        '<select id="swal-select5" class="swal2-input">' +
+        '<option value="">Selecciona Estado de Pago</option>' +
+        '<option value="PENDIENTE">PENDIENTE</option>' +
+        '<option value="APROBADO">APROBADO</option>' +
+        '<option value="RECHAZADO">RECHAZADO</option>' +
+        '</select>',
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: "Guardar",
+      cancelButtonText: "Cancelar",
+      preConfirm: () => {
+        const idEvento = document.getElementById("swal-input1").value.trim();
+        // CAMBIO CLAVE AQUÍ: Obtiene el usuario_cliente como string
+        const usuarioCliente = document.getElementById("swal-input2").value.trim();
+        const cantidadTickets = document.getElementById("swal-input3").value.trim();
+        const fechaReserva = document.getElementById("swal-input4").value.trim();
+        const estadoPago = document.getElementById("swal-select5").value.trim();
 
-      if (!idEvento || !usuarioCliente || !cantidadTickets || !fechaReserva || !estadoPago) {
-        Swal.showValidationMessage("Completa todos los campos obligatorios (ID Evento, Usuario Cliente, Tickets, Fecha, Estado Pago)");
-        return;
-      }
+        if (!idEvento || !usuarioCliente || !cantidadTickets || !fechaReserva || !estadoPago) {
+          Swal.showValidationMessage("Completa todos los campos obligatorios (ID Evento, Usuario Cliente, Tickets, Fecha, Estado Pago)");
+          return;
+        }
 
-      let finalIdTransaccion = "";
-      if (estadoPago === "APROBADO") {
-        finalIdTransaccion = `MP_ADM_UPD_${Date.now()}`;
-      } else {
-        finalIdTransaccion = "";
-      }
+        let finalIdTransaccion = "";
+        if (estadoPago === "APROBADO") {
+          finalIdTransaccion = `MP_ADM_${Date.now()}`;
+        }
 
-      return {
-        idReserva: reservaData.idReserva,
-        evento: { idEvento: Number(idEvento) },
-        // CAMBIO CLAVE AQUÍ: Envía el usuario_cliente en el objeto cliente
-        cliente: { usuarioCliente: usuarioCliente },
-        cantidadTickets: Number(cantidadTickets),
-        fechaReserva,
-        estadoPago,
-        idTransaccion: finalIdTransaccion,
-      };
-    },
-  });
+        return {
+          evento: { idEvento: Number(idEvento) },
+          // CAMBIO CLAVE AQUÍ: Envía el usuario_cliente en el objeto cliente
+          cliente: { usuarioCliente: usuarioCliente },
+          cantidadTickets: Number(cantidadTickets),
+          fechaReserva,
+          estadoPago,
+          idTransaccion: finalIdTransaccion,
+        };
+      },
+    });
 
-
-  if (formValues) {
-    try {
-      const response = await fetch(
-        `${BASE_URL}/servicio/actualizar-reserva`,
-        {
-          method: "PUT",
+    if (formValues) {
+      try {
+        const response = await fetch(`${BASE_URL}/servicio/guardar-reserva`, {
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
             ...getAuthHeaders(),
           },
           body: JSON.stringify(formValues),
+        });
+        if (response.status === 401 || response.status === 403) {
+          Swal.fire({
+            imageUrl: '/logitotriste.png',
+            imageWidth: 130,
+            imageHeight: 130,
+            background: '#000',
+            color: '#fff',
+            title: "Error",
+            text: "No autorizado. Por favor, inicia sesión de nuevo.",
+          });
+          handleLogout();
+          return;
         }
-      );
-      if (response.status === 401 || response.status === 403) {
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`No se pudo añadir la reserva: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+        // CAMBIO: Recargar todas las reservas para asegurar la actualización de la lista
+        fetchReservas();
+        Swal.fire({
+          imageUrl: '/logitonegro.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "¡Guardado!",
+          text: "Reserva añadida correctamente",
+        });
+      } catch (err) {
+        console.error("Error adding reserva:", err);
         Swal.fire({
           imageUrl: '/logitotriste.png',
           imageWidth: 130,
@@ -953,64 +877,107 @@ const updateReserva = async (reservaData) => {
           background: '#000',
           color: '#fff',
           title: "Error",
-          text: "No autorizado. Por favor, inicia sesión de nuevo.",
+          text: err.message || "Hubo un error al añadir la reserva.",
         });
-        handleLogout();
-        return;
       }
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`No se pudo actualizar la reserva: ${response.status} ${response.statusText} - ${errorText}`);
-      }
-      // CAMBIO: Recargar todas las reservas para asegurar la actualización de la lista
-      fetchReservas();
-      Swal.fire({
-        imageUrl: '/logitonegro.png',
-        imageWidth: 130,
-        imageHeight: 130,
-        background: '#000',
-        color: '#fff',
-        title: "Actualizado",
-        text: "Reserva actualizada correctamente",
-      });
-    } catch (err) {
-      console.error("Error updating reserva:", err);
-      Swal.fire({
-        imageUrl: '/logitotriste.png',
-        imageWidth: 130,
-        imageHeight: 130,
-        background: '#000',
-        color: '#fff',
-        title: "Error",
-        text: err.message || "Hubo un error al actualizar la reserva.",
-      });
     }
-  }
-};
+  };
 
-const deleteReserva = async (idReserva) => {
-  const result = await Swal.fire({
-    title: "Confirmar eliminación",
-    text: "¿Estás seguro de eliminar esta reserva?",
-    imageUrl: '/logitopensativo.webp',
-    imageWidth: 130,
-    imageHeight: 130,
-    background: '#000',
-    color: '#fff',
-    showCancelButton: true,
-    confirmButtonText: "Sí, eliminar",
-    cancelButtonText: "Cancelar",
-  });
-  if (result.isConfirmed) {
-    try {
-      const response = await fetch(
-        `${BASE_URL}/servicio/eliminar-reserva/${idReserva}`,
-        {
-          method: "DELETE",
-          headers: getAuthHeaders(),
+  const updateReserva = async (reservaData) => {
+    const { value: formValues } = await Swal.fire({
+      title: "Actualizar Reserva",
+      html: `
+        <input id="swal-input1" class="swal2-input" placeholder="ID Evento" value="${reservaData.idEvento || reservaData.evento?.idEvento || ''}">
+        <input id="swal-input2" class="swal2-input" placeholder="Usuario Cliente" value="${reservaData.usuarioCliente || reservaData.cliente?.usuarioCliente || ''}">
+        <input id="swal-input3" class="swal2-input" type="number" placeholder="Cantidad Tickets" value="${reservaData.cantidadTickets}">
+        <input id="swal-input4" class="swal2-input" type="date" placeholder="Fecha Reserva (YYYY-MM-DD)" value="${reservaData.fechaReserva}">
+        <select id="swal-select5" class="swal2-input">
+          <option value="PENDIENTE" ${reservaData.estadoPago === 'PENDIENTE' ? 'selected' : ''}>PENDIENTE</option>
+          <option value="APROBADO" ${reservaData.estadoPago === 'APROBADO' ? 'selected' : ''}>APROBADO</option>
+          <option value="RECHAZADO" ${reservaData.estadoPago === 'RECHAZADO' ? 'selected' : ''}>RECHAZADO</option>
+        </select>
+      `,
+      focusConfirm: false,
+      showCancelButton: true,
+      confirmButtonText: "Actualizar",
+      cancelButtonText: "Cancelar",
+      preConfirm: () => {
+        const idEvento = document.getElementById("swal-input1").value.trim();
+        // CAMBIO CLAVE AQUÍ: Obtiene el usuario_cliente como string
+        const usuarioCliente = document.getElementById("swal-input2").value.trim();
+        const cantidadTickets = document.getElementById("swal-input3").value.trim();
+        const fechaReserva = document.getElementById("swal-input4").value.trim();
+        const estadoPago = document.getElementById("swal-select5").value.trim();
+
+        if (!idEvento || !usuarioCliente || !cantidadTickets || !fechaReserva || !estadoPago) {
+          Swal.showValidationMessage("Completa todos los campos obligatorios (ID Evento, Usuario Cliente, Tickets, Fecha, Estado Pago)");
+          return;
         }
-      );
-      if (response.status === 401 || response.status === 403) {
+
+        let finalIdTransaccion = "";
+        if (estadoPago === "APROBADO") {
+          finalIdTransaccion = `MP_ADM_UPD_${Date.now()}`;
+        } else {
+          finalIdTransaccion = "";
+        }
+
+        return {
+          idReserva: reservaData.idReserva,
+          evento: { idEvento: Number(idEvento) },
+          // CAMBIO CLAVE AQUÍ: Envía el usuario_cliente en el objeto cliente
+          cliente: { usuarioCliente: usuarioCliente },
+          cantidadTickets: Number(cantidadTickets),
+          fechaReserva,
+          estadoPago,
+          idTransaccion: finalIdTransaccion,
+        };
+      },
+    });
+
+
+    if (formValues) {
+      try {
+        const response = await fetch(
+          `${BASE_URL}/servicio/actualizar-reserva`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              ...getAuthHeaders(),
+            },
+            body: JSON.stringify(formValues),
+          }
+        );
+        if (response.status === 401 || response.status === 403) {
+          Swal.fire({
+            imageUrl: '/logitotriste.png',
+            imageWidth: 130,
+            imageHeight: 130,
+            background: '#000',
+            color: '#fff',
+            title: "Error",
+            text: "No autorizado. Por favor, inicia sesión de nuevo.",
+          });
+          handleLogout();
+          return;
+        }
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`No se pudo actualizar la reserva: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+        // CAMBIO: Recargar todas las reservas para asegurar la actualización de la lista
+        fetchReservas();
+        Swal.fire({
+          imageUrl: '/logitonegro.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Actualizado",
+          text: "Reserva actualizada correctamente",
+        });
+      } catch (err) {
+        console.error("Error updating reserva:", err);
         Swal.fire({
           imageUrl: '/logitotriste.png',
           imageWidth: 130,
@@ -1018,274 +985,295 @@ const deleteReserva = async (idReserva) => {
           background: '#000',
           color: '#fff',
           title: "Error",
-          text: "No autorizado. Por favor, inicia sesión de nuevo.",
+          text: err.message || "Hubo un error al actualizar la reserva.",
         });
-        handleLogout();
-        return;
       }
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`No se pudo eliminar la reserva: ${response.status} ${response.statusText} - ${errorText}`);
-      }
-      setReservas(reservas.filter((r) => r.idReserva !== idReserva));
-      Swal.fire({
-        imageUrl: '/logitonegro.png',
-        imageWidth: 130,
-        imageHeight: 130,
-        background: '#000',
-        color: '#fff',
-        title: "Eliminado",
-        text: "La reserva ha sido eliminada",
-      });
-    } catch (err) {
-      console.error("Error deleting reserva:", err);
-      Swal.fire({
-        imageUrl: '/logitotriste.png',
-        imageWidth: 130,
-        imageHeight: 130,
-        background: '#000',
-        color: '#fff',
-        title: "Error",
-        text: err.message || "Hubo un error al eliminar la reserva.",
-      });
     }
-  }
-};
+  };
 
-const renderMainContent = () => {
-  switch (activeTab) {
-    case "perfil":
-      return (
-        <div className="profile-container">
-          <h2>Mi Perfil</h2>
-          {currentAdmin ? (
-            <div>
-              <p><strong>ID Admin:</strong> {currentAdmin.id_admin}</p>
-              <p><strong>Nombre:</strong> {currentAdmin.nombre_admin}</p>
-              <p><strong>Usuario:</strong> {currentAdmin.usuario_admin}</p>
-              <p><strong>Teléfono:</strong> {currentAdmin.telefono_admin}</p>
-              <p><strong>Correo:</strong> {currentAdmin.correo_admin}</p>
-              {/* Agrega más detalles del perfil si los tienes */}
-            </div>
-          ) : (
-            <p>Cargando información del perfil...</p>
-          )}
-        </div>
-      );
-    case "discotecas":
-      return (
-        <div className="events-container">
-          <div className="topbar">
-            <h1>Discotecas</h1>
-            <button className="btn-add" onClick={addDiscoteca}>+ Añadir Discoteca</button>
-          </div>
-          <div className="actions-bar">
-            <input type="text" placeholder="Buscar discoteca..." />
-          </div>
-          {loadingDisco ? (
-            <p>Cargando discotecas...</p>
-          ) : errorDisco ? (
-            <p>Error: {errorDisco}</p>
-          ) : discotecas.length === 0 ? (
-            <p>No hay discotecas registradas.</p>
-          ) : (
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>NIT</th>
-                  <th>Nombre</th>
-                  <th>Ubicación</th>
-                  <th>Capacidad</th>
-                  <th>Horario</th>
-                  <th>Imagen</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {discotecas.map((discoteca) => (
-                  <tr key={discoteca.nit}>
-                    <td data-label="NIT">{discoteca.nit}</td>
-                    <td data-label="Nombre">{discoteca.nombre}</td>
-                    <td data-label="Ubicación">{discoteca.ubicacion}</td>
-                    <td data-label="Capacidad">{discoteca.capacidad}</td>
-                    <td data-label="Horario">{discoteca.horario}</td>
-                    <td data-label="Imagen">
-                      {discoteca.imagen ? (
-                        <img
-                          src={discoteca.imagen}
-                          alt={discoteca.nombre}
-                          style={{ width: "50px", height: "50px", borderRadius: "8px", objectFit: "cover" }}
-                        />
-                      ) : (
-                        "N/A"
-                      )}
-                    </td>
-                    <td data-label="Acciones" className="actions-cell">
-                      <button className="btn view">Ver</button>
-                      <button className="btn edit" onClick={() => updateDiscoteca(discoteca)}>Editar</button>
-                      <button className="btn delete" onClick={() => deleteDiscoteca(discoteca.nit)}>Eliminar</button>
-                    </td>
+  const deleteReserva = async (idReserva) => {
+    const result = await Swal.fire({
+      title: "Confirmar eliminación",
+      text: "¿Estás seguro de eliminar esta reserva?",
+      imageUrl: '/logitopensativo.webp',
+      imageWidth: 130,
+      imageHeight: 130,
+      background: '#000',
+      color: '#fff',
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+    });
+    if (result.isConfirmed) {
+      try {
+        const response = await fetch(
+          `${BASE_URL}/servicio/eliminar-reserva/${idReserva}`,
+          {
+            method: "DELETE",
+            headers: getAuthHeaders(),
+          }
+        );
+        if (response.status === 401 || response.status === 403) {
+          Swal.fire({
+            imageUrl: '/logitotriste.png',
+            imageWidth: 130,
+            imageHeight: 130,
+            background: '#000',
+            color: '#fff',
+            title: "Error",
+            text: "No autorizado. Por favor, inicia sesión de nuevo.",
+          });
+          handleLogout();
+          return;
+        }
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`No se pudo eliminar la reserva: ${response.status} ${response.statusText} - ${errorText}`);
+        }
+        setReservas(reservas.filter((r) => r.idReserva !== idReserva));
+        Swal.fire({
+          imageUrl: '/logitonegro.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Eliminado",
+          text: "La reserva ha sido eliminada",
+        });
+      } catch (err) {
+        console.error("Error deleting reserva:", err);
+        Swal.fire({
+          imageUrl: '/logitotriste.png',
+          imageWidth: 130,
+          imageHeight: 130,
+          background: '#000',
+          color: '#fff',
+          title: "Error",
+          text: err.message || "Hubo un error al eliminar la reserva.",
+        });
+      }
+    }
+  };
+
+
+  // Función para renderizar el contenido principal según la pestaña activa
+  const renderMainContent = () => {
+    switch (activeTab) {
+      // CAMBIO: Se elimina el case "perfil"
+      case "discotecas":
+        return (
+          <div className="events-container">
+            <div className="topbar">
+              <h1>Discotecas</h1>
+              <button className="btn-add" onClick={addDiscoteca}>+ Añadir Discoteca</button>
+            </div>
+            <div className="actions-bar">
+              <input type="text" placeholder="Buscar discoteca..." />
+            </div>
+            {loadingDisco ? (
+              <p>Cargando discotecas...</p>
+            ) : errorDisco ? (
+              <p>Error: {errorDisco}</p>
+            ) : discotecas.length === 0 ? (
+              <p>No hay discotecas registradas.</p>
+            ) : (
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>NIT</th>
+                    <th>Nombre</th>
+                    <th>Ubicación</th>
+                    <th>Capacidad</th>
+                    <th>Horario</th>
+                    <th>Imagen</th>
+                    <th>Acciones</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      );
-    case "eventos":
-      return (
-        <div className="events-container">
-          <div className="topbar">
-            <h1>Eventos</h1>
-            <button className="btn-add" onClick={addEvento}>+ Añadir Evento</button>
+                </thead>
+                <tbody>
+                  {discotecas.map((discoteca) => (
+                    <tr key={discoteca.nit}>
+                      <td data-label="NIT">{discoteca.nit}</td>
+                      <td data-label="Nombre">{discoteca.nombre}</td>
+                      <td data-label="Ubicación">{discoteca.ubicacion}</td>
+                      <td data-label="Capacidad">{discoteca.capacidad}</td>
+                      <td data-label="Horario">{discoteca.horario}</td>
+                      <td data-label="Imagen">
+                        {discoteca.imagen ? (
+                          <img
+                            src={discoteca.imagen}
+                            alt={discoteca.nombre}
+                            style={{ width: "50px", height: "50px", borderRadius: "8px", objectFit: "cover" }}
+                          />
+                        ) : (
+                          "N/A"
+                        )}
+                      </td>
+                      <td data-label="Acciones" className="actions-cell">
+                        <button className="btn view">Ver</button>
+                        <button className="btn edit" onClick={() => updateDiscoteca(discoteca)}>Editar</button>
+                        <button className="btn delete" onClick={() => deleteDiscoteca(discoteca.nit)}>Eliminar</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
-          <div className="actions-bar">
-            <input type="text" placeholder="Buscar evento..." />
-          </div>
-          {loadingEventos ? (
-            <p>Cargando eventos...</p>
-          ) : errorEventos ? (
-            <p>Error: {errorEventos}</p>
-          ) : eventos.length === 0 ? (
-            <p>No hay eventos registrados.</p>
-          ) : (
-            <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>ID Evento</th>
-                  <th>Discoteca (NIT)</th>
-                  <th>Nombre Evento</th>
-                  <th>Fecha</th>
-                  <th>Hora</th>
-                  <th>Descripción</th>
-                  <th>Precio</th>
-                  <th>Imagen</th>
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {eventos.map((evento) => (
-                  <tr key={evento.idEvento || evento.id}>
-                    <td data-label="ID Evento">{evento.idEvento || evento.id}</td>
-                    <td data-label="Discoteca (NIT)">{evento.discoteca?.nit || 'N/A'}</td>
-                    <td data-label="Nombre Evento">{evento.nombreEvento}</td>
-                    <td data-label="Fecha">{evento.fecha}</td>
-                    <td data-label="Hora">{evento.hora}</td>
-                    <td data-label="Descripción">{evento.descripcion}</td>
-                    <td data-label="Precio">${evento.precio?.toFixed(2) || '0.00'}</td>
-                    <td data-label="Imagen">
-                      {evento.imagen ? (
-                        <img
-                          src={evento.imagen}
-                          alt={evento.nombreEvento}
-                          style={{ width: "50px", height: "50px", borderRadius: "8px", objectFit: "cover" }}
-                        />
-                      ) : (
-                        "N/A"
-                      )}
-                    </td>
-                    <td data-label="Acciones" className="actions-cell">
-                      <button className="btn view">Ver</button>
-                      <button className="btn edit" onClick={() => updateEvento(evento)}>Editar</button>
-                      <button className="btn delete" onClick={() => deleteEvento(evento.idEvento || evento.id)}>Eliminar</button>
-                    </td>
+        );
+      case "eventos":
+        return (
+          <div className="events-container">
+            <div className="topbar">
+              <h1>Eventos</h1>
+              <button className="btn-add" onClick={addEvento}>+ Añadir Evento</button>
+            </div>
+            <div className="actions-bar">
+              <input type="text" placeholder="Buscar evento..." />
+            </div>
+            {loadingEventos ? (
+              <p>Cargando eventos...</p>
+            ) : errorEventos ? (
+              <p>Error: {errorEventos}</p>
+            ) : eventos.length === 0 ? (
+              <p>No hay eventos registrados.</p>
+            ) : (
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID Evento</th>
+                    <th>Discoteca (NIT)</th>
+                    <th>Nombre Evento</th>
+                    <th>Fecha</th>
+                    <th>Hora</th>
+                    <th>Descripción</th>
+                    <th>Precio</th>
+                    <th>Imagen</th>
+                    <th>Acciones</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
-        </div>
-      );
-    case "reservas":
-      return (
-        <div className="events-container">
-          <div className="topbar">
-            <h1>Reservas</h1>
-            <button className="btn-add" onClick={addReserva}>+ Añadir Reserva</button>
+                </thead>
+                <tbody>
+                  {eventos.map((evento) => (
+                    <tr key={evento.idEvento || evento.id}>
+                      <td data-label="ID Evento">{evento.idEvento || evento.id}</td>
+                      <td data-label="Discoteca (NIT)">{evento.discoteca?.nit || 'N/A'}</td>
+                      <td data-label="Nombre Evento">{evento.nombreEvento}</td>
+                      <td data-label="Fecha">{evento.fecha}</td>
+                      <td data-label="Hora">{evento.hora}</td>
+                      <td data-label="Descripción">{evento.descripcion}</td>
+                      <td data-label="Precio">${evento.precio?.toFixed(2) || '0.00'}</td>
+                      <td data-label="Imagen">
+                        {evento.imagen ? (
+                          <img
+                            src={evento.imagen}
+                            alt={evento.nombreEvento}
+                            style={{ width: "50px", height: "50px", borderRadius: "8px", objectFit: "cover" }}
+                          />
+                        ) : (
+                          "N/A"
+                        )}
+                      </td>
+                      <td data-label="Acciones" className="actions-cell">
+                        <button className="btn view">Ver</button>
+                        <button className="btn edit" onClick={() => updateEvento(evento)}>Editar</button>
+                        <button className="btn delete" onClick={() => deleteEvento(evento.idEvento || evento.id)}>Eliminar</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
           </div>
-          <div className="actions-bar">
-            <input type="text" placeholder="Buscar reserva..." />
-          </div>
-          {loadingReservas ? (
-            <p>Cargando reservas...</p>
-          ) : errorReservas ? (
-            <p>Error: {errorReservas}</p>
-          ) : reservas.length === 0 ? (
-            <p>No hay reservas registradas.</p>
-          ) : (
-                       <table className="admin-table">
-              <thead>
-                <tr>
-                  <th>ID Reserva</th>
-                  <th>ID Evento</th>
-                  <th>USUARIO</th> {/* El encabezado de la columna está bien */}
-                  <th>Tickets</th>
-                  <th>Fecha Reserva</th>
-                  <th>Estado Pago</th>
-                  {/* CAMBIO: Columna 'ID Transacción' eliminada del thead */}
-                  <th>Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reservas.map((reserva) => (
-                  <tr key={reserva.idReserva || reserva.id}>
-                    <td data-label="ID Reserva">{reserva.idReserva || reserva.id}</td>
-                    <td data-label="ID Evento">{reserva.idEvento || reserva.evento?.idEvento || 'N/A'}</td>
-                    {/* ¡CORRECCIÓN AQUÍ! Acceder a usuarioCliente o nombreCliente */}
-                    <td data-label="Usuario">{reserva.usuarioCliente || reserva.nombreCliente || 'N/A'}</td>
-                    <td data-label="Tickets">{reserva.cantidadTickets}</td>
-                    <td data-label="Fecha Reserva">{reserva.fechaReserva}</td>
-                    <td data-label="Estado Pago">{reserva.estadoPago}</td>
-                    {/* CAMBIO: Columna 'ID Transacción' eliminada del tbody */}
-                    <td data-label="Acciones" className="actions-cell">
-                      <button className="btn view">Ver</button>
-                      <button className="btn edit" onClick={() => updateReserva(reserva)}>Editar</button>
-                      <button className="btn delete" onClick={() => deleteReserva(reserva.idReserva || reserva.id)}>Eliminar</button>
-                    </td>
+        );
+      case "reservas":
+        return (
+          <div className="events-container">
+            <div className="topbar">
+              <h1>Reservas</h1>
+              <button className="btn-add" onClick={addReserva}>+ Añadir Reserva</button>
+            </div>
+            <div className="actions-bar">
+              <input type="text" placeholder="Buscar reserva..." />
+            </div>
+            {loadingReservas ? (
+              <p>Cargando reservas...</p>
+            ) : errorReservas ? (
+              <p>Error: {errorReservas}</p>
+            ) : reservas.length === 0 ? (
+              <p>No hay reservas registradas.</p>
+            ) : (
+              <table className="admin-table">
+                <thead>
+                  <tr>
+                    <th>ID Reserva</th>
+                    <th>ID Evento</th>
+                    <th>USUARIO</th> {/* El encabezado de la columna está bien */}
+                    <th>Tickets</th>
+                    <th>Fecha Reserva</th>
+                    <th>Estado Pago</th>
+                    {/* CAMBIO: Columna 'ID Transacción' eliminada del thead */}
+                    <th>Acciones</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          )}
+                </thead>
+                <tbody>
+                  {reservas.map((reserva) => (
+                    <tr key={reserva.idReserva || reserva.id}>
+                      <td data-label="ID Reserva">{reserva.idReserva || reserva.id}</td>
+                      <td data-label="ID Evento">{reserva.idEvento || reserva.evento?.idEvento || 'N/A'}</td>
+                      {/* ¡CORRECCIÓN AQUÍ! Acceder a usuarioCliente o nombreCliente */}
+                      <td data-label="Usuario">{reserva.usuarioCliente || reserva.cliente?.usuarioCliente || 'N/A'}</td>
+                      <td data-label="Tickets">{reserva.cantidadTickets}</td>
+                      <td data-label="Fecha Reserva">{reserva.fechaReserva}</td>
+                      <td data-label="Estado Pago">{reserva.estadoPago}</td>
+                      {/* CAMBIO: Columna 'ID Transacción' eliminada del tbody */}
+                      <td data-label="Acciones" className="actions-cell">
+                        <button className="btn view">Ver</button>
+                        <button className="btn edit" onClick={() => updateReserva(reserva)}>Editar</button>
+                        <button className="btn delete" onClick={() => deleteReserva(reserva.idReserva || reserva.id)}>Eliminar</button>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        );
+      default:
+        return null;
+    }
+  };
+
+  return (
+    <div className="admin-panel-container">
+      {/* Botón para abrir/cerrar sidebar en móviles */}
+      <button className="sidebar-toggle" onClick={toggleSidebar}>
+        ☰ {/* O puedes usar un ícono de FontAwesome si lo tienes configurado */}
+      </button>
+
+      <aside className={`sidebar ${isSidebarActive ? 'active' : ''}`} id="sidebar">
+        <div className="sidebar-content">
+          <div className="logo-container">
+            <img src="/logito.svg" alt="Logo Night" className="logo-img" />
+          </div>
+          <h2>Panel de Administrador</h2>
+          <ul>
+            {/* CAMBIO: Eliminada la opción "Perfil" */}
+            <li className={activeTab === "discotecas" ? "active" : ""} onClick={() => setActiveTab("discotecas")}>Discotecas</li>
+            <li className={activeTab === "eventos" ? "active" : ""} onClick={() => setActiveTab("eventos")}>Eventos</li>
+            <li className={activeTab === "reservas" ? "active" : ""} onClick={() => setActiveTab("reservas")}>Reservas</li>
+          </ul>
+          <button className="logout-btn" onClick={handleLogout}>
+            <span>Cerrar Sesión</span>
+          </button>
         </div>
-      );
-    default:
-      return null;
-  }
-};
+      </aside>
 
-return (
-  <div className="admin-panel-container">
-    {/* Botón para abrir/cerrar sidebar en móviles */}
-    <button className="sidebar-toggle" onClick={toggleSidebar}>
-      ☰ {/* O puedes usar un ícono de FontAwesome si lo tienes configurado */}
-    </button>
-
-    <aside className={`sidebar ${isSidebarActive ? 'active' : ''}`} id="sidebar">
-      <div className="sidebar-content">
-        <div className="logo-container">
-          <img src="/logito.svg" alt="Logo Night" className="logo-img" />
-        </div>
-        <h2>Panel de Administrador</h2>
-        <ul>
-          <li className={activeTab === "perfil" ? "active" : ""} onClick={() => setActiveTab("perfil")}>Perfil</li>
-          <li className={activeTab === "discotecas" ? "active" : ""} onClick={() => setActiveTab("discotecas")}>Discotecas</li>
-          <li className={activeTab === "eventos" ? "active" : ""} onClick={() => setActiveTab("eventos")}>Eventos</li>
-          <li className={activeTab === "reservas" ? "active" : ""} onClick={() => setActiveTab("reservas")}>Reservas</li>
-        </ul>
-        <button className="logout-btn" onClick={handleLogout}>
-          <span>Cerrar Sesión</span>
-        </button>
-      </div>
-    </aside>
-
-    <main className="main-content" id="mainContent" onClick={(event) => {
+      <main className="main-content" id="mainContent" onClick={(event) => {
         if (isSidebarActive && window.innerWidth <= 768 && !event.target.closest('.sidebar-toggle')) {
           setIsSidebarActive(false);
         }
       }}>
-      {renderMainContent()}
-    </main>
-  </div>
-);
+        {renderMainContent()}
+      </main>
+    </div>
+  );
 };
