@@ -220,7 +220,7 @@ export const UserProfile = () => {
                     <th>Fecha Reserva</th>
                     <th>Estado Pago</th>
                     {/* Si tienes una columna de acciones, asegúrate de que el thead y tbody coincidan */}
-                    <th>Acciones</th> 
+                 
                   </tr>
                 </thead>
                 <tbody>
