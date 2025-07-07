@@ -1,90 +1,108 @@
 /* src/Styles/Eventos.css */
 
-.eventos-container { /* Renamed from .eventos14-container for consistency with the JS component */
+.eventos-container {
     display: flex;
     flex-wrap: wrap;
-    padding: 1rem; /* Adjusted padding for smaller screens */
+    padding: 2rem; /* Increased padding around the whole container */
     background-color: #0b0b14;
     color: white;
-    gap: 1.5rem; /* Adjusted gap */
+    gap: 2rem; /* Increased gap between cards for more spacing */
     justify-content: center;
-    align-items: flex-start; /* Align items to the start for better stacking */
+    align-items: flex-start;
 }
+
+/* Base styles for all event cards */
+.evento-card { /* New class for common card styles, you'd apply this to both principal and lateral event containers */
+    background-color: #1a0f28; /* A darker, rich purple/dark grey for card background */
+    border-radius: 16px; /* More pronounced rounded corners */
+    padding: 1.5rem; /* Increased padding inside cards */
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); /* Subtle, larger shadow for depth */
+    border: 1px solid #3d225c; /* A thin, subtle purple border */
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* Smooth transition for hover effects */
+}
+
+.evento-card:hover {
+    transform: translateY(-5px); /* Lift card slightly on hover */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.6); /* More intense shadow on hover */
+}
+
 
 .evento-principal {
     flex: 2;
-    min-width: 280px; /* Smaller min-width for mobile */
-    max-width: 600px;
-    padding: 1rem; /* Added padding to the principal event card */
-    box-sizing: border-box; /* Include padding in the element's total width and height */
+    min-width: 350px; /* Increased min-width for larger appearance */
+    max-width: 700px; /* Increased max-width */
+    /* All padding, background, border-radius, box-shadow will be inherited from .evento-card */
 }
 
 .evento-principal h2 {
-    font-size: 1.8rem; /* Adjusted font size for smaller screens */
-    font-weight: bold;
-    color: white;
-    word-break: break-word; /* Ensure long titles wrap */
+    font-size: 2.2rem; /* Larger font size for principal event title */
+    margin-bottom: 0.5rem; /* Added margin for spacing */
 }
 
 .evento-principal .hashtag {
-    font-size: 1rem; /* Adjusted font size */
-    color: #f50082;
-    margin-top: 0.3rem;
-    font-weight: bold;
+    font-size: 1.1rem; /* Slightly larger hashtag */
+    color: #ff52a2; /* Brighter fuchsia for better contrast */
 }
 
 .boton-fucsia {
-    margin: 1rem 0;
-    padding: 0.7rem 1.5rem;
+    margin: 1.5rem 0; /* More margin around the button */
+    padding: 0.9rem 2rem; /* Larger button padding */
     background: #ff006a;
-    color: white;
-    border: none;
-    font-weight: bold;
-    border-radius: 8px;
-    cursor: not-allowed;
-    width: 100%; /* Make button full width on smaller screens */
-    max-width: 250px; /* Limit button width on larger screens */
-}
-
-.ver-otros-eventos {
-    display: inline-block;
-    margin-top: 0.5rem;
-    color: #fff;
-    text-decoration: underline;
-    font-size: 0.9rem;
+    border-radius: 12px; /* More rounded button corners */
+    font-size: 1.1rem; /* Larger font for the button */
+    max-width: 300px; /* Allow button to be larger on wide screens */
 }
 
 .ubicacion {
-    margin-top: 1.5rem; /* Adjusted margin */
+    margin-top: 2rem; /* More margin above location */
 }
 
 .ubicacion h3 {
-    color: #ffcc00;
+    color: #ffd700; /* Slightly brighter yellow for location */
+    font-size: 1.2rem; /* Larger font for location title */
 }
 
 .eventos-lateral {
     flex: 1;
     display: flex;
     flex-direction: column;
-    gap: 1rem;
-    min-width: 280px; /* Ensure lateral events are also readable on small screens */
-    padding: 1rem; /* Added padding */
-    box-sizing: border-box;
+    gap: 1.5rem; /* Slightly more gap between lateral events */
+    min-width: 300px; /* Increased min-width for lateral events */
+    /* All padding, background, border-radius, box-shadow will be inherited from .evento-card */
 }
 
-/* Media Queries for responsiveness */
+/* Media Queries adjusted for the new larger sizes */
 @media (max-width: 768px) {
     .eventos-container {
-        flex-direction: column; /* Stack items vertically on smaller screens */
-        align-items: center; /* Center items when stacked */
-        padding: 1rem;
+        padding: 1.5rem;
+        gap: 1.5rem;
     }
 
     .evento-principal,
     .eventos-lateral {
-        width: 100%; /* Take full width */
-        max-width: 500px; /* Limit max-width even when full width to prevent stretching on small tablets */
-        margin-bottom: 1rem; /* Add some space between stacked elements */
+        max-width: 90%; /* Allow cards to take more width on smaller screens */
+        min-width: unset; /* Remove min-width to allow shrinking */
+        width: 100%; /* Ensure they take full width within max-width */
+        margin-bottom: 1rem;
+    }
+
+    .evento-principal h2 {
+        font-size: 1.8rem;
+    }
+
+    .boton-fucsia {
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .eventos-container {
+        padding: 1rem;
+        gap: 1rem;
+    }
+
+    .evento-card {
+        padding: 1rem; /* Adjust padding for very small screens */
     }
 
     .evento-principal h2 {
@@ -96,38 +114,15 @@
     }
 
     .boton-fucsia {
-        max-width: 100%; /* Ensure button takes full width within its container */
-    }
-}
-
-@media (max-width: 480px) {
-    .eventos-container {
-        padding: 0.5rem; /* Even less padding on very small screens */
-        gap: 1rem;
-    }
-
-    .evento-principal {
-        padding: 0.8rem;
-    }
-
-    .evento-principal h2 {
-        font-size: 1.4rem;
-    }
-
-    .evento-principal .hashtag {
-        font-size: 0.85rem;
-    }
-
-    .boton-fucsia {
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
+        padding: 0.7rem 1.2rem;
+        font-size: 1rem;
     }
 
     .ver-otros-eventos {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
     }
 
-    .eventos-lateral {
-        padding: 0.8rem;
+    .ubicacion h3 {
+        font-size: 1rem;
     }
 }
